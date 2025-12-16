@@ -2,6 +2,7 @@ name: Generate Proto Files and Documentation
 
 on:
   push:
+    branches: [ main, dev ]
     paths:
       - 'api/proto/v1/**/*.proto' # 仅监听 proto 文件的改动
   workflow_dispatch:
