@@ -1,0 +1,45 @@
+name: Generate Proto Files
+
+on:
+  push:
+    paths:
+      - '**/*.proto'
+      - 'buf.gen.yaml'
+      - 'buf.yaml'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.21'
+
+      - name: Install protoc and plugins
+        run: |
+          sudo apt-get update && sudo apt-get install -y protobuf-compiler
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+          go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
+          go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
+
+      - name: Generate code
+        run: |
+          protoc -I . \
+            --go_out=. --go_opt=paths=source_relative \
+            --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+            --grpc-gateway_out=. --grpc-gateway_opt=paths=source_relative \
+            --openapiv2_out=. \
+            ./api/proto/v1/*.proto
+
+      - name: Commit generated files
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add -A
+          git commit -m "Auto-generate proto files" || echo "No changes to commit"
+          git push
