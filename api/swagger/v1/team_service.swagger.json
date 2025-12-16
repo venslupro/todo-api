@@ -1,0 +1,273 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "team_service.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "TeamService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/team/share": {
+      "post": {
+        "operationId": "TeamService_ShareTodo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ShareTodoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ShareTodoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      }
+    },
+    "/v1/team/share/{shareId}": {
+      "delete": {
+        "operationId": "TeamService_RemoveShare",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RemoveShareResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      },
+      "patch": {
+        "operationId": "TeamService_UpdateSharePermission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateSharePermissionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TeamServiceUpdateSharePermissionBody"
+            }
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      }
+    },
+    "/v1/team/shared/{userId}": {
+      "get": {
+        "operationId": "TeamService_GetSharedTodos",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetSharedTodosResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "TeamServiceUpdateSharePermissionBody": {
+      "type": "object",
+      "properties": {
+        "permission": {
+          "$ref": "#/definitions/v1SharePermission"
+        }
+      },
+      "title": "更新共享权限请求"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1GetSharedTodosResponse": {
+      "type": "object",
+      "properties": {
+        "sharedLists": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1SharedTodoList"
+          }
+        }
+      }
+    },
+    "v1RemoveShareResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1SharePermission": {
+      "type": "string",
+      "enum": [
+        "SHARE_PERMISSION_UNSPECIFIED",
+        "SHARE_PERMISSION_VIEW",
+        "SHARE_PERMISSION_EDIT"
+      ],
+      "default": "SHARE_PERMISSION_UNSPECIFIED",
+      "title": "共享权限枚举"
+    },
+    "v1ShareTodoRequest": {
+      "type": "object",
+      "properties": {
+        "todoId": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "permission": {
+          "$ref": "#/definitions/v1SharePermission"
+        }
+      },
+      "title": "共享请求"
+    },
+    "v1ShareTodoResponse": {
+      "type": "object",
+      "properties": {
+        "sharedList": {
+          "$ref": "#/definitions/v1SharedTodoList"
+        }
+      }
+    },
+    "v1SharedTodoList": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "todoId": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "sharedWithUserId": {
+          "type": "string"
+        },
+        "permission": {
+          "$ref": "#/definitions/v1SharePermission"
+        },
+        "sharedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "共享 TODO 列表消息"
+    },
+    "v1UpdateSharePermissionResponse": {
+      "type": "object",
+      "properties": {
+        "sharedList": {
+          "$ref": "#/definitions/v1SharedTodoList"
+        }
+      }
+    }
+  }
+}
