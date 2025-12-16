@@ -1,0 +1,71 @@
+name: Generate Proto Files and Documentation
+
+on:
+  push:
+    paths:
+      - 'api/proto/v1/**/*.proto' # 仅监听 proto 文件的改动
+  workflow_dispatch:
+
+jobs:
+  generate:
+    name: Compile proto files
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Go environment
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.25
+
+      # Step 3: Cache Go modules
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      # Step 4: Install protoc and plugins
+      - name: Install Protobuf and gRPC Gateway
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.31.0
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.3.0
+          go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@v2.15.2
+          go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@v2.15.2
+          export PATH=$PATH:$(go env GOPATH)/bin
+
+      # Step 5: Compile Proto Files
+      - name: Generate Go files and OpenAPI docs
+        run: |
+          PROTO_DIR=api/proto/v1
+          OUT_DIR=api/gen/v1
+          mkdir -p ${OUT_DIR}
+
+          # 编译 .pb.go 和 .pb.gw.go 文件
+          for proto_file in ${PROTO_DIR}/*.proto; do
+            protoc \
+              -I ${PROTO_DIR} \
+              -I . \
+              --go_out ${OUT_DIR} \
+              --go-grpc_out ${OUT_DIR} \
+              --grpc-gateway_out ${OUT_DIR} \
+              --openapiv2_out ${OUT_DIR} \
+              ${proto_file}
+          done
+
+      # Step 6: Upload Generated Files if Needed (Optional)
+      - name: Commit and Push Generated Files
+        run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "actions@github.com"
+          git add .
+          git commit -m "Generate .pb.go, .pb.gw.go and OpenAPI docs [skip ci]" || echo "No changes to commit"
+          git push
