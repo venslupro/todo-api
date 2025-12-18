@@ -1,18 +1,18 @@
 syntax = "proto3";
 
-package todopb;
+package todo.v1;
 
-option go_package = "api/protos;todopb";
+option go_package = "github.com/venslupro/todo-api/api/protos;todopb";
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "github.com/venslupro/todo-api/api/protos/services/auth_service.proto";
-import "github.com/venslupro/todo-api/api/protos/services/todo_service.proto";
-import "github.com/venslupro/todo-api/api/protos/services/team_service.proto";
-import "github.com/venslupro/todo-api/api/protos/services/file_service.proto";
-import "github.com/venslupro/todo-api/api/protos/services/collaboration_service.proto";
-import "github.com/venslupro/todo-api/api/protos/services/notification_service.proto";
-import "github.com/venslupro/todo-api/api/protos/services/system_service.proto";
+import "api/protos/services/auth_service.proto";
+import "api/protos/services/todo_service.proto";
+import "api/protos/services/team_service.proto";
+import "api/protos/services/file_service.proto";
+import "api/protos/services/collaboration_service.proto";
+import "api/protos/services/notification_service.proto";
+import "api/protos/services/system_service.proto";
 
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {

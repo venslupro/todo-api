@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package todopb.services;
+package todo.services;
 
 option go_package = "api/protos/services;todopb";
 
@@ -9,10 +9,10 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "github.com/venslupro/todo-api/api/protos/common/enums.proto";
-import "github.com/venslupro/todo-api/api/protos/common/messages.proto";
-import "github.com/venslupro/todo-api/api/protos/common/errors.proto";
-import "github.com/venslupro/todo-api/api/protos/common/pagination.proto";
+import "api/protos/common/enums.proto";
+import "api/protos/common/errors.proto";
+import "api/protos/common/messages.proto";
+import "api/protos/common/pagination.proto";
 
 
 // File Service - Handles file uploads to object storage
@@ -151,7 +151,7 @@ message FileMetadata {
   string id = 1;
   string name = 2;
   string original_name = 3;
-  FileType type = 4;
+  common.FileType type = 4;
   string mime_type = 5;
   int64 size = 6;  // File size in bytes
   string storage_key = 7;  // Key in object storage
@@ -186,7 +186,7 @@ message GetUploadUrlRequest {
   string filename = 1;
   string mime_type = 2;
   int64 size = 3;  // 文件大小
-  FileType file_type = 4;
+  common.FileType file_type = 4;
 
   // 关联信息
   optional string todo_id = 5;
@@ -199,7 +199,7 @@ message GetUploadUrlRequest {
   map<string, string> metadata = 10;
 
   // 视频限制：不超过4分钟（240秒）
-  optional int32 max_duration_seconds = 11 [default = 240];
+  optional int32 max_duration_seconds = 11 ; // default is 4 minutes
 }
 
 message GetUploadUrlResponse {
@@ -261,7 +261,7 @@ message ListFilesRequest {
 
 message ListFilesResponse {
   repeated FileMetadata files = 1;
-  PaginationInfo pagination = 2;
+  common.PaginationInfo pagination = 2;
   int64 total_size = 3;  // 总文件大小（字节）
 }
 
@@ -269,7 +269,7 @@ message GenerateThumbnailRequest {
   string id = 1;
   optional int32 width = 2;
   optional int32 height = 3;
-  optional string format = 4 [default = "jpeg"];  // jpeg, png, webp
+  optional string format = 4;  // jpeg, png, webp, default: jpeg
 }
 
 message GenerateThumbnailResponse {
