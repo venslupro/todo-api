@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/venslupro/todo-api/gen/go/todo/v1;todov1";
+
+// 健康检查请求/响应
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+  string status = 1;
+}
+
+// 系统信息请求/响应
+message SystemInfoRequest {}
+
+message SystemInfoResponse {
+  string version = 1;
+  string environment = 2;
+  int64 uptime = 3;
+}
+
+// 系统服务定义
+service SystemService {
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse) {
+    option (google.api.http) = {
+      get: "/v1/health"
+    };
+  }
+
+  rpc SystemInfo(SystemInfoRequest) returns (SystemInfoResponse) {
+    option (google.api.http) = {
+      get: "/v1/system/info"
+    };
+  }
+}

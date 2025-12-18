@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/venslupro/todo-api/gen/go/todo/v1;todov1";
+
+// TODO 状态枚举
+enum TodoStatus {
+  TODO_STATUS_UNSPECIFIED = 0;
+  TODO_STATUS_NOT_STARTED = 1;
+  TODO_STATUS_IN_PROGRESS = 2;
+  TODO_STATUS_COMPLETED = 3;
+}
+
+// TODO 优先级枚举
+enum TodoPriority {
+  TODO_PRIORITY_UNSPECIFIED = 0;
+  TODO_PRIORITY_LOW = 1;
+  TODO_PRIORITY_MEDIUM = 2;
+  TODO_PRIORITY_HIGH = 3;
+}
+
+// TODO 消息定义
+message Todo {
+  string id = 1;
+  string user_id = 2;
+  string name = 3;
+  string description = 4;
+  TodoStatus status = 5;
+  TodoPriority priority = 6;
+  repeated string tags = 7;
+  google.protobuf.Timestamp due_date = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+// TODO 创建请求
+message CreateTodoRequest {
+  string name = 1;
+  string description = 2;
+  TodoStatus status = 3;
+  TodoPriority priority = 4;
+  repeated string tags = 5;
+  google.protobuf.Timestamp due_date = 6;
+}
+
+message CreateTodoResponse {
+  Todo todo = 1;
+}
+
+// TODO 更新请求
+message UpdateTodoRequest {
+  string id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional TodoStatus status = 4;
+  optional TodoPriority priority = 5;
+  repeated string tags = 6;
+  optional google.protobuf.Timestamp due_date = 7;
+}
+
+message UpdateTodoResponse {
+  Todo todo = 1;
+}
+
+// TODO 查询请求（支持过滤、排序、分页）
+message ListTodosRequest {
+  optional TodoStatus status = 1;
+  optional google.protobuf.Timestamp due_date_from = 2;
+  optional google.protobuf.Timestamp due_date_to = 3;
+  repeated string tags = 4;
+  optional string sort_by = 5; // "due_date", "status", "name", "priority"
+  optional bool sort_desc = 6;
+  int32 page_size = 7;
+  string page_token = 8;
+}
+
+message ListTodosResponse {
+  repeated Todo todos = 1;
+  string next_page_token = 2;
+}
+
+// TODO 删除请求
+message DeleteTodoRequest {
+  string id = 1;
+}
+
+message DeleteTodoResponse {
+  bool success = 1;
+}
+
+// TODO 服务定义
+service TodoService {
+  rpc CreateTodo(CreateTodoRequest) returns (CreateTodoResponse) {
+    option (google.api.http) = {
+      post: "/v1/todos"
+      body: "*"
+    };
+  }
+
+  rpc UpdateTodo(UpdateTodoRequest) returns (UpdateTodoResponse) {
+    option (google.api.http) = {
+      patch: "/v1/todos/{id}"
+      body: "*"
+    };
+  }
+
+  rpc ListTodos(ListTodosRequest) returns (ListTodosResponse) {
+    option (google.api.http) = {
+      get: "/v1/todos"
+    };
+  }
+
+  rpc DeleteTodo(DeleteTodoRequest) returns (DeleteTodoResponse) {
+    option (google.api.http) = {
+      delete: "/v1/todos/{id}"
+    };
+  }
+}
