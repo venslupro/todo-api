@@ -117,7 +117,7 @@ message GetNotificationsRequest {
 
 message GetNotificationsResponse {
   repeated Notification notifications = 1;
-  PaginationInfo pagination = 2;
+  common.PaginationInfo pagination = 2;
   int32 unread_count = 3;
 }
 

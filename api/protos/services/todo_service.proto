@@ -182,7 +182,7 @@ message CreateTodoRequest {
   string list_id = 1;
   string title = 2;
   string description = 3;
-  .PriorityLevel priority = 4;
+  common.PriorityLevel priority = 4;
   google.protobuf.Timestamp due_date = 5;
   string assignee_id = 6;
   repeated string tags = 7;
@@ -193,19 +193,19 @@ message CreateTodoRequest {
 }
 
 message CreateTodoResponse {
-  Todo todo = 1;
+  common.Todo todo = 1;
 }
 
 message GetTodoResponse {
-  .Todo todo = 1;
+  common.Todo todo = 1;
 }
 
 message UpdateTodoRequest {
   string id = 1;
   optional string title = 2;
   optional string description = 3;
-  optional .TodoStatus status = 4;
-  optional .PriorityLevel priority = 5;
+  optional common.TodoStatus status = 4;
+  optional common.PriorityLevel priority = 5;
   optional google.protobuf.Timestamp due_date = 6;
   optional string assignee_id = 7;
   repeated string tags = 8;
@@ -217,14 +217,14 @@ message UpdateTodoRequest {
 }
 
 message UpdateTodoResponse {
-  Todo todo = 1;
+  common.Todo todo = 1;
 }
 
 message ListTodosRequest {
   string list_id = 1;
   optional string team_id = 2;
-  optional .TodoStatus status = 3;
-  optional .PriorityLevel priority = 4;
+  optional common.TodoStatus status = 3;
+  optional common.PriorityLevel priority = 4;
   optional string assignee_id = 5;
   repeated string tags = 6;
   optional bool overdue_only = 7;
@@ -238,8 +238,8 @@ message ListTodosRequest {
 }
 
 message ListTodosResponse {
-  repeated Todo todos = 1;
-  PaginationInfo pagination = 2;
+  repeated common.Todo todos = 1;
+  common.PaginationInfo pagination = 2;
 }
 
 message CreateTodoListRequest {
@@ -250,7 +250,7 @@ message CreateTodoListRequest {
 }
 
 message CreateTodoListResponse {
-  TodoList list = 1;
+  common.TodoList list = 1;
 }
 
 message GetTodoListRequest {
@@ -258,7 +258,7 @@ message GetTodoListRequest {
 }
 
 message GetTodoListResponse {
-  TodoList list = 1;
+  common.TodoList list = 1;
 }
 
 message UpdateTodoListRequest {
@@ -269,7 +269,7 @@ message UpdateTodoListRequest {
 }
 
 message UpdateTodoListResponse {
-  TodoList list = 1;
+  common.TodoList list = 1;
 }
 
 message DeleteTodoListRequest {
@@ -285,8 +285,8 @@ message ListTodoListsRequest {
 }
 
 message ListTodoListsResponse {
-  repeated TodoList lists = 1;
-  PaginationInfo pagination = 2;
+  repeated common.TodoList lists = 1;
+  common.PaginationInfo pagination = 2;
 }
 
 // Statistics Related
@@ -322,8 +322,8 @@ message AttachMediaToTodoRequest {
 }
 
 message AttachMediaToTodoResponse {
-  Todo todo = 1;
-  MediaFile media = 2;
+  common.Todo todo = 1;
+  common.MediaFile media = 2;
 }
 
 message RemoveMediaFromTodoRequest {
@@ -333,12 +333,12 @@ message RemoveMediaFromTodoRequest {
 
 message ListTodoMediaRequest {
   string todo_id = 1;
-  optional MediaType media_type = 2;
+  optional common.MediaType media_type = 2;
   int32 page_size = 3;
   string page_token = 4;
 }
 
 message ListTodoMediaResponse {
-  repeated MediaFile media_files = 1;
-  PaginationInfo pagination = 2;
+  repeated common.MediaFile media_files = 1;
+  common.PaginationInfo pagination = 2;
 }
