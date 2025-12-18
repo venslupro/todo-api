@@ -1,0 +1,133 @@
+syntax = "proto3";
+
+package todopb.services;
+
+option go_package = "api/protos/services;todopb";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "github.com/venslupro/todo-api/api/protos/common/errors.proto";
+
+
+// System Service
+service SystemService {
+  // Health check
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse) {
+    option (google.api.http) = {
+      get: "/v1/health"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Health check"
+      description: "Check system health"
+      security: {}
+    };
+  }
+
+  // 系统信息
+  rpc SystemInfo(SystemInfoRequest) returns (SystemInfoResponse) {
+    option (google.api.http) = {
+      get: "/v1/system/info"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "System info"
+      description: "Get system information and version"
+      security: {}
+    };
+  }
+
+  // 获取指标
+  rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse) {
+    option (google.api.http) = {
+      get: "/v1/system/metrics"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get metrics"
+      description: "Get system metrics (admin only)"
+    };
+  }
+
+  // 获取使用统计
+  rpc GetUsageStats(GetUsageStatsRequest) returns (GetUsageStatsResponse) {
+    option (google.api.http) = {
+      get: "/v1/system/usage"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get usage stats"
+      description: "Get usage statistics (admin only)"
+    };
+  }
+}
+
+// 请求/响应消息
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+  string status = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  map<string, string> services = 3;  // 各服务状态
+}
+
+message SystemInfoRequest {}
+
+message SystemInfoResponse {
+  string version = 1;
+  string environment = 2;
+  int64 uptime = 3;  // 运行时间（秒）
+  google.protobuf.Timestamp build_time = 4;
+  string commit_hash = 5;
+  map<string, string> features = 6;
+}
+
+message GetMetricsRequest {
+  optional string metric_name = 1;
+  optional google.protobuf.Timestamp start_time = 2;
+  optional google.protobuf.Timestamp end_time = 3;
+  optional string aggregation = 4;
+}
+
+message GetMetricsResponse {
+  map<string, MetricData> metrics = 1;
+}
+
+message MetricData {
+  repeated DataPoint data_points = 1;
+  string unit = 2;
+}
+
+message DataPoint {
+  google.protobuf.Timestamp timestamp = 1;
+  double value = 2;
+  map<string, string> labels = 3;
+}
+
+message GetUsageStatsRequest {
+  optional google.protobuf.Timestamp start_date = 1;
+  optional google.protobuf.Timestamp end_date = 2;
+  optional string granularity = 3;  // daily, weekly, monthly
+}
+
+message GetUsageStatsResponse {
+  UsageStats stats = 1;
+  repeated TimeSeriesData time_series = 2;
+}
+
+message UsageStats {
+  int32 total_users = 1;
+  int32 active_users = 2;
+  int32 total_teams = 3;
+  int32 total_todos = 4;
+  int32 completed_todos = 5;
+  int64 total_storage_used = 6;  // 存储使用量（字节）
+  int32 total_file_uploads = 7;
+  map<string, int32> user_activity = 8;
+}
+
+message TimeSeriesData {
+  google.protobuf.Timestamp timestamp = 1;
+  int32 new_users = 2;
+  int32 active_users = 3;
+  int32 new_todos = 4;
+  int32 completed_todos = 5;
+  int32 file_uploads = 6;
+}

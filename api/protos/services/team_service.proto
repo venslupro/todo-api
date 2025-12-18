@@ -1,0 +1,348 @@
+syntax = "proto3";
+
+package todopb.services;
+
+option go_package = "api/protos/services;todopb";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "github.com/venslupro/todo-api/api/protos/common/enums.proto";
+import "github.com/venslupro/todo-api/api/protos/common/messages.proto";
+import "github.com/venslupro/todo-api/api/protos/common/errors.proto";
+import "github.com/venslupro/todo-api/api/protos/common/pagination.proto";
+
+
+// Team Service
+service TeamService {
+  // Create Team
+  rpc CreateTeam(CreateTeamRequest) returns (CreateTeamResponse) {
+    option (google.api.http) = {
+      post: "/v1/teams"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create team"
+      description: "Create a new team"
+    };
+  }
+
+  // 获取团队
+  rpc GetTeam(GetTeamRequest) returns (GetTeamResponse) {
+    option (google.api.http) = {
+      get: "/v1/teams/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get team"
+      description: "Get team by ID"
+    };
+  }
+
+  // 更新团队
+  rpc UpdateTeam(UpdateTeamRequest) returns (UpdateTeamResponse) {
+    option (google.api.http) = {
+      patch: "/v1/teams/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update team"
+      description: "Update team (partial update supported)"
+    };
+  }
+
+  // 删除团队
+  rpc DeleteTeam(DeleteTeamRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/teams/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete team"
+      description: "Delete team by ID"
+    };
+  }
+
+  // 列出团队
+  rpc ListTeams(ListTeamsRequest) returns (ListTeamsResponse) {
+    option (google.api.http) = {
+      get: "/v1/teams"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List teams"
+      description: "List teams with filtering and pagination"
+    };
+  }
+
+  // 添加团队成员
+  rpc AddTeamMember(AddTeamMemberRequest) returns (AddTeamMemberResponse) {
+    option (google.api.http) = {
+      post: "/v1/teams/{team_id}/members"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Add team member"
+      description: "Add user to team"
+    };
+  }
+
+  // 移除团队成员
+  rpc RemoveTeamMember(RemoveTeamMemberRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/teams/{team_id}/members/{user_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Remove team member"
+      description: "Remove user from team"
+    };
+  }
+
+  // 更新团队成员角色
+  rpc UpdateTeamMemberRole(UpdateTeamMemberRoleRequest) returns (UpdateTeamMemberRoleResponse) {
+    option (google.api.http) = {
+      patch: "/v1/teams/{team_id}/members/{user_id}/role"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update team member role"
+      description: "Update team member's role"
+    };
+  }
+
+  // 列出团队成员
+  rpc ListTeamMembers(ListTeamMembersRequest) returns (ListTeamMembersResponse) {
+    option (google.api.http) = {
+      get: "/v1/teams/{team_id}/members"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List team members"
+      description: "List team members with filtering and pagination"
+    };
+  }
+
+  // 授予列表权限
+  rpc GrantListPermission(GrantListPermissionRequest) returns (GrantListPermissionResponse) {
+    option (google.api.http) = {
+      post: "/v1/permissions"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Grant list permission"
+      description: "Grant permission for todo list"
+    };
+  }
+
+  // 撤销列表权限
+  rpc RevokeListPermission(RevokeListPermissionRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/permissions"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Revoke list permission"
+      description: "Revoke permission for todo list"
+    };
+  }
+
+  // 列出权限
+  rpc ListPermissions(ListPermissionsRequest) returns (ListPermissionsResponse) {
+    option (google.api.http) = {
+      get: "/v1/permissions"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List permissions"
+      description: "List permissions with filtering and pagination"
+    };
+  }
+
+  // 添加评论
+  rpc AddComment(AddCommentRequest) returns (AddCommentResponse) {
+    option (google.api.http) = {
+      post: "/v1/comments"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Add comment"
+      description: "Add comment to todo"
+    };
+  }
+
+  // 列出评论
+  rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse) {
+    option (google.api.http) = {
+      get: "/v1/comments"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List comments"
+      description: "List comments with filtering and pagination"
+    };
+  }
+
+  // 列出活动
+  rpc ListActivities(ListActivitiesRequest) returns (ListActivitiesResponse) {
+    option (google.api.http) = {
+      get: "/v1/activities"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List activities"
+      description: "List activities with filtering and pagination"
+    };
+  }
+}
+
+// 请求/响应消息
+message CreateTeamRequest {
+  string name = 1;
+  string description = 2;
+  bool is_public = 3;
+  repeated string tags = 4;
+  string avatar_url = 5;
+}
+
+message CreateTeamResponse {
+  Team team = 1;
+}
+
+message GetTeamRequest {
+  string id = 1;
+}
+
+message GetTeamResponse {
+  Team team = 1;
+}
+
+message UpdateTeamRequest {
+  string id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional bool is_public = 4;
+  repeated string tags = 5;
+  optional string avatar_url = 6;
+}
+
+message UpdateTeamResponse {
+  Team team = 1;
+}
+
+message DeleteTeamRequest {
+  string id = 1;
+}
+
+message ListTeamsRequest {
+  bool is_member = 1;
+  optional bool is_public = 2;
+  optional string search_query = 3;
+  int32 page_size = 4;
+  string page_token = 5;
+}
+
+message ListTeamsResponse {
+  repeated Team teams = 1;
+  PaginationInfo pagination = 2;
+}
+
+message AddTeamMemberRequest {
+  string team_id = 1;
+  string user_id = 2;
+  TeamRole role = 3;
+}
+
+message AddTeamMemberResponse {
+  TeamMember member = 1;
+}
+
+message RemoveTeamMemberRequest {
+  string team_id = 1;
+  string user_id = 2;
+}
+
+message UpdateTeamMemberRoleRequest {
+  string team_id = 1;
+  string user_id = 2;
+  TeamRole role = 3;
+}
+
+message UpdateTeamMemberRoleResponse {
+  TeamMember member = 1;
+}
+
+message ListTeamMembersRequest {
+  string team_id = 1;
+  optional TeamRole role = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListTeamMembersResponse {
+  repeated TeamMember members = 1;
+  PaginationInfo pagination = 2;
+}
+
+message GrantListPermissionRequest {
+  string list_id = 1;
+  string user_id = 2;
+  optional string team_id = 3;
+  PermissionLevel permission_level = 4;
+  optional google.protobuf.Timestamp expires_at = 5;
+}
+
+message GrantListPermissionResponse {
+  ListPermission permission = 1;
+}
+
+message RevokeListPermissionRequest {
+  string list_id = 1;
+  string user_id = 2;
+  optional string team_id = 3;
+}
+
+message ListPermissionsRequest {
+  optional string list_id = 1;
+  optional string user_id = 2;
+  optional string team_id = 3;
+  int32 page_size = 4;
+  string page_token = 5;
+}
+
+message ListPermissionsResponse {
+  repeated ListPermission permissions = 1;
+  PaginationInfo pagination = 2;
+}
+
+message AddCommentRequest {
+  string todo_id = 1;
+  string content = 2;
+  optional string parent_comment_id = 3;
+  repeated string mentions = 4;
+  repeated string attachment_ids = 5;
+}
+
+message AddCommentResponse {
+  Comment comment = 1;
+}
+
+message ListCommentsRequest {
+  string todo_id = 1;
+  optional string parent_comment_id = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListCommentsResponse {
+  repeated Comment comments = 1;
+  PaginationInfo pagination = 2;
+}
+
+message ListActivitiesRequest {
+  optional string team_id = 1;
+  optional string list_id = 2;
+  optional string user_id = 3;
+  optional ActivityType type = 4;
+  optional google.protobuf.Timestamp start_date = 5;
+  optional google.protobuf.Timestamp end_date = 6;
+  int32 page_size = 7;
+  string page_token = 8;
+}
+
+message ListActivitiesResponse {
+  repeated Activity activities = 1;
+  PaginationInfo pagination = 2;
+}

@@ -1,0 +1,190 @@
+syntax = "proto3";
+
+package todopb.services;
+
+option go_package = "api/protos/services;todopb";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "github.com/venslupro/todo-api/api/protos/common/enums.proto";
+import "github.com/venslupro/todo-api/api/protos/common/messages.proto";
+import "github.com/venslupro/todo-api/api/protos/common/errors.proto";
+
+
+// Authentication Service
+service AuthService {
+  // Register new user
+  rpc Register(RegisterRequest) returns (RegisterResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/register"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Register new user"
+      description: "Register a new user account"
+      security: {}
+    };
+  }
+
+  // 用户登录
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/login"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "User login"
+      description: "Authenticate user and get access tokens"
+      security: {}
+    };
+  }
+
+  // 登出
+  rpc Logout(LogoutRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/auth/logout"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "User logout"
+      description: "Invalidate user session"
+    };
+  }
+
+  // 刷新Token
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/refresh"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Refresh access token"
+      description: "Get new access token using refresh token"
+      security: {}
+    };
+  }
+
+  // 忘记密码
+  rpc ForgotPassword(ForgotPasswordRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/auth/forgot-password"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Forgot password"
+      description: "Initiate password reset process"
+      security: {}
+    };
+  }
+
+  // 重置密码
+  rpc ResetPassword(ResetPasswordRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/auth/reset-password"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Reset password"
+      description: "Reset password using token"
+      security: {}
+    };
+  }
+
+  // 获取用户资料
+  rpc GetProfile(GetProfileRequest) returns (GetProfileResponse) {
+    option (google.api.http) = {
+      get: "/v1/auth/profile"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get user profile"
+      description: "Get current user's profile"
+    };
+  }
+
+  // 更新用户资料
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse) {
+    option (google.api.http) = {
+      patch: "/v1/auth/profile"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update user profile"
+      description: "Update current user's profile"
+    };
+  }
+}
+
+// 请求/响应消息
+message RegisterRequest {
+  string email = 1;
+  string username = 2;
+  string password = 3;
+  string display_name = 4;
+  bool accept_terms = 5;
+}
+
+message RegisterResponse {
+  User user = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+  google.protobuf.Timestamp expires_at = 4;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  bool remember_me = 3;
+}
+
+message LoginResponse {
+  User user = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+  google.protobuf.Timestamp expires_at = 4;
+}
+
+message LogoutRequest {
+  string refresh_token = 1;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message RefreshTokenResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+message ResetPasswordRequest {
+  string token = 1;
+  string new_password = 2;
+}
+
+message GetProfileRequest {
+  string user_id = 1;
+}
+
+message GetProfileResponse {
+  User user = 1;
+}
+
+message UpdateProfileRequest {
+  optional string display_name = 1;
+  optional string avatar_url = 2;
+  optional string timezone = 3;
+  optional string locale = 4;
+  map<string, string> preferences = 5;
+}
+
+message UpdateProfileResponse {
+  User user = 1;
+}

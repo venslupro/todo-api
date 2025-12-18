@@ -1,0 +1,229 @@
+syntax = "proto3";
+
+package todopb.common;
+
+option go_package = "api/protos/common;todopb";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "github.com/venslupro/todo-api/api/protos/common/enums.proto";
+import "github.com/venslupro/todo-api/api/protos/common/message.proto";
+
+
+// User information
+message User {
+  string id = 1;
+  string email = 2;
+  string username = 3;
+  string display_name = 4;
+  string avatar_url = 5;
+  UserStatus status = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp last_active_at = 8;
+}
+
+// Team information
+message Team {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string created_by = 4;
+  string avatar_url = 5;
+  bool is_public = 6;
+  repeated string tags = 7;
+  int32 member_count = 8;
+  int32 list_count = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+// TODO List
+message TodoList {
+  string id = 1;
+  string team_id = 2;
+  string name = 3;
+  string description = 4;
+  string created_by = 5;
+  bool is_shared = 6;
+  repeated string tags = 7;
+  int32 todo_count = 8;
+  int32 completed_count = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+  google.protobuf.Timestamp last_activity_at = 12;
+}
+
+// TODO Item
+message Todo {
+  string id = 1;
+  string list_id = 2;
+  string title = 3;
+  string description = 4;
+  TodoStatus status = 5;
+  PriorityLevel priority = 6;
+  string assignee_id = 7;
+  string created_by = 8;
+  google.protobuf.Timestamp due_date = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+  google.protobuf.Timestamp completed_at = 12;
+  int32 estimated_minutes = 13;
+  int32 time_spent_minutes = 14;
+  repeated string tags = 15;
+  repeated string labels = 16;
+  repeated string media_ids = 17;  // Associated media file IDs
+  repeated string subtask_ids = 18;
+  map<string, google.protobuf.Value> custom_fields = 19;
+}
+
+// Team member
+message TeamMember {
+  string id = 1;
+  string team_id = 2;
+  string user_id = 3;
+  TeamRole role = 4;
+  google.protobuf.Timestamp joined_at = 5;
+  google.protobuf.Timestamp last_active_at = 6;
+  User user_info = 7;
+}
+
+// List permission
+message ListPermission {
+  string id = 1;
+  string list_id = 2;
+  string user_id = 3;
+  string team_id = 4;
+  PermissionLevel permission_level = 5;
+  google.protobuf.Timestamp granted_at = 6;
+  string granted_by = 7;
+  google.protobuf.Timestamp expires_at = 8;
+}
+
+// Comment
+message Comment {
+  string id = 1;
+  string todo_id = 2;
+  string user_id = 3;
+  string content = 4;
+  repeated string attachment_ids = 5;
+  repeated string mentions = 6;
+  string parent_comment_id = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  User user_info = 10;
+}
+
+// Activity log
+message Activity {
+  string id = 1;
+  ActivityType type = 2;
+  string user_id = 3;
+  string target_id = 4;
+  string target_type = 5;
+  string team_id = 6;
+  string list_id = 7;
+  string todo_id = 8;
+  map<string, google.protobuf.Value> metadata = 9;
+  google.protobuf.Timestamp created_at = 10;
+  User user_info = 11;
+}
+
+// Collaboration message
+message CollaborationMessage {
+  CollaborationEventType type = 1;
+  string user_id = 2;
+  string team_id = 3;
+  string list_id = 4;
+  string todo_id = 5;
+  google.protobuf.Timestamp timestamp = 6;
+  map<string, google.protobuf.Value> payload = 7;
+}
+
+// User presence status
+message UserPresence {
+  string user_id = 1;
+  string status = 2;  // online, away, offline, busy
+  google.protobuf.Timestamp last_seen = 3;
+  string current_activity = 4;
+}
+
+// Media file metadata
+message MediaFile {
+  string id = 1;
+  string name = 2;
+  string original_filename = 3;
+  MediaType media_type = 4;
+  string mime_type = 5;
+  int64 size_bytes = 6;      // File size in bytes
+  string storage_key = 7;    // Key in object storage
+  string bucket = 8;         // Storage bucket name
+
+  // Common metadata
+  string uploaded_by = 9;
+  string todo_id = 10;
+  string list_id = 11;
+  string comment_id = 12;
+  string team_id = 13;
+  map<string, string> metadata = 14;
+
+  // Timestamps
+  google.protobuf.Timestamp uploaded_at = 15;
+  google.protobuf.Timestamp expires_at = 16;
+
+  // Image specific fields
+  message ImageMetadata {
+    int32 width = 1;          // Width in pixels
+    int32 height = 2;         // Height in pixels
+    ImageFormat format = 3;   // Image format
+    string dominant_color = 4; // Dominant color (hex)
+    bool has_transparency = 5; // Whether has transparency
+    int32 dpi = 6;            // DPI (resolution)
+  }
+
+  // Video specific fields
+  message VideoMetadata {
+    int32 duration_seconds = 1;   // Duration in seconds - max 240s (4 minutes)
+    int32 width = 2;              // Width in pixels
+    int32 height = 3;             // Height in pixels
+    VideoFormat format = 4;       // Video format
+    VideoCodec video_codec = 5;   // Video codec
+    VideoCodec audio_codec = 6;   // Audio codec
+    int32 frame_rate = 7;         // Frame rate (FPS)
+    int32 bitrate_kbps = 8;       // Bitrate (kbps)
+    string thumbnail_url = 9;     // Thumbnail URL
+    string preview_url = 10;      // Preview URL (low resolution version)
+  }
+
+  oneof media_specific {
+    ImageMetadata image_metadata = 17;
+    VideoMetadata video_metadata = 18;
+  }
+
+  // 访问URL
+  string original_url = 19;      // 原始文件URL
+  string optimized_url = 20;     // 优化后文件URL
+  string thumbnail_url = 21;     // 缩略图URL
+  string preview_url = 22;       // 预览URL
+}
+
+// Image upload options
+message ImageUploadOptions {
+  int32 max_width = 1;          // Maximum width (0 means no limit)
+  int32 max_height = 2;         // Maximum height (0 means no limit)
+  int32 max_size_mb = 3;        // Maximum file size (MB)
+  repeated ImageFormat allowed_formats = 4; // Allowed formats
+  bool auto_optimize = 5;       // Whether to auto-optimize
+  bool generate_thumbnails = 6; // Whether to generate thumbnails
+  ImageQuality target_quality = 7; // Target quality
+}
+
+// Video upload options
+message VideoUploadOptions {
+  int32 max_duration_seconds = 1 [default = 240]; // Maximum duration (seconds), default 4 minutes
+  int32 max_size_mb = 2;        // Maximum file size (MB)
+  repeated VideoFormat allowed_formats = 3; // Allowed formats
+  bool auto_transcode = 4;      // Whether to auto-transcode
+  bool generate_thumbnail = 5;  // Whether to generate thumbnail
+  bool generate_preview = 6;    // Whether to generate preview (low resolution)
+  VideoQuality target_quality = 7; // Target quality
+}
