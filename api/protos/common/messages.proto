@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package todopb.common;
+package todo.common;
 
 option go_package = "api/protos/common;todopb";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
-import "github.com/venslupro/todo-api/api/protos/common/enums.proto";
-import "github.com/venslupro/todo-api/api/protos/common/message.proto";
+import "api/protos/common/enums.proto";
+import "api/protos/common/messages.proto";
 
 
 // User information
@@ -219,7 +219,7 @@ message ImageUploadOptions {
 
 // Video upload options
 message VideoUploadOptions {
-  int32 max_duration_seconds = 1 [default = 240]; // Maximum duration (seconds), default 4 minutes
+  int32 max_duration_seconds = 1; // Maximum duration (seconds), default 4 minutes
   int32 max_size_mb = 2;        // Maximum file size (MB)
   repeated VideoFormat allowed_formats = 3; // Allowed formats
   bool auto_transcode = 4;      // Whether to auto-transcode

@@ -1,0 +1,138 @@
+name: Proto Generation
+
+on:
+  push:
+    paths:
+      - 'api/protos/**/*.proto'
+      - '.github/workflows/proto-gen.yml'
+    branches: [ main, develop ]
+  pull_request:
+    paths:
+      - 'api/protos/**/*.proto'
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  generate-protos:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+          cache-dependency-path: go.sum
+
+      - name: Install protoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler
+          protoc --version
+
+      - name: Install Go protobuf tools
+        run: |
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+          go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
+          go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
+          go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
+          go install github.com/envoyproxy/protoc-gen-validate@latest
+          go install github.com/favadi/protoc-go-inject-tag@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      - name: Install Buf
+        run: |
+          # 使用 Buf 进行 Lint 和 Breaking Change 检查
+          curl -sSL "https://github.com/bufbuild/buf/releases/latest/download/buf-$(uname -s)-$(uname -m)" -o /usr/local/bin/buf
+          chmod +x /usr/local/bin/buf
+          buf --version
+
+      - name: Generate Go code
+        run: |
+          # 创建输出目录
+          mkdir -p api/gen/go
+          
+          # 生成 Go 代码 (protobuf + gRPC)
+          protoc \
+            -I=./api/protos \
+            -I=./third_party \
+            --go_out=./api/gen/go \
+            --go_opt=paths=source_relative \
+            --go-grpc_out=./api/gen/go \
+            --go-grpc_opt=paths=source_relative \
+            ./api/protos/**/*.proto
+          
+          # 生成 gRPC Gateway 代码
+          protoc \
+            -I=./api/protos \
+            -I=./third_party \
+            --grpc-gateway_out=./api/gen/go \
+            --grpc-gateway_opt=logtostderr=true \
+            --grpc-gateway_opt=paths=source_relative \
+            --grpc-gateway_opt=generate_unbound_methods=true \
+            ./api/protos/services/*.proto
+          
+          # 生成 OpenAPI/Swagger JSON
+          protoc \
+            -I=./api/protos \
+            -I=./third_party \
+            --openapiv2_out=./api/gen/openapi \
+            --openapiv2_opt=logtostderr=true \
+            --openapiv2_opt=json_names_for_fields=false \
+            ./api/protos/services/*.proto
+          
+          # 生成 OpenAPI YAML (可选的)
+          protoc \
+            -I=./api/protos \
+            -I=./third_party \
+            --openapi_out=./api/gen/openapi \
+            ./api/protos/services/*.proto
+          
+          # 注入 struct tags (如果需要)
+          for file in ./api/gen/go/**/*.pb.go; do
+            if [ -f "$file" ]; then
+              protoc-go-inject-tag -input="$file"
+            fi
+          done
+
+      - name: Validate generated code
+        run: |
+          # 检查生成的文件是否有效
+          go mod tidy
+          go build ./api/gen/go/...
+          
+          # 如果生成 Swagger，验证 Swagger 文件
+          if [ -f "./api/gen/openapi/todo.swagger.json" ]; then
+            npx -y swagger-cli validate ./api/gen/openapi/todo.swagger.json
+          fi
+
+      - name: Format generated code
+        run: |
+          gofmt -w ./api/gen/go
+          goimports -w ./api/gen/go
+
+      - name: Buf Lint
+        run: |
+          cd api/protos
+          buf lint
+          buf breaking --against '.git#branch=main'
+
+      - name: Commit generated files
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git checkout -b dev
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          if git diff --quiet; then
+            echo "No changes to commit"
+          else
+            git add api/gen/
+            git commit -m "chore: regenerate protobuf files [skip ci]"
+            git push origin dev
+          fi

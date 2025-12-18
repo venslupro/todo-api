@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package todopb.services;
+package todo.services;
 
 option go_package = "api/protos/services;todopb";
 
@@ -9,10 +9,10 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "github.com/venslupro/todo-api/api/protos/common/enums.proto";
-import "github.com/venslupro/todo-api/api/protos/common/messages.proto";
-import "github.com/venslupro/todo-api/api/protos/common/errors.proto";
-
+import "api/protos/common/enums.proto";
+import "api/protos/common/errors.proto";
+import "api/protos/common/messages.proto";
+import "api/protos/common/pagination.proto";
 
 // Authentication Service
 service AuthService {
@@ -127,7 +127,7 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-  User user = 1;
+  common.User user = 1;
   string access_token = 2;
   string refresh_token = 3;
   google.protobuf.Timestamp expires_at = 4;
@@ -140,7 +140,7 @@ message LoginRequest {
 }
 
 message LoginResponse {
-  User user = 1;
+  common.User user = 1;
   string access_token = 2;
   string refresh_token = 3;
   google.protobuf.Timestamp expires_at = 4;
@@ -174,7 +174,7 @@ message GetProfileRequest {
 }
 
 message GetProfileResponse {
-  User user = 1;
+  common.User user = 1;
 }
 
 message UpdateProfileRequest {
@@ -186,5 +186,5 @@ message UpdateProfileRequest {
 }
 
 message UpdateProfileResponse {
-  User user = 1;
+  common.User user = 1;
 }

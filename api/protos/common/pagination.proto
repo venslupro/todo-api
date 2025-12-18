@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package todopb.common;
+package todo.common;
 
 option go_package = "api/protos/common;todopb";
 

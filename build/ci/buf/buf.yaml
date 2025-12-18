@@ -1,0 +1,15 @@
+version: v1
+lint:
+  use:
+    - DEFAULT
+  except:
+    - PACKAGE_DIRECTORY_MATCH
+  ignore_only:
+    PACKAGE_VERSION_SUFFIX:
+      - api/protos/common
+breaking:
+  use:
+    - FILE
+build:
+  roots:
+    - api/protos
