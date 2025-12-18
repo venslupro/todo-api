@@ -125,6 +125,7 @@ jobs:
       - name: Commit generated files
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
+          git checkout -b dev
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           
@@ -133,5 +134,5 @@ jobs:
           else
             git add api/gen/
             git commit -m "chore: regenerate protobuf files [skip ci]"
-            git push origin main
+            git push origin dev
           fi
