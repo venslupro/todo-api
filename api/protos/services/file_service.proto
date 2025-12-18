@@ -151,7 +151,7 @@ message FileMetadata {
   string id = 1;
   string name = 2;
   string original_name = 3;
-  todo.common.FileType type = 4;
+  FileType type = 4;
   string mime_type = 5;
   int64 size = 6;  // File size in bytes
   string storage_key = 7;  // Key in object storage
@@ -186,7 +186,7 @@ message GetUploadUrlRequest {
   string filename = 1;
   string mime_type = 2;
   int64 size = 3;  // 文件大小
-  todo.common.FileType file_type = 4;
+  FileType file_type = 4;
 
   // 关联信息
   optional string todo_id = 5;
@@ -252,7 +252,7 @@ message ListFilesRequest {
   optional string comment_id = 3;
   optional string team_id = 4;
   optional string uploaded_by = 5;
-  optional todo.common.FileType type = 6;
+  optional FileType type = 6;
   optional google.protobuf.Timestamp uploaded_after = 7;
   optional google.protobuf.Timestamp uploaded_before = 8;
   int32 page_size = 9;
@@ -261,7 +261,7 @@ message ListFilesRequest {
 
 message ListFilesResponse {
   repeated FileMetadata files = 1;
-  todo.common.PaginationInfo pagination = 2;
+  PaginationInfo pagination = 2;
   int64 total_size = 3;  // 总文件大小（字节）
 }
 
@@ -498,7 +498,7 @@ message GetImageUploadUrlRequest {
   optional string team_id = 7;
 
   // 图片特定选项
-  optional todo.common.ImageUploadOptions options = 8;
+  optional ImageUploadOptions options = 8;
 
   // 验证信息
   optional string checksum = 9;  // MD5或SHA256
@@ -530,7 +530,7 @@ message GetVideoUploadUrlRequest {
   optional string team_id = 7;
 
   // 视频特定选项（包含4分钟限制）
-  optional todo.common.VideoUploadOptions options = 8;
+  optional VideoUploadOptions options = 8;
 
   // 验证信息
   optional string checksum = 9;  // MD5或SHA256
@@ -555,7 +555,7 @@ message GetVideoUploadUrlResponse {
 
   // 转码信息
   bool will_transcode = 9;    // 是否会自动转码
-  todo.common.VideoQuality target_quality = 10;  // 目标质量
+  VideoQuality target_quality = 10;  // 目标质量
 }
 
 // ================== 通用上传请求/响应 ==================
@@ -588,7 +588,7 @@ message VideoVerification {
 }
 
 message CompleteMediaUploadResponse {
-  todo.common.MediaFile media_file = 1;
+  MediaFile media_file = 1;
   google.protobuf.Timestamp processed_at = 2;
 
   // 处理结果
@@ -602,7 +602,7 @@ message InitiateMultipartUploadRequest {
   string filename = 1;
   string mime_type = 2;
   int64 size_bytes = 3;
-  todo.common.MediaType media_type = 4;
+  MediaType media_type = 4;
 
   // 关联信息
   optional string todo_id = 5;
@@ -610,8 +610,8 @@ message InitiateMultipartUploadRequest {
 
   // 媒体特定选项
   oneof media_options {
-    todo.common.ImageUploadOptions image_options = 7;
-    todo.common.VideoUploadOptions video_options = 8;
+    ImageUploadOptions image_options = 7;
+    VideoUploadOptions video_options = 8;
   }
 
   map<string, string> metadata = 9;
@@ -652,7 +652,7 @@ message PartETag {
 }
 
 message CompleteMultipartUploadResponse {
-  todo.common.MediaFile media_file = 1;
+  MediaFile media_file = 1;
   google.protobuf.Timestamp completed_at = 2;
 }
 
@@ -663,7 +663,7 @@ message GetMediaFileRequest {
 }
 
 message GetMediaFileResponse {
-  todo.common.MediaFile media_file = 1;
+  MediaFile media_file = 1;
   ProcessingStatus processing_status = 2;  // 处理状态（如果请求）
 }
 
@@ -702,7 +702,7 @@ message ListMediaFilesRequest {
   optional string comment_id = 3;
   optional string team_id = 4;
   optional string uploaded_by = 5;
-  optional todo.common.MediaType media_type = 6;
+  optional MediaType media_type = 6;
   optional google.protobuf.Timestamp uploaded_after = 7;
   optional google.protobuf.Timestamp uploaded_before = 8;
   optional bool only_optimized = 9;  // 只返回优化后的文件
@@ -711,8 +711,8 @@ message ListMediaFilesRequest {
 }
 
 message ListMediaFilesResponse {
-  repeated todo.common.MediaFile media_files = 1;
-  todo.common.PaginationInfo pagination = 2;
+  repeated MediaFile media_files = 1;
+  PaginationInfo pagination = 2;
   MediaStats stats = 3;
 }
 
@@ -730,8 +730,8 @@ message GenerateImageThumbnailRequest {
   string id = 1;
   optional int32 width = 2;
   optional int32 height = 3;
-  optional todo.common.ImageFormat format = 4;
-  optional todo.common.ImageQuality quality = 5;
+  optional ImageFormat format = 4;
+  optional ImageQuality quality = 5;
   optional bool crop = 6 [default = false];  // 是否裁剪
   optional string crop_mode = 7;             // 裁剪模式：center, face, smart
 }
@@ -741,8 +741,8 @@ message GenerateImageThumbnailResponse {
   int32 width = 2;
   int32 height = 3;
   int64 size_bytes = 4;
-  todo.common.ImageFormat format = 5;
-  todo.common.ImageQuality quality = 6;
+  ImageFormat format = 5;
+  ImageQuality quality = 6;
 }
 
 message OptimizeImageRequest {
@@ -750,13 +750,13 @@ message OptimizeImageRequest {
   optional int32 max_width = 2;
   optional int32 max_height = 3;
   optional int32 quality_percentage = 4 [default = 85];  // 质量百分比
-  optional todo.common.ImageFormat target_format = 5;
+  optional ImageFormat target_format = 5;
   optional bool keep_metadata = 6 [default = true];  // 是否保留元数据
   optional bool progressive = 7 [default = true];    // 是否生成渐进式图片
 }
 
 message OptimizeImageResponse {
-  todo.common.MediaFile optimized_file = 1;
+  MediaFile optimized_file = 1;
   OptimizationResult result = 2;
 }
 
@@ -773,8 +773,8 @@ message GenerateVideoThumbnailRequest {
   optional int32 time_offset_seconds = 2;  // 时间偏移（秒）
   optional int32 width = 3;
   optional int32 height = 4;
-  optional todo.common.ImageFormat format = 5;
-  optional todo.common.ImageQuality quality = 6;
+  optional ImageFormat format = 5;
+  optional ImageQuality quality = 6;
 }
 
 message GenerateVideoThumbnailResponse {
@@ -782,26 +782,26 @@ message GenerateVideoThumbnailResponse {
   int32 width = 2;
   int32 height = 3;
   int64 size_bytes = 4;
-  todo.common.ImageFormat format = 5;
+  ImageFormat format = 5;
   int32 time_offset_seconds = 6;  // 截图时间点
 }
 
 message TranscodeVideoRequest {
   string id = 1;
-  optional todo.common.VideoFormat target_format = 2;
-  optional todo.common.VideoQuality target_quality = 3;
+  optional VideoFormat target_format = 2;
+  optional VideoQuality target_quality = 3;
   optional int32 target_bitrate_kbps = 4;  // 目标比特率（kbps）
   optional int32 target_width = 5;         // 目标宽度
   optional int32 target_height = 6;        // 目标高度
   optional int32 target_framerate = 7;     // 目标帧率
-  optional todo.common.VideoCodec video_codec = 8;
-  optional todo.common.VideoCodec audio_codec = 9;
+  optional VideoCodec video_codec = 8;
+  optional VideoCodec audio_codec = 9;
   optional bool keep_audio = 10 [default = true];  // 是否保留音频
   optional bool generate_preview = 11 [default = true];  // 是否生成预览
 }
 
 message TranscodeVideoResponse {
-  todo.common.MediaFile transcoded_file = 1;
+  MediaFile transcoded_file = 1;
   TranscodingResult result = 2;
 }
 

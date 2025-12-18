@@ -182,7 +182,7 @@ message CreateTodoRequest {
   string list_id = 1;
   string title = 2;
   string description = 3;
-  .todo.common.PriorityLevel priority = 4;
+  .PriorityLevel priority = 4;
   google.protobuf.Timestamp due_date = 5;
   string assignee_id = 6;
   repeated string tags = 7;
@@ -193,23 +193,23 @@ message CreateTodoRequest {
 }
 
 message CreateTodoResponse {
-  todo.common.Todo todo = 1;
+  Todo todo = 1;
 }
 
 message CreateTodoResponse {
-  .todo.common.Todo todo = 1;
+  .Todo todo = 1;
 }
 
 message GetTodoResponse {
-  .todo.common.Todo todo = 1;
+  .Todo todo = 1;
 }
 
 message UpdateTodoRequest {
   string id = 1;
   optional string title = 2;
   optional string description = 3;
-  optional .todo.common.TodoStatus status = 4;
-  optional .todo.common.PriorityLevel priority = 5;
+  optional .TodoStatus status = 4;
+  optional .PriorityLevel priority = 5;
   optional google.protobuf.Timestamp due_date = 6;
   optional string assignee_id = 7;
   repeated string tags = 8;
@@ -221,18 +221,18 @@ message UpdateTodoRequest {
 }
 
 message UpdateTodoResponse {
-  todo.common.Todo todo = 1;
+  Todo todo = 1;
 }
 
 message UpdateTodoResponse {
-  .todo.common.Todo todo = 1;
+  .Todo todo = 1;
 }
 
 message ListTodosRequest {
   string list_id = 1;
   optional string team_id = 2;
-  optional .todo.common.TodoStatus status = 3;
-  optional .todo.common.PriorityLevel priority = 4;
+  optional .TodoStatus status = 3;
+  optional .PriorityLevel priority = 4;
   optional string assignee_id = 5;
   repeated string tags = 6;
   optional bool overdue_only = 7;
@@ -246,8 +246,8 @@ message ListTodosRequest {
 }
 
 message ListTodosResponse {
-  repeated todo.common.Todo todos = 1;
-  todo.common.PaginationInfo pagination = 2;
+  repeated Todo todos = 1;
+  PaginationInfo pagination = 2;
 }
 
 message CreateTodoListRequest {
@@ -258,7 +258,7 @@ message CreateTodoListRequest {
 }
 
 message CreateTodoListResponse {
-  todo.common.TodoList list = 1;
+  TodoList list = 1;
 }
 
 message GetTodoListRequest {
@@ -266,7 +266,7 @@ message GetTodoListRequest {
 }
 
 message GetTodoListResponse {
-  todo.common.TodoList list = 1;
+  TodoList list = 1;
 }
 
 message UpdateTodoListRequest {
@@ -277,7 +277,7 @@ message UpdateTodoListRequest {
 }
 
 message UpdateTodoListResponse {
-  todo.common.TodoList list = 1;
+  TodoList list = 1;
 }
 
 message DeleteTodoListRequest {
@@ -293,8 +293,8 @@ message ListTodoListsRequest {
 }
 
 message ListTodoListsResponse {
-  repeated todo.common.TodoList lists = 1;
-  todo.common.PaginationInfo pagination = 2;
+  repeated TodoList lists = 1;
+  PaginationInfo pagination = 2;
 }
 
 // Statistics Related
@@ -330,8 +330,8 @@ message AttachMediaToTodoRequest {
 }
 
 message AttachMediaToTodoResponse {
-  todo.common.Todo todo = 1;
-  todo.common.MediaFile media = 2;
+  Todo todo = 1;
+  MediaFile media = 2;
 }
 
 message RemoveMediaFromTodoRequest {
@@ -341,12 +341,12 @@ message RemoveMediaFromTodoRequest {
 
 message ListTodoMediaRequest {
   string todo_id = 1;
-  optional todo.common.MediaType media_type = 2;
+  optional MediaType media_type = 2;
   int32 page_size = 3;
   string page_token = 4;
 }
 
 message ListTodoMediaResponse {
-  repeated todo.common.MediaFile media_files = 1;
-  todo.common.PaginationInfo pagination = 2;
+  repeated MediaFile media_files = 1;
+  PaginationInfo pagination = 2;
 }

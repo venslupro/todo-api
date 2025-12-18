@@ -198,7 +198,7 @@ message CreateTeamRequest {
 }
 
 message CreateTeamResponse {
-  todo.common.Team team = 1;
+  Team team = 1;
 }
 
 message GetTeamRequest {
@@ -206,7 +206,7 @@ message GetTeamRequest {
 }
 
 message GetTeamResponse {
-  todo.common.Team team = 1;
+  Team team = 1;
 }
 
 message UpdateTeamRequest {
@@ -219,7 +219,7 @@ message UpdateTeamRequest {
 }
 
 message UpdateTeamResponse {
-  todo.common.Team team = 1;
+  Team team = 1;
 }
 
 message DeleteTeamRequest {
@@ -235,18 +235,18 @@ message ListTeamsRequest {
 }
 
 message ListTeamsResponse {
-  repeated todo.common.Team teams = 1;
-  todo.common.PaginationInfo pagination = 2;
+  repeated Team teams = 1;
+  PaginationInfo pagination = 2;
 }
 
 message AddTeamMemberRequest {
   string team_id = 1;
   string user_id = 2;
-  todo.common.TeamRole role = 3;
+  TeamRole role = 3;
 }
 
 message AddTeamMemberResponse {
-  todo.common.TeamMember member = 1;
+  TeamMember member = 1;
 }
 
 message RemoveTeamMemberRequest {
@@ -257,35 +257,35 @@ message RemoveTeamMemberRequest {
 message UpdateTeamMemberRoleRequest {
   string team_id = 1;
   string user_id = 2;
-  todo.common.TeamRole role = 3;
+  TeamRole role = 3;
 }
 
 message UpdateTeamMemberRoleResponse {
-  todo.common.TeamMember member = 1;
+  TeamMember member = 1;
 }
 
 message ListTeamMembersRequest {
   string team_id = 1;
-  optional todo.common.TeamRole role = 2;
+  optional TeamRole role = 2;
   int32 page_size = 3;
   string page_token = 4;
 }
 
 message ListTeamMembersResponse {
-  repeated todo.common.TeamMember members = 1;
-  todo.common.PaginationInfo pagination = 2;
+  repeated TeamMember members = 1;
+  PaginationInfo pagination = 2;
 }
 
 message GrantListPermissionRequest {
   string list_id = 1;
   string user_id = 2;
   optional string team_id = 3;
-  todo.common.PermissionLevel permission_level = 4;
+  PermissionLevel permission_level = 4;
   optional google.protobuf.Timestamp expires_at = 5;
 }
 
 message GrantListPermissionResponse {
-  todo.common.ListPermission permission = 1;
+  ListPermission permission = 1;
 }
 
 message RevokeListPermissionRequest {
@@ -303,8 +303,8 @@ message ListPermissionsRequest {
 }
 
 message ListPermissionsResponse {
-  repeated todo.common.ListPermission permissions = 1;
-  todo.common.PaginationInfo pagination = 2;
+  repeated ListPermission permissions = 1;
+  PaginationInfo pagination = 2;
 }
 
 message AddCommentRequest {
@@ -316,7 +316,7 @@ message AddCommentRequest {
 }
 
 message AddCommentResponse {
-  todo.common.Comment comment = 1;
+  Comment comment = 1;
 }
 
 message ListCommentsRequest {
@@ -327,15 +327,15 @@ message ListCommentsRequest {
 }
 
 message ListCommentsResponse {
-  repeated todo.common.Comment comments = 1;
-  todo.common.PaginationInfo pagination = 2;
+  repeated Comment comments = 1;
+  PaginationInfo pagination = 2;
 }
 
 message ListActivitiesRequest {
   optional string team_id = 1;
   optional string list_id = 2;
   optional string user_id = 3;
-  optional todo.common.ActivityType type = 4;
+  optional ActivityType type = 4;
   optional google.protobuf.Timestamp start_date = 5;
   optional google.protobuf.Timestamp end_date = 6;
   int32 page_size = 7;
@@ -343,6 +343,6 @@ message ListActivitiesRequest {
 }
 
 message ListActivitiesResponse {
-  repeated todo.common.Activity activities = 1;
-  todo.common.PaginationInfo pagination = 2;
+  repeated Activity activities = 1;
+  PaginationInfo pagination = 2;
 }

@@ -16,7 +16,7 @@ import "github.com/venslupro/todo-api/api/protos/common/errors.proto";
 // Collaboration Service - Handles real-time updates
 service CollaborationService {
   // Real-time collaboration stream (WebSocket/Server-Sent Events)
-  rpc SubscribeToUpdates(SubscribeToUpdatesRequest) returns (stream todo.common.CollaborationMessage) {
+  rpc SubscribeToUpdates(SubscribeToUpdatesRequest) returns (stream CollaborationMessage) {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Subscribe to updates"
       description: "Real-time subscription to collaboration updates (WebSocket/SSE)"
@@ -95,7 +95,7 @@ message GetUserPresenceRequest {
 }
 
 message GetUserPresenceResponse {
-  todo.common.UserPresence presence = 1;
+  UserPresence presence = 1;
 }
 
 message UpdatePresenceRequest {
@@ -114,8 +114,8 @@ message ListActiveUsersRequest {
 }
 
 message ListActiveUsersResponse {
-  repeated todo.common.UserPresence users = 1;
-  todo.common.PaginationInfo pagination = 2;
+  repeated UserPresence users = 1;
+  PaginationInfo pagination = 2;
   int32 total_active = 3;
 }
 

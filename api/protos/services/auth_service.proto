@@ -127,7 +127,7 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-  todo.common.User user = 1;
+  User user = 1;
   string access_token = 2;
   string refresh_token = 3;
   google.protobuf.Timestamp expires_at = 4;
@@ -140,7 +140,7 @@ message LoginRequest {
 }
 
 message LoginResponse {
-  todo.common.User user = 1;
+  User user = 1;
   string access_token = 2;
   string refresh_token = 3;
   google.protobuf.Timestamp expires_at = 4;
@@ -174,7 +174,7 @@ message GetProfileRequest {
 }
 
 message GetProfileResponse {
-  todo.common.User user = 1;
+  User user = 1;
 }
 
 message UpdateProfileRequest {
@@ -186,5 +186,5 @@ message UpdateProfileRequest {
 }
 
 message UpdateProfileResponse {
-  todo.common.User user = 1;
+  User user = 1;
 }
