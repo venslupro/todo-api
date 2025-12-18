@@ -123,7 +123,7 @@ message ListActiveUsersResponse {
 message LockResourceRequest {
   string resource_type = 1;  // todo, list
   string resource_id = 2;
-  optional int32 timeout_seconds = 3 [default = 300];  // 锁定超时时间（默认5分钟）
+  optional int32 timeout_seconds = 3;  // 锁定超时时间（默认5分钟）
 }
 
 message LockResourceResponse {

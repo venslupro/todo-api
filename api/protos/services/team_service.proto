@@ -198,7 +198,7 @@ message CreateTeamRequest {
 }
 
 message CreateTeamResponse {
-  Team team = 1;
+  common.Team team = 1;
 }
 
 message GetTeamRequest {
@@ -206,7 +206,7 @@ message GetTeamRequest {
 }
 
 message GetTeamResponse {
-  Team team = 1;
+  common.Team team = 1;
 }
 
 message UpdateTeamRequest {
@@ -219,7 +219,7 @@ message UpdateTeamRequest {
 }
 
 message UpdateTeamResponse {
-  Team team = 1;
+  common.Team team = 1;
 }
 
 message DeleteTeamRequest {
@@ -235,18 +235,18 @@ message ListTeamsRequest {
 }
 
 message ListTeamsResponse {
-  repeated Team teams = 1;
-  PaginationInfo pagination = 2;
+  repeated common.Team teams = 1;
+  common.PaginationInfo pagination = 2;
 }
 
 message AddTeamMemberRequest {
   string team_id = 1;
   string user_id = 2;
-  TeamRole role = 3;
+  common.TeamRole role = 3;
 }
 
 message AddTeamMemberResponse {
-  TeamMember member = 1;
+  common.TeamMember member = 1;
 }
 
 message RemoveTeamMemberRequest {
@@ -257,35 +257,35 @@ message RemoveTeamMemberRequest {
 message UpdateTeamMemberRoleRequest {
   string team_id = 1;
   string user_id = 2;
-  TeamRole role = 3;
+  common.TeamRole role = 3;
 }
 
 message UpdateTeamMemberRoleResponse {
-  TeamMember member = 1;
+  common.TeamMember member = 1;
 }
 
 message ListTeamMembersRequest {
   string team_id = 1;
-  optional TeamRole role = 2;
+  optional common.TeamRole role = 2;
   int32 page_size = 3;
   string page_token = 4;
 }
 
 message ListTeamMembersResponse {
-  repeated TeamMember members = 1;
-  PaginationInfo pagination = 2;
+  repeated common.TeamMember members = 1;
+  common.PaginationInfo pagination = 2;
 }
 
 message GrantListPermissionRequest {
   string list_id = 1;
   string user_id = 2;
   optional string team_id = 3;
-  PermissionLevel permission_level = 4;
+  common.PermissionLevel permission_level = 4;
   optional google.protobuf.Timestamp expires_at = 5;
 }
 
 message GrantListPermissionResponse {
-  ListPermission permission = 1;
+  common.ListPermission permission = 1;
 }
 
 message RevokeListPermissionRequest {
@@ -303,8 +303,8 @@ message ListPermissionsRequest {
 }
 
 message ListPermissionsResponse {
-  repeated ListPermission permissions = 1;
-  PaginationInfo pagination = 2;
+  repeated common.ListPermission permissions = 1;
+  common.PaginationInfo pagination = 2;
 }
 
 message AddCommentRequest {
@@ -316,7 +316,7 @@ message AddCommentRequest {
 }
 
 message AddCommentResponse {
-  Comment comment = 1;
+  common.Comment comment = 1;
 }
 
 message ListCommentsRequest {
@@ -327,15 +327,15 @@ message ListCommentsRequest {
 }
 
 message ListCommentsResponse {
-  repeated Comment comments = 1;
-  PaginationInfo pagination = 2;
+  repeated common.Comment comments = 1;
+  common.PaginationInfo pagination = 2;
 }
 
 message ListActivitiesRequest {
   optional string team_id = 1;
   optional string list_id = 2;
   optional string user_id = 3;
-  optional ActivityType type = 4;
+  optional common.ActivityType type = 4;
   optional google.protobuf.Timestamp start_date = 5;
   optional google.protobuf.Timestamp end_date = 6;
   int32 page_size = 7;
@@ -343,6 +343,6 @@ message ListActivitiesRequest {
 }
 
 message ListActivitiesResponse {
-  repeated Activity activities = 1;
-  PaginationInfo pagination = 2;
+  repeated common.Activity activities = 1;
+  common.PaginationInfo pagination = 2;
 }

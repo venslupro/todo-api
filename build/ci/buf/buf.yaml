@@ -1,4 +1,8 @@
 version: v1
+name: buf.build/github.com/venslupro/todo-api
+deps:
+  - buf.build/googleapis/googleapis  # 包含 google/api/annotations.proto
+  - buf.build/grpc-ecosystem/grpc-gateway  # 包含 protoc-gen-openapiv2
 lint:
   use:
     - DEFAULT
@@ -6,7 +10,7 @@ lint:
     - PACKAGE_DIRECTORY_MATCH
   ignore_only:
     PACKAGE_VERSION_SUFFIX:
-      - api/protos/common
+      - api/protos/
 breaking:
   use:
     - FILE

@@ -14,7 +14,6 @@ import "api/protos/common/errors.proto";
 import "api/protos/common/messages.proto";
 import "api/protos/common/pagination.proto";
 
-
 // File Service - Handles file uploads to object storage
 service FileService {
   // Get upload pre-signed URL - Core method: client uploads directly to S3 etc.
@@ -199,7 +198,7 @@ message GetUploadUrlRequest {
   map<string, string> metadata = 10;
 
   // 视频限制：不超过4分钟（240秒）
-  optional int32 max_duration_seconds = 11 ; // default is 4 minutes
+  optional int32 max_duration_seconds = 11; // default is 4 minutes
 }
 
 message GetUploadUrlResponse {
@@ -232,7 +231,7 @@ message GetFileResponse {
 
 message GetDownloadUrlRequest {
   string id = 1;
-  optional int32 expires_in = 2 [default = 3600];  // URL有效期（秒）
+  optional int32 expires_in = 2;  // URL有效期（秒）
   optional bool inline = 3;  // 是否内联显示
 }
 
@@ -243,7 +242,7 @@ message GetDownloadUrlResponse {
 
 message DeleteFileRequest {
   string id = 1;
-  optional bool permanent = 2 [default = false];  // 是否永久删除
+  optional bool permanent = 2;  // 是否永久删除
 }
 
 message ListFilesRequest {
@@ -252,7 +251,7 @@ message ListFilesRequest {
   optional string comment_id = 3;
   optional string team_id = 4;
   optional string uploaded_by = 5;
-  optional FileType type = 6;
+  optional common.FileType type = 6;
   optional google.protobuf.Timestamp uploaded_after = 7;
   optional google.protobuf.Timestamp uploaded_before = 8;
   int32 page_size = 9;
@@ -279,358 +278,48 @@ message GenerateThumbnailResponse {
   int64 size = 4;
 }
 
-
-
-
-option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
-  info: {
-    title: "Media Service";
-    version: "1.0";
-    description: "Media upload and management service for images and videos"
-  };
-  schemes: HTTP;
-  schemes: HTTPS;
-  consumes: "application/json";
-  produces: "application/json";
-  security_definitions: {
-    security: {
-      key: "BearerAuth";
-      value: {
-        type: TYPE_API_KEY;
-        in: IN_HEADER;
-        name: "Authorization";
-      }
-    }
-  };
-};
-
-// 媒体服务 - 专门处理图片和视频上传到对象存储
-service MediaService {
-  // 获取图片上传预签名URL
-  rpc GetImageUploadUrl(GetImageUploadUrlRequest) returns (GetImageUploadUrlResponse) {
-    option (google.api.http) = {
-      post: "/v1/media/images/upload-url"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get image upload URL"
-      description: "Get pre-signed URL for uploading image directly to object storage"
-      tags: "Images"
-    };
-  }
-
-  // 获取视频上传预签名URL
-  rpc GetVideoUploadUrl(GetVideoUploadUrlRequest) returns (GetVideoUploadUrlResponse) {
-    option (google.api.http) = {
-      post: "/v1/media/videos/upload-url"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get video upload URL"
-      description: "Get pre-signed URL for uploading video directly to object storage (max 4 minutes)"
-      tags: "Videos"
-    };
-  }
-
-  // 确认上传完成
-  rpc CompleteMediaUpload(CompleteMediaUploadRequest) returns (CompleteMediaUploadResponse) {
-    option (google.api.http) = {
-      post: "/v1/media/complete-upload"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Complete media upload"
-      description: "Confirm media upload completion and create media record"
-      tags: ["Images", "Videos"]
-    };
-  }
-
-  // 初始化分片上传（用于大文件）
-  rpc InitiateMultipartUpload(InitiateMultipartUploadRequest) returns (InitiateMultipartUploadResponse) {
-    option (google.api.http) = {
-      post: "/v1/media/multipart/initiate"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Initiate multipart upload"
-      description: "Initiate multipart upload for large media files"
-      tags: ["Images", "Videos"]
-    };
-  }
-
-  // 获取分片上传URL
-  rpc GetMultipartUploadUrl(GetMultipartUploadUrlRequest) returns (GetMultipartUploadUrlResponse) {
-    option (google.api.http) = {
-      post: "/v1/media/multipart/upload-url"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get multipart upload URL"
-      description: "Get pre-signed URL for multipart upload part"
-      tags: ["Images", "Videos"]
-    };
-  }
-
-  // 完成分片上传
-  rpc CompleteMultipartUpload(CompleteMultipartUploadRequest) returns (CompleteMultipartUploadResponse) {
-    option (google.api.http) = {
-      post: "/v1/media/multipart/complete"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Complete multipart upload"
-      description: "Complete multipart upload and merge parts"
-      tags: ["Images", "Videos"]
-    };
-  }
-
-  // 获取媒体文件信息
-  rpc GetMediaFile(GetMediaFileRequest) returns (GetMediaFileResponse) {
-    option (google.api.http) = {
-      get: "/v1/media/{id}"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get media file"
-      description: "Get media file metadata by ID"
-      tags: ["Images", "Videos"]
-    };
-  }
-
-  // 获取媒体文件下载URL
-  rpc GetMediaDownloadUrl(GetMediaDownloadUrlRequest) returns (GetMediaDownloadUrlResponse) {
-    option (google.api.http) = {
-      get: "/v1/media/{id}/download-url"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get media download URL"
-      description: "Get pre-signed URL for media file download"
-      tags: ["Images", "Videos"]
-    };
-  }
-
-  // 删除媒体文件
-  rpc DeleteMediaFile(DeleteMediaFileRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      delete: "/v1/media/{id}"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Delete media file"
-      description: "Delete media file by ID"
-      tags: ["Images", "Videos"]
-    };
-  }
-
-  // 列出媒体文件
-  rpc ListMediaFiles(ListMediaFilesRequest) returns (ListMediaFilesResponse) {
-    option (google.api.http) = {
-      get: "/v1/media"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "List media files"
-      description: "List media files with filtering and pagination"
-      tags: ["Images", "Videos"]
-    };
-  }
-
-  // 生成图片缩略图
-  rpc GenerateImageThumbnail(GenerateImageThumbnailRequest) returns (GenerateImageThumbnailResponse) {
-    option (google.api.http) = {
-      post: "/v1/media/images/{id}/thumbnail"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Generate image thumbnail"
-      description: "Generate thumbnail for image with specified dimensions"
-      tags: "Images"
-    };
-  }
-
-  // 生成视频缩略图
-  rpc GenerateVideoThumbnail(GenerateVideoThumbnailRequest) returns (GenerateVideoThumbnailResponse) {
-    option (google.api.http) = {
-      post: "/v1/media/videos/{id}/thumbnail"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Generate video thumbnail"
-      description: "Generate thumbnail for video at specified time"
-      tags: "Videos"
-    };
-  }
-
-  // 转码视频（处理视频优化和格式转换）
-  rpc TranscodeVideo(TranscodeVideoRequest) returns (TranscodeVideoResponse) {
-    option (google.api.http) = {
-      post: "/v1/media/videos/{id}/transcode"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Transcode video"
-      description: "Transcode video to different format, resolution, or quality"
-      tags: "Videos"
-    };
-  }
-
-  // 优化图片（压缩、调整尺寸等）
-  rpc OptimizeImage(OptimizeImageRequest) returns (OptimizeImageResponse) {
-    option (google.api.http) = {
-      post: "/v1/media/images/{id}/optimize"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Optimize image"
-      description: "Optimize image by compressing, resizing, or converting format"
-      tags: "Images"
-    };
-  }
+message TranscodeVideoRequest {
+  string id = 1;
+  optional common.VideoFormat target_format = 2;
+  optional common.VideoQuality target_quality = 3;
+  optional int32 target_width = 4;
+  optional int32 target_height = 5;
+  optional int32 target_bitrate = 6;
 }
 
-// ================== 图片上传请求/响应 ==================
-message GetImageUploadUrlRequest {
-  string filename = 1;
-  string mime_type = 2;
-  int64 size_bytes = 3;  // 文件大小（字节）
-
-  // 关联信息
-  optional string todo_id = 4;
-  optional string list_id = 5;
-  optional string comment_id = 6;
-  optional string team_id = 7;
-
-  // 图片特定选项
-  optional ImageUploadOptions options = 8;
-
-  // 验证信息
-  optional string checksum = 9;  // MD5或SHA256
-  map<string, string> metadata = 10;
+message TranscodeVideoResponse {
+  string transcoded_url = 1;
+  string preview_url = 2;
+  string thumbnail_url = 3;
+  int32 duration = 4;
+  int32 width = 5;
+  int32 height = 6;
+  int64 size = 7;
 }
 
-message GetImageUploadUrlResponse {
-  string upload_url = 1;      // 预签名上传URL
-  string media_id = 2;        // 媒体文件ID
-  string upload_id = 3;       // 上传ID（用于分片上传）
-  google.protobuf.Timestamp expires_at = 4;  // URL过期时间
-  map<string, string> headers = 5;  // 需要包含的HTTP头
-
-  // 验证信息
-  string expected_checksum = 6;  // 预期的校验和
-  int64 expected_size = 7;       // 预期的文件大小
-}
-
-// ================== 视频上传请求/响应 ==================
-message GetVideoUploadUrlRequest {
-  string filename = 1;
-  string mime_type = 2;
-  int64 size_bytes = 3;  // 文件大小（字节）
-
-  // 关联信息
-  optional string todo_id = 4;
-  optional string list_id = 5;
-  optional string comment_id = 6;
-  optional string team_id = 7;
-
-  // 视频特定选项（包含4分钟限制）
-  optional VideoUploadOptions options = 8;
-
-  // 验证信息
-  optional string checksum = 9;  // MD5或SHA256
-  map<string, string> metadata = 10;
-
-  // 视频预览选项
-  optional bool generate_preview = 11 [default = true];  // 是否生成预览
-  optional bool generate_thumbnail = 12 [default = true]; // 是否生成缩略图
-}
-
-message GetVideoUploadUrlResponse {
-  string upload_url = 1;      // 预签名上传URL
-  string media_id = 2;        // 媒体文件ID
-  string upload_id = 3;       // 上传ID（用于分片上传）
-  google.protobuf.Timestamp expires_at = 4;  // URL过期时间
-  map<string, string> headers = 5;  // 需要包含的HTTP头
-
-  // 视频验证信息
-  int32 max_duration_seconds = 6 [default = 240];  // 最大时长限制（4分钟）
-  int64 max_size_bytes = 7;   // 最大文件大小限制
-  repeated string allowed_mime_types = 8;  // 允许的MIME类型
-
-  // 转码信息
-  bool will_transcode = 9;    // 是否会自动转码
-  VideoQuality target_quality = 10;  // 目标质量
-}
-
-// ================== 通用上传请求/响应 ==================
-message CompleteMediaUploadRequest {
-  string media_id = 1;
-  string upload_id = 2;
-  string checksum = 3;  // 文件校验和
-  int64 size_bytes = 4; // 实际文件大小
-
-  // 媒体特定验证数据
-  oneof media_verification {
-    ImageVerification image_verification = 5;
-    VideoVerification video_verification = 6;
-  }
-
-  map<string, string> metadata = 7;
-}
-
-message ImageVerification {
-  optional int32 width = 1;   // 图片宽度
-  optional int32 height = 2;  // 图片高度
-  optional string format = 3; // 图片格式
-}
-
-message VideoVerification {
-  optional int32 duration_seconds = 1;  // 视频时长
-  optional int32 width = 2;             // 视频宽度
-  optional int32 height = 3;            // 视频高度
-  optional string format = 4;           // 视频格式
-}
-
-message CompleteMediaUploadResponse {
-  MediaFile media_file = 1;
-  google.protobuf.Timestamp processed_at = 2;
-
-  // 处理结果
-  bool was_optimized = 3;      // 是否被优化
-  bool was_transcoded = 4;     // 是否被转码
-  string optimization_summary = 5;  // 优化摘要
-}
-
-// ================== 分片上传请求/响应 ==================
+// 分片上传相关消息
 message InitiateMultipartUploadRequest {
   string filename = 1;
   string mime_type = 2;
   int64 size_bytes = 3;
-  MediaType media_type = 4;
-
-  // 关联信息
+  common.FileType file_type = 4;
   optional string todo_id = 5;
   optional string list_id = 6;
-
-  // 媒体特定选项
-  oneof media_options {
-    ImageUploadOptions image_options = 7;
-    VideoUploadOptions video_options = 8;
-  }
-
-  map<string, string> metadata = 9;
+  map<string, string> metadata = 7;
 }
 
 message InitiateMultipartUploadResponse {
-  string media_id = 1;
+  string file_id = 1;
   string upload_id = 2;
   google.protobuf.Timestamp expires_at = 3;
-  int32 part_size = 4;  // 建议的分片大小
-  int32 min_part_size = 5;  // 最小分片大小
-  int32 max_part_size = 6;  // 最大分片大小
+  int32 part_size = 4;
 }
 
 message GetMultipartUploadUrlRequest {
-  string media_id = 1;
+  string file_id = 1;
   string upload_id = 2;
-  int32 part_number = 3;  // 分片编号（从1开始）
-  int64 part_size = 4;    // 分片大小
+  int32 part_number = 3;
+  int64 part_size = 4;
 }
 
 message GetMultipartUploadUrlResponse {
@@ -640,9 +329,9 @@ message GetMultipartUploadUrlResponse {
 }
 
 message CompleteMultipartUploadRequest {
-  string media_id = 1;
+  string file_id = 1;
   string upload_id = 2;
-  repeated PartETag parts = 3;  // 分片ETag列表
+  repeated PartETag parts = 3;
   string checksum = 4;
 }
 
@@ -652,168 +341,5 @@ message PartETag {
 }
 
 message CompleteMultipartUploadResponse {
-  MediaFile media_file = 1;
-  google.protobuf.Timestamp completed_at = 2;
-}
-
-// ================== 媒体管理请求/响应 ==================
-message GetMediaFileRequest {
-  string id = 1;
-  optional bool include_processing_status = 2 [default = false]; // 是否包含处理状态
-}
-
-message GetMediaFileResponse {
-  MediaFile media_file = 1;
-  ProcessingStatus processing_status = 2;  // 处理状态（如果请求）
-}
-
-message ProcessingStatus {
-  string status = 1;  // pending, processing, completed, failed
-  int32 progress = 2; // 进度百分比（0-100）
-  string message = 3; // 状态消息
-  google.protobuf.Timestamp started_at = 4;
-  google.protobuf.Timestamp completed_at = 5;
-  optional string error_message = 6;
-}
-
-message GetMediaDownloadUrlRequest {
-  string id = 1;
-  optional int32 expires_in = 2 [default = 3600];  // URL有效期（秒）
-  optional bool inline = 3 [default = false];      // 是否内联显示
-  optional string variant = 4;                     // 变体：original, optimized, thumbnail, preview
-}
-
-message GetMediaDownloadUrlResponse {
-  string download_url = 1;
-  google.protobuf.Timestamp expires_at = 2;
-  string variant = 3;          // 文件变体
-  int64 size_bytes = 4;        // 文件大小
-  string mime_type = 5;        // MIME类型
-}
-
-message DeleteMediaFileRequest {
-  string id = 1;
-  optional bool permanent = 2 [default = false];  // 是否永久删除
-}
-
-message ListMediaFilesRequest {
-  optional string todo_id = 1;
-  optional string list_id = 2;
-  optional string comment_id = 3;
-  optional string team_id = 4;
-  optional string uploaded_by = 5;
-  optional MediaType media_type = 6;
-  optional google.protobuf.Timestamp uploaded_after = 7;
-  optional google.protobuf.Timestamp uploaded_before = 8;
-  optional bool only_optimized = 9;  // 只返回优化后的文件
-  int32 page_size = 10;
-  string page_token = 11;
-}
-
-message ListMediaFilesResponse {
-  repeated MediaFile media_files = 1;
-  PaginationInfo pagination = 2;
-  MediaStats stats = 3;
-}
-
-message MediaStats {
-  int32 total_count = 1;
-  int32 image_count = 2;
-  int32 video_count = 3;
-  int64 total_size_bytes = 4;
-  int64 images_size_bytes = 5;
-  int64 videos_size_bytes = 6;
-}
-
-// ================== 图片处理请求/响应 ==================
-message GenerateImageThumbnailRequest {
-  string id = 1;
-  optional int32 width = 2;
-  optional int32 height = 3;
-  optional ImageFormat format = 4;
-  optional ImageQuality quality = 5;
-  optional bool crop = 6 [default = false];  // 是否裁剪
-  optional string crop_mode = 7;             // 裁剪模式：center, face, smart
-}
-
-message GenerateImageThumbnailResponse {
-  string thumbnail_url = 1;
-  int32 width = 2;
-  int32 height = 3;
-  int64 size_bytes = 4;
-  ImageFormat format = 5;
-  ImageQuality quality = 6;
-}
-
-message OptimizeImageRequest {
-  string id = 1;
-  optional int32 max_width = 2;
-  optional int32 max_height = 3;
-  optional int32 quality_percentage = 4 [default = 85];  // 质量百分比
-  optional ImageFormat target_format = 5;
-  optional bool keep_metadata = 6 [default = true];  // 是否保留元数据
-  optional bool progressive = 7 [default = true];    // 是否生成渐进式图片
-}
-
-message OptimizeImageResponse {
-  MediaFile optimized_file = 1;
-  OptimizationResult result = 2;
-}
-
-message OptimizationResult {
-  int64 original_size = 1;
-  int64 optimized_size = 2;
-  int32 reduction_percentage = 3;  // 减少百分比
-  string optimization_summary = 4;
-}
-
-// ================== 视频处理请求/响应 ==================
-message GenerateVideoThumbnailRequest {
-  string id = 1;
-  optional int32 time_offset_seconds = 2;  // 时间偏移（秒）
-  optional int32 width = 3;
-  optional int32 height = 4;
-  optional ImageFormat format = 5;
-  optional ImageQuality quality = 6;
-}
-
-message GenerateVideoThumbnailResponse {
-  string thumbnail_url = 1;
-  int32 width = 2;
-  int32 height = 3;
-  int64 size_bytes = 4;
-  ImageFormat format = 5;
-  int32 time_offset_seconds = 6;  // 截图时间点
-}
-
-message TranscodeVideoRequest {
-  string id = 1;
-  optional VideoFormat target_format = 2;
-  optional VideoQuality target_quality = 3;
-  optional int32 target_bitrate_kbps = 4;  // 目标比特率（kbps）
-  optional int32 target_width = 5;         // 目标宽度
-  optional int32 target_height = 6;        // 目标高度
-  optional int32 target_framerate = 7;     // 目标帧率
-  optional VideoCodec video_codec = 8;
-  optional VideoCodec audio_codec = 9;
-  optional bool keep_audio = 10 [default = true];  // 是否保留音频
-  optional bool generate_preview = 11 [default = true];  // 是否生成预览
-}
-
-message TranscodeVideoResponse {
-  MediaFile transcoded_file = 1;
-  TranscodingResult result = 2;
-}
-
-message TranscodingResult {
-  int64 original_size = 1;
-  int64 transcoded_size = 2;
-  int32 reduction_percentage = 3;  // 减少百分比
-  int32 original_duration = 4;
-  int32 transcoded_duration = 5;
-  int32 original_width = 6;
-  int32 original_height = 7;
-  int32 transcoded_width = 8;
-  int32 transcoded_height = 9;
-  string transcoding_summary = 10;
+  FileMetadata file = 1;
 }

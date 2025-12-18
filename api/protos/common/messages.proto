@@ -7,7 +7,6 @@ option go_package = "api/protos/common;todopb";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 import "api/protos/common/enums.proto";
-import "api/protos/common/messages.proto";
 
 
 // User information
