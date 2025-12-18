@@ -196,10 +196,6 @@ message CreateTodoResponse {
   Todo todo = 1;
 }
 
-message CreateTodoResponse {
-  .Todo todo = 1;
-}
-
 message GetTodoResponse {
   .Todo todo = 1;
 }
@@ -222,10 +218,6 @@ message UpdateTodoRequest {
 
 message UpdateTodoResponse {
   Todo todo = 1;
-}
-
-message UpdateTodoResponse {
-  .Todo todo = 1;
 }
 
 message ListTodosRequest {
