@@ -1,0 +1,352 @@
+syntax = "proto3";
+
+package todopb.services;
+
+option go_package = "api/protos/services;todopb";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "github.com/venslupro/todo-api/api/protos/common/enums.proto";
+import "github.com/venslupro/todo-api/api/protos/common/messages.proto";
+import "github.com/venslupro/todo-api/api/protos/common/errors.proto";
+import "github.com/venslupro/todo-api/api/protos/common/pagination.proto";
+
+
+// TODO Service
+service TodoService {
+  // Create TODO
+  rpc CreateTodo(CreateTodoRequest) returns (CreateTodoResponse) {
+    option (google.api.http) = {
+      post: "/v1/todos"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create todo"
+      description: "Create a new todo item"
+    };
+  }
+
+  // Get TODO
+  rpc GetTodo(GetTodoRequest) returns (GetTodoResponse) {
+    option (google.api.http) = {
+      get: "/v1/todos/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get todo"
+      description: "Get todo by ID"
+    };
+  }
+
+  // Update TODO
+  rpc UpdateTodo(UpdateTodoRequest) returns (UpdateTodoResponse) {
+    option (google.api.http) = {
+      patch: "/v1/todos/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update todo"
+      description: "Update todo (partial update supported)"
+    };
+  }
+
+  // Delete TODO
+  rpc DeleteTodo(DeleteTodoRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/todos/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete todo"
+      description: "Delete todo by ID"
+    };
+  }
+
+  // List TODOs
+  rpc ListTodos(ListTodosRequest) returns (ListTodosResponse) {
+    option (google.api.http) = {
+      get: "/v1/todos"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List todos"
+      description: "List todos with filtering, sorting, and pagination"
+    };
+  }
+
+  // Create TODO List
+  rpc CreateTodoList(CreateTodoListRequest) returns (CreateTodoListResponse) {
+    option (google.api.http) = {
+      post: "/v1/todo-lists"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create todo list"
+      description: "Create a new todo list"
+    };
+  }
+
+  // Get TODO List
+  rpc GetTodoList(GetTodoListRequest) returns (GetTodoListResponse) {
+    option (google.api.http) = {
+      get: "/v1/todo-lists/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get todo list"
+      description: "Get todo list by ID"
+    };
+  }
+
+  // Update TODO List
+  rpc UpdateTodoList(UpdateTodoListRequest) returns (UpdateTodoListResponse) {
+    option (google.api.http) = {
+      patch: "/v1/todo-lists/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update todo list"
+      description: "Update todo list (partial update supported)"
+    };
+  }
+
+  // Delete TODO List
+  rpc DeleteTodoList(DeleteTodoListRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/todo-lists/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete todo list"
+      description: "Delete todo list by ID"
+    };
+  }
+
+  // List TODO Lists
+  rpc ListTodoLists(ListTodoListsRequest) returns (ListTodoListsResponse) {
+    option (google.api.http) = {
+      get: "/v1/todo-lists"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List todo lists"
+      description: "List todo lists with filtering and pagination"
+    };
+  }
+
+  // Get TODO Statistics
+  rpc GetTodoStats(GetTodoStatsRequest) returns (GetTodoStatsResponse) {
+    option (google.api.http) = {
+      get: "/v1/todo-stats"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get todo statistics"
+      description: "Get statistics and analytics about todos"
+    };
+  }
+
+  // Attach Media to TODO
+  rpc AttachMediaToTodo(AttachMediaToTodoRequest) returns (AttachMediaToTodoResponse) {
+    option (google.api.http) = {
+      post: "/v1/todos/{todo_id}/media"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Attach media to todo"
+      description: "Attach image or video media to a todo item"
+    };
+  }
+
+  // Remove Media from TODO
+  rpc RemoveMediaFromTodo(RemoveMediaFromTodoRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/todos/{todo_id}/media/{media_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Remove media from todo"
+      description: "Remove media attachment from a todo item"
+    };
+  }
+
+  // List TODO Media
+  rpc ListTodoMedia(ListTodoMediaRequest) returns (ListTodoMediaResponse) {
+    option (google.api.http) = {
+      get: "/v1/todos/{todo_id}/media"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List todo media"
+      description: "List media attachments for a todo item"
+    };
+  }
+}
+
+// Request/Response Messages
+message CreateTodoRequest {
+  string list_id = 1;
+  string title = 2;
+  string description = 3;
+  .todo.common.PriorityLevel priority = 4;
+  google.protobuf.Timestamp due_date = 5;
+  string assignee_id = 6;
+  repeated string tags = 7;
+  repeated string labels = 8;
+  int32 estimated_minutes = 9;
+  repeated string attachment_ids = 10;
+  map<string, google.protobuf.Value> custom_fields = 11;
+}
+
+message CreateTodoResponse {
+  todo.common.Todo todo = 1;
+}
+
+message CreateTodoResponse {
+  .todo.common.Todo todo = 1;
+}
+
+message GetTodoResponse {
+  .todo.common.Todo todo = 1;
+}
+
+message UpdateTodoRequest {
+  string id = 1;
+  optional string title = 2;
+  optional string description = 3;
+  optional .todo.common.TodoStatus status = 4;
+  optional .todo.common.PriorityLevel priority = 5;
+  optional google.protobuf.Timestamp due_date = 6;
+  optional string assignee_id = 7;
+  repeated string tags = 8;
+  repeated string labels = 9;
+  optional int32 estimated_minutes = 10;
+  optional int32 time_spent_minutes = 11;
+  repeated string media_ids = 12;  // Associated media file IDs
+  map<string, google.protobuf.Value> custom_fields = 13;
+}
+
+message UpdateTodoResponse {
+  todo.common.Todo todo = 1;
+}
+
+message UpdateTodoResponse {
+  .todo.common.Todo todo = 1;
+}
+
+message ListTodosRequest {
+  string list_id = 1;
+  optional string team_id = 2;
+  optional .todo.common.TodoStatus status = 3;
+  optional .todo.common.PriorityLevel priority = 4;
+  optional string assignee_id = 5;
+  repeated string tags = 6;
+  optional bool overdue_only = 7;
+  optional string search_query = 8;
+  optional google.protobuf.Timestamp due_date_from = 9;
+  optional google.protobuf.Timestamp due_date_to = 10;
+  int32 page_size = 11;
+  string page_token = 12;
+  string sort_by = 13;
+  bool sort_descending = 14;
+}
+
+message ListTodosResponse {
+  repeated todo.common.Todo todos = 1;
+  todo.common.PaginationInfo pagination = 2;
+}
+
+message CreateTodoListRequest {
+  string name = 1;
+  string description = 2;
+  optional string team_id = 3;
+  repeated string tags = 4;
+}
+
+message CreateTodoListResponse {
+  todo.common.TodoList list = 1;
+}
+
+message GetTodoListRequest {
+  string id = 1;
+}
+
+message GetTodoListResponse {
+  todo.common.TodoList list = 1;
+}
+
+message UpdateTodoListRequest {
+  string id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  repeated string tags = 4;
+}
+
+message UpdateTodoListResponse {
+  todo.common.TodoList list = 1;
+}
+
+message DeleteTodoListRequest {
+  string id = 1;
+}
+
+message ListTodoListsRequest {
+  optional string team_id = 1;
+  optional bool is_shared = 2;
+  optional string search_query = 3;
+  int32 page_size = 4;
+  string page_token = 5;
+}
+
+message ListTodoListsResponse {
+  repeated todo.common.TodoList lists = 1;
+  todo.common.PaginationInfo pagination = 2;
+}
+
+// Statistics Related
+message TodoStats {
+  int32 total_todos = 1;
+  int32 completed_todos = 2;
+  int32 in_progress_todos = 3;
+  int32 not_started_todos = 4;
+  int32 overdue_todos = 5;
+  map<string, int32> priority_stats = 6;
+  map<string, int32> tag_stats = 7;
+  map<string, int32> assignee_stats = 8;
+}
+
+message GetTodoStatsRequest {
+  optional string list_id = 1;
+  optional string team_id = 2;
+  optional string user_id = 3;
+  optional google.protobuf.Timestamp start_date = 4;
+  optional google.protobuf.Timestamp end_date = 5;
+}
+
+message GetTodoStatsResponse {
+  TodoStats stats = 1;
+}
+
+// Media Related Requests/Responses
+message AttachMediaToTodoRequest {
+  string todo_id = 1;
+  string media_id = 2;  // 通过MediaService上传后获得的媒体ID
+  optional string caption = 3;  // 媒体描述
+  optional int32 position = 4;  // 显示位置（排序）
+}
+
+message AttachMediaToTodoResponse {
+  todo.common.Todo todo = 1;
+  todo.common.MediaFile media = 2;
+}
+
+message RemoveMediaFromTodoRequest {
+  string todo_id = 1;
+  string media_id = 2;
+}
+
+message ListTodoMediaRequest {
+  string todo_id = 1;
+  optional todo.common.MediaType media_type = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListTodoMediaResponse {
+  repeated todo.common.MediaFile media_files = 1;
+  todo.common.PaginationInfo pagination = 2;
+}
