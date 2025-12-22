@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option java_multiple_files = true;
+option java_package = "todo.v1";
+
+// User represents a user in the system.
+message User {
+  string id = 1;
+  string email = 2;
+  string username = 3;
+  string display_name = 4;
+  string avatar_url = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  google.protobuf.Timestamp last_login_at = 8;
+  bool email_verified = 9;
+}
+
+// RegisterRequest contains user registration information.
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  string username = 3;
+  string display_name = 4;
+}
+
+// RegisterResponse contains the registered user information.
+message RegisterResponse {
+  User user = 1;
+}
+
+// LoginRequest contains user login credentials.
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  bool remember_me = 3;
+}
+
+// LoginResponse contains authentication tokens and user info.
+message LoginResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  google.protobuf.Timestamp access_token_expires_at = 3;
+  google.protobuf.Timestamp refresh_token_expires_at = 4;
+  User user = 5;
+}
+
+// RefreshTokenRequest contains refresh token for obtaining new access token.
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+// RefreshTokenResponse contains new authentication tokens.
+message RefreshTokenResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  google.protobuf.Timestamp access_token_expires_at = 3;
+  google.protobuf.Timestamp refresh_token_expires_at = 4;
+  User user = 5;
+}
+
+// LogoutRequest contains logout information.
+message LogoutRequest {
+  string refresh_token = 1;
+}
+
+// LogoutResponse confirms logout operation.
+message LogoutResponse {}
+
+// UpdateProfileRequest contains user profile updates.
+message UpdateProfileRequest {
+  optional string display_name = 1;
+  optional string avatar_url = 2;
+}
+
+// UpdateProfileResponse contains updated user profile.
+message UpdateProfileResponse {
+  User user = 1;
+}
+
+// ChangePasswordRequest contains password change information.
+message ChangePasswordRequest {
+  string current_password = 1;
+  string new_password = 2;
+}
+
+// ChangePasswordResponse confirms password change.
+message ChangePasswordResponse {}
+
+// VerifyEmailRequest contains email verification token.
+message VerifyEmailRequest {
+  string token = 1;
+}
+
+// VerifyEmailResponse confirms email verification.
+message VerifyEmailResponse {}
+
+// RequestPasswordResetRequest contains email for password reset.
+message RequestPasswordResetRequest {
+  string email = 1;
+}
+
+// RequestPasswordResetResponse confirms password reset request.
+message RequestPasswordResetResponse {}
+
+// ConfirmPasswordResetRequest contains new password for reset.
+message ConfirmPasswordResetRequest {
+  string token = 1;
+  string new_password = 2;
+}
+
+// ConfirmPasswordResetResponse confirms password reset.
+message ConfirmPasswordResetResponse {}
+
+// GetProfileRequest requests current user profile.
+message GetProfileRequest {}
+
+// GetProfileResponse contains user profile.
+message GetProfileResponse {
+  User user = 1;
+}

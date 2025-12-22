@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "google/api/annotations.proto";
+import "todo/v1/media.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option java_multiple_files = true;
+option java_package = "todo.v1";
+
+// MediaService handles media upload and management.
+service MediaService {
+  // Upload media file (streaming).
+  rpc UploadMedia(stream UploadMediaRequest) returns (UploadMediaResponse) {
+    option (google.api.http) = {
+      post: "/v1/media/upload"
+      body: "*"
+    };
+  }
+
+  // Generate pre-signed URL for direct client upload.
+  rpc GenerateUploadURL(GenerateUploadURLRequest) returns (GenerateUploadURLResponse) {
+    option (google.api.http) = {
+      post: "/v1/media/upload-url"
+      body: "*"
+    };
+  }
+
+  // Get media metadata by ID.
+  rpc GetMedia(GetMediaRequest) returns (GetMediaResponse) {
+    option (google.api.http) = {get: "/v1/media/{id}"};
+  }
+
+  // List media with filtering and pagination.
+  rpc ListMedia(ListMediaRequest) returns (ListMediaResponse) {
+    option (google.api.http) = {get: "/v1/media"};
+  }
+
+  // Delete media by ID.
+  rpc DeleteMedia(DeleteMediaRequest) returns (DeleteMediaResponse) {
+    option (google.api.http) = {delete: "/v1/media/{id}"};
+  }
+}

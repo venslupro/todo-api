@@ -1,0 +1,194 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "common/v1/enums.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option java_multiple_files = true;
+option java_package = "todo.v1";
+
+// Team represents a group of users collaborating on TODO lists.
+message Team {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string owner_id = 4;
+  string avatar_url = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+// TeamMember represents a user's membership in a team.
+message TeamMember {
+  string user_id = 1;
+  string team_id = 2;
+  common.v1.Role role = 3;
+  common.v1.Permission permission = 4; // Default permission for shared lists
+  google.protobuf.Timestamp joined_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+// SharedList represents a TODO list shared with a team.
+message SharedList {
+  string id = 1;
+  string todo_id = 2; // Reference to TODO list (root TODO)
+  string team_id = 3;
+  common.v1.Permission permission = 4; // Default permission for team members
+  string shared_by = 5; // User ID who shared the list
+  google.protobuf.Timestamp shared_at = 6;
+}
+
+// CreateTeamRequest contains data for creating a new team.
+message CreateTeamRequest {
+  string name = 1;
+  optional string description = 2;
+  optional string avatar_url = 3;
+}
+
+// UpdateTeamRequest contains data for updating a team.
+message UpdateTeamRequest {
+  string id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional string avatar_url = 4;
+}
+
+// GetTeamRequest contains team ID.
+message GetTeamRequest {
+  string id = 1;
+}
+
+// DeleteTeamRequest contains team ID.
+message DeleteTeamRequest {
+  string id = 1;
+}
+
+// ListTeamsRequest with pagination.
+message ListTeamsRequest {
+  optional string user_id = 1; // Filter by user membership
+  optional common.v1.PaginationRequest pagination = 2;
+}
+
+// ListTeamsResponse with teams and pagination info.
+message ListTeamsResponse {
+  repeated Team teams = 1;
+  common.v1.PaginationResponse pagination = 2;
+}
+
+// AddTeamMemberRequest for adding a user to a team.
+message AddTeamMemberRequest {
+  string team_id = 1;
+  string user_email = 2; // Email of user to add
+  optional common.v1.Role role = 3;
+  optional common.v1.Permission permission = 4;
+}
+
+// UpdateTeamMemberRequest for updating team member permissions.
+message UpdateTeamMemberRequest {
+  string team_id = 1;
+  string user_id = 2;
+  optional common.v1.Role role = 3;
+  optional common.v1.Permission permission = 4;
+}
+
+// RemoveTeamMemberRequest for removing a user from a team.
+message RemoveTeamMemberRequest {
+  string team_id = 1;
+  string user_id = 2;
+}
+
+// ListTeamMembersRequest for listing team members.
+message ListTeamMembersRequest {
+  string team_id = 1;
+  optional common.v1.PaginationRequest pagination = 2;
+}
+
+// ListTeamMembersResponse with members and pagination info.
+message ListTeamMembersResponse {
+  repeated TeamMember members = 1;
+  common.v1.PaginationResponse pagination = 2;
+}
+
+// ShareListRequest for sharing a TODO list with a team.
+message ShareListRequest {
+  string todo_id = 1;
+  string team_id = 2;
+  common.v1.Permission permission = 3;
+}
+
+// UpdateSharedListRequest for updating shared list permissions.
+message UpdateSharedListRequest {
+  string id = 1;
+  optional common.v1.Permission permission = 2;
+}
+
+// ListSharedListsRequest for listing shared lists.
+message ListSharedListsRequest {
+  optional string team_id = 1; // Filter by team
+  optional string todo_id = 2; // Filter by TODO list
+  optional string user_id = 3; // Filter by user who shared
+  optional common.v1.PaginationRequest pagination = 4;
+}
+
+// ListSharedListsResponse with shared lists and pagination info.
+message ListSharedListsResponse {
+  repeated SharedList shared_lists = 1;
+  common.v1.PaginationResponse pagination = 2;
+}
+
+// DeleteSharedListRequest for removing a shared list.
+message DeleteSharedListRequest {
+  string id = 1;
+}
+
+// CreateTeamResponse contains created team information.
+message CreateTeamResponse {
+  Team team = 1;
+}
+
+// GetTeamResponse contains team information.
+message GetTeamResponse {
+  Team team = 1;
+}
+
+// UpdateTeamResponse contains updated team information.
+message UpdateTeamResponse {
+  Team team = 1;
+}
+
+// DeleteTeamResponse confirms team deletion.
+message DeleteTeamResponse {}
+
+// AddTeamMemberResponse contains team member information.
+message AddTeamMemberResponse {
+  TeamMember member = 1;
+}
+
+// UpdateTeamMemberResponse contains updated team member information.
+message UpdateTeamMemberResponse {
+  TeamMember member = 1;
+}
+
+// RemoveTeamMemberResponse confirms team member removal.
+message RemoveTeamMemberResponse {}
+
+// ShareListResponse contains shared list information.
+message ShareListResponse {
+  SharedList shared_list = 1;
+}
+
+// UpdateSharedListResponse contains updated shared list information.
+message UpdateSharedListResponse {
+  SharedList shared_list = 1;
+}
+
+// UnshareListRequest for removing a shared list.
+message UnshareListRequest {
+  string id = 1;
+}
+
+// UnshareListResponse confirms unsharing operation.
+message UnshareListResponse {}

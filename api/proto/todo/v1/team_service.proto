@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "google/api/annotations.proto";
+import "todo/v1/team.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option java_multiple_files = true;
+option java_package = "todo.v1";
+
+// TeamService handles team collaboration features.
+service TeamService {
+  // Create a new team.
+  rpc CreateTeam(CreateTeamRequest) returns (CreateTeamResponse) {
+    option (google.api.http) = {
+      post: "/v1/teams"
+      body: "*"
+    };
+  }
+
+  // Get team by ID.
+  rpc GetTeam(GetTeamRequest) returns (GetTeamResponse) {
+    option (google.api.http) = {get: "/v1/teams/{id}"};
+  }
+
+  // Update team information.
+  rpc UpdateTeam(UpdateTeamRequest) returns (UpdateTeamResponse) {
+    option (google.api.http) = {
+      put: "/v1/teams/{id}"
+      body: "*"
+    };
+  }
+
+  // Delete a team.
+  rpc DeleteTeam(DeleteTeamRequest) returns (DeleteTeamResponse) {
+    option (google.api.http) = {delete: "/v1/teams/{id}"};
+  }
+
+  // List teams for current user.
+  rpc ListTeams(ListTeamsRequest) returns (ListTeamsResponse) {
+    option (google.api.http) = {get: "/v1/teams"};
+  }
+
+  // Add a user to a team.
+  rpc AddTeamMember(AddTeamMemberRequest) returns (AddTeamMemberResponse) {
+    option (google.api.http) = {
+      post: "/v1/teams/{team_id}/members"
+      body: "*"
+    };
+  }
+
+  // Update team member permissions.
+  rpc UpdateTeamMember(UpdateTeamMemberRequest) returns (UpdateTeamMemberResponse) {
+    option (google.api.http) = {
+      put: "/v1/teams/{team_id}/members/{user_id}"
+      body: "*"
+    };
+  }
+
+  // Remove a user from a team.
+  rpc RemoveTeamMember(RemoveTeamMemberRequest) returns (RemoveTeamMemberResponse) {
+    option (google.api.http) = {delete: "/v1/teams/{team_id}/members/{user_id}"};
+  }
+
+  // List team members.
+  rpc ListTeamMembers(ListTeamMembersRequest) returns (ListTeamMembersResponse) {
+    option (google.api.http) = {get: "/v1/teams/{team_id}/members"};
+  }
+
+  // Share a TODO list with a team.
+  rpc ShareList(ShareListRequest) returns (ShareListResponse) {
+    option (google.api.http) = {
+      post: "/v1/teams/{team_id}/share"
+      body: "*"
+    };
+  }
+
+  // Update shared list permissions.
+  rpc UpdateSharedList(UpdateSharedListRequest) returns (UpdateSharedListResponse) {
+    option (google.api.http) = {
+      put: "/v1/shared-lists/{id}"
+      body: "*"
+    };
+  }
+
+  // List shared lists.
+  rpc ListSharedLists(ListSharedListsRequest) returns (ListSharedListsResponse) {
+    option (google.api.http) = {get: "/v1/shared-lists"};
+  }
+
+  // Unshare a TODO list from a team.
+  rpc UnshareList(UnshareListRequest) returns (UnshareListResponse) {
+    option (google.api.http) = {delete: "/v1/shared-lists/{id}"};
+  }
+}

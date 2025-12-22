@@ -1,0 +1,3699 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Real-Time Collaborative TODO API",
+    "description": "A scalable real-time collaborative TODO list application supporting 100M+ daily active users",
+    "version": "1.0",
+    "contact": {
+      "name": "TODO API Team",
+      "url": "https://github.com/venslupro/todo-api",
+      "email": "support@todo-api.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags": [
+    {
+      "name": "AuthService"
+    },
+    {
+      "name": "MediaService"
+    },
+    {
+      "name": "RealtimeService"
+    },
+    {
+      "name": "SystemService"
+    },
+    {
+      "name": "TeamService"
+    },
+    {
+      "name": "TODOService"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https",
+    "wss"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/auth/change-password": {
+      "post": {
+        "summary": "Change user password.",
+        "operationId": "AuthService_ChangePassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ChangePasswordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "ChangePasswordRequest contains password change information.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ChangePasswordRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/v1/auth/confirm-password-reset": {
+      "post": {
+        "summary": "Confirm password reset.",
+        "operationId": "AuthService_ConfirmPasswordReset",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConfirmPasswordResetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "ConfirmPasswordResetRequest contains new password for reset.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ConfirmPasswordResetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "summary": "Login with email and password.",
+        "operationId": "AuthService_Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LoginResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "LoginRequest contains user login credentials.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1LoginRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "summary": "Logout the current user.",
+        "operationId": "AuthService_Logout",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LogoutResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "LogoutRequest contains logout information.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1LogoutRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/v1/auth/profile": {
+      "get": {
+        "summary": "Get current user profile.",
+        "operationId": "AuthService_GetProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "AuthService"
+        ]
+      },
+      "patch": {
+        "summary": "Update user profile.",
+        "operationId": "AuthService_UpdateProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "UpdateProfileRequest contains user profile updates.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/v1/auth/refresh": {
+      "post": {
+        "summary": "Refresh access token using refresh token.",
+        "operationId": "AuthService_RefreshToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RefreshTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "RefreshTokenRequest contains refresh token for obtaining new access token.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RefreshTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/v1/auth/register": {
+      "post": {
+        "summary": "Register a new user account.",
+        "operationId": "AuthService_Register",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RegisterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "RegisterRequest contains user registration information.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RegisterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/v1/auth/request-password-reset": {
+      "post": {
+        "summary": "Request password reset.",
+        "operationId": "AuthService_RequestPasswordReset",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RequestPasswordResetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "RequestPasswordResetRequest contains email for password reset.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RequestPasswordResetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/v1/auth/verify-email": {
+      "post": {
+        "summary": "Verify email address.",
+        "operationId": "AuthService_VerifyEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1VerifyEmailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "VerifyEmailRequest contains email verification token.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1VerifyEmailRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/v1/media": {
+      "get": {
+        "summary": "List media with filtering and pagination.",
+        "operationId": "MediaService_ListMedia",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListMediaResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "todoId",
+            "description": "Filter by associated TODO",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "description": "Filter by media type",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "MEDIA_TYPE_UNSPECIFIED",
+              "MEDIA_TYPE_IMAGE",
+              "MEDIA_TYPE_VIDEO"
+            ],
+            "default": "MEDIA_TYPE_UNSPECIFIED"
+          },
+          {
+            "name": "userId",
+            "description": "Filter by uploader",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pagination.page",
+            "description": "Page number (1-indexed)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.pageSize",
+            "description": "Number of items per page (max 100)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.cursor",
+            "description": "Cursor for cursor-based pagination",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MediaService"
+        ]
+      }
+    },
+    "/v1/media/upload": {
+      "post": {
+        "summary": "Upload media file (streaming).",
+        "operationId": "MediaService_UploadMedia",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UploadMediaResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "UploadMediaRequest for uploading media files. (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UploadMediaRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MediaService"
+        ]
+      }
+    },
+    "/v1/media/upload-url": {
+      "post": {
+        "summary": "Generate pre-signed URL for direct client upload.",
+        "operationId": "MediaService_GenerateUploadURL",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GenerateUploadURLResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GenerateUploadURLRequest for generating pre-signed upload URLs.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GenerateUploadURLRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MediaService"
+        ]
+      }
+    },
+    "/v1/media/{id}": {
+      "get": {
+        "summary": "Get media metadata by ID.",
+        "operationId": "MediaService_GetMedia",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetMediaResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MediaService"
+        ]
+      },
+      "delete": {
+        "summary": "Delete media by ID.",
+        "operationId": "MediaService_DeleteMedia",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteMediaResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MediaService"
+        ]
+      }
+    },
+    "/v1/realtime/activities": {
+      "get": {
+        "summary": "List recent activities.",
+        "operationId": "RealtimeService_ListActivities",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListActivitiesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "description": "Filter by user",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "resourceId",
+            "description": "Filter by resource",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "resourceType",
+            "description": "Filter by resource type",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "eventTypes",
+            "description": "Filter by event types",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "EVENT_TYPE_UNSPECIFIED",
+                "EVENT_TYPE_TODO_CREATED",
+                "EVENT_TYPE_TODO_UPDATED",
+                "EVENT_TYPE_TODO_DELETED",
+                "EVENT_TYPE_TODO_STATUS_CHANGED",
+                "EVENT_TYPE_USER_JOINED",
+                "EVENT_TYPE_USER_LEFT",
+                "EVENT_TYPE_COMMENT_ADDED",
+                "EVENT_TYPE_MEDIA_ADDED"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "after",
+            "description": "Filter by timestamp",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "pagination.page",
+            "description": "Page number (1-indexed)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.pageSize",
+            "description": "Number of items per page (max 100)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.cursor",
+            "description": "Cursor for cursor-based pagination",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RealtimeService"
+        ]
+      }
+    },
+    "/v1/realtime/heartbeat": {
+      "post": {
+        "summary": "Send heartbeat to indicate user is active.",
+        "operationId": "RealtimeService_Heartbeat",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1HeartbeatResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "HeartbeatRequest for keeping connection alive.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1HeartbeatRequest"
+            }
+          }
+        ],
+        "tags": [
+          "RealtimeService"
+        ]
+      }
+    },
+    "/v1/realtime/online-users": {
+      "get": {
+        "summary": "Get online users for a TODO list or team.",
+        "operationId": "RealtimeService_GetOnlineUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetOnlineUsersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "todoId",
+            "description": "Filter by TODO list",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "teamId",
+            "description": "Filter by team",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RealtimeService"
+        ]
+      }
+    },
+    "/v1/realtime/publish": {
+      "post": {
+        "summary": "Publish an event to subscribers.",
+        "operationId": "RealtimeService_PublishEvent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PublishEventResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "PublishEventRequest contains event to publish.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PublishEventRequest"
+            }
+          }
+        ],
+        "tags": [
+          "RealtimeService"
+        ]
+      }
+    },
+    "/v1/realtime/subscribe": {
+      "get": {
+        "summary": "Subscribe to real-time events (streaming).",
+        "operationId": "RealtimeService_Subscribe",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1SubscribeResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/googlerpcStatus"
+                }
+              },
+              "title": "Stream result of v1SubscribeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "todoIds",
+            "description": "TODO lists to subscribe to",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "teamIds",
+            "description": "Teams to subscribe to",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "eventTypes",
+            "description": "Filter by event types",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "EVENT_TYPE_UNSPECIFIED",
+                "EVENT_TYPE_TODO_CREATED",
+                "EVENT_TYPE_TODO_UPDATED",
+                "EVENT_TYPE_TODO_DELETED",
+                "EVENT_TYPE_TODO_STATUS_CHANGED",
+                "EVENT_TYPE_USER_JOINED",
+                "EVENT_TYPE_USER_LEFT",
+                "EVENT_TYPE_COMMENT_ADDED",
+                "EVENT_TYPE_MEDIA_ADDED"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "lastEventId",
+            "description": "For resuming connection",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RealtimeService"
+        ]
+      }
+    },
+    "/v1/shared-lists": {
+      "get": {
+        "summary": "List shared lists.",
+        "operationId": "TeamService_ListSharedLists",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListSharedListsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "teamId",
+            "description": "Filter by team",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "todoId",
+            "description": "Filter by TODO list",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "description": "Filter by user who shared",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pagination.page",
+            "description": "Page number (1-indexed)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.pageSize",
+            "description": "Number of items per page (max 100)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.cursor",
+            "description": "Cursor for cursor-based pagination",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      }
+    },
+    "/v1/shared-lists/{id}": {
+      "delete": {
+        "summary": "Unshare a TODO list from a team.",
+        "operationId": "TeamService_UnshareList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UnshareListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      },
+      "put": {
+        "summary": "Update shared list permissions.",
+        "operationId": "TeamService_UpdateSharedList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateSharedListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TeamServiceUpdateSharedListBody"
+            }
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      }
+    },
+    "/v1/system/export": {
+      "post": {
+        "summary": "Export user data.",
+        "operationId": "SystemService_ExportData",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ExportDataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "ExportDataRequest for exporting user data.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ExportDataRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SystemService"
+        ]
+      }
+    },
+    "/v1/system/export/{exportId}": {
+      "get": {
+        "summary": "Get export status.",
+        "operationId": "SystemService_GetExportStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetExportStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "exportId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "SystemService"
+        ]
+      }
+    },
+    "/v1/system/health": {
+      "get": {
+        "summary": "Health check endpoint.",
+        "operationId": "SystemService_HealthCheck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1HealthCheckResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "SystemService"
+        ]
+      }
+    },
+    "/v1/system/logs": {
+      "get": {
+        "summary": "List system logs.",
+        "operationId": "SystemService_ListLogs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListLogsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "level",
+            "description": "Filter by log level",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "service",
+            "description": "Filter by service",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "description": "Filter by user",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "requestId",
+            "description": "Filter by request",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "pagination.page",
+            "description": "Page number (1-indexed)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.pageSize",
+            "description": "Number of items per page (max 100)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.cursor",
+            "description": "Cursor for cursor-based pagination",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "SystemService"
+        ]
+      }
+    },
+    "/v1/system/logs/clear": {
+      "post": {
+        "summary": "Clear old logs.",
+        "operationId": "SystemService_ClearOldLogs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ClearOldLogsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "ClearOldLogsRequest for cleaning up old logs.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ClearOldLogsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SystemService"
+        ]
+      }
+    },
+    "/v1/system/status": {
+      "get": {
+        "summary": "Get detailed system status.",
+        "operationId": "SystemService_GetSystemStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetSystemStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "SystemService"
+        ]
+      }
+    },
+    "/v1/teams": {
+      "get": {
+        "summary": "List teams for current user.",
+        "operationId": "TeamService_ListTeams",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListTeamsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "description": "Filter by user membership",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pagination.page",
+            "description": "Page number (1-indexed)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.pageSize",
+            "description": "Number of items per page (max 100)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.cursor",
+            "description": "Cursor for cursor-based pagination",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      },
+      "post": {
+        "summary": "Create a new team.",
+        "operationId": "TeamService_CreateTeam",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateTeamResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "CreateTeamRequest contains data for creating a new team.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateTeamRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      }
+    },
+    "/v1/teams/{id}": {
+      "get": {
+        "summary": "Get team by ID.",
+        "operationId": "TeamService_GetTeam",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetTeamResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a team.",
+        "operationId": "TeamService_DeleteTeam",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteTeamResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      },
+      "put": {
+        "summary": "Update team information.",
+        "operationId": "TeamService_UpdateTeam",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateTeamResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TeamServiceUpdateTeamBody"
+            }
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      }
+    },
+    "/v1/teams/{teamId}/members": {
+      "get": {
+        "summary": "List team members.",
+        "operationId": "TeamService_ListTeamMembers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListTeamMembersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "pagination.page",
+            "description": "Page number (1-indexed)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.pageSize",
+            "description": "Number of items per page (max 100)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.cursor",
+            "description": "Cursor for cursor-based pagination",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      },
+      "post": {
+        "summary": "Add a user to a team.",
+        "operationId": "TeamService_AddTeamMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AddTeamMemberResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TeamServiceAddTeamMemberBody"
+            }
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      }
+    },
+    "/v1/teams/{teamId}/members/{userId}": {
+      "delete": {
+        "summary": "Remove a user from a team.",
+        "operationId": "TeamService_RemoveTeamMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RemoveTeamMemberResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      },
+      "put": {
+        "summary": "Update team member permissions.",
+        "operationId": "TeamService_UpdateTeamMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateTeamMemberResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TeamServiceUpdateTeamMemberBody"
+            }
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      }
+    },
+    "/v1/teams/{teamId}/share": {
+      "post": {
+        "summary": "Share a TODO list with a team.",
+        "operationId": "TeamService_ShareList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ShareListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TeamServiceShareListBody"
+            }
+          }
+        ],
+        "tags": [
+          "TeamService"
+        ]
+      }
+    },
+    "/v1/todos": {
+      "get": {
+        "summary": "List TODO items with filtering, sorting, and pagination.",
+        "operationId": "TODOService_ListTODOs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListTODOsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "ids",
+            "description": "Filter by specific IDs",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "userId",
+            "description": "Filter by user ID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "statuses",
+            "description": "Filter by status",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "STATUS_UNSPECIFIED",
+                "STATUS_NOT_STARTED",
+                "STATUS_IN_PROGRESS",
+                "STATUS_COMPLETED",
+                "STATUS_CANCELLED"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "priorities",
+            "description": "Filter by priority",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "PRIORITY_UNSPECIFIED",
+                "PRIORITY_LOW",
+                "PRIORITY_MEDIUM",
+                "PRIORITY_HIGH",
+                "PRIORITY_URGENT"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "dueDateRange.start",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "dueDateRange.end",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "tags",
+            "description": "Filter by tags",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "assignedTo",
+            "description": "Filter by assignee",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "parentId",
+            "description": "Filter by parent TODO",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "searchQuery",
+            "description": "Full-text search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pagination.page",
+            "description": "Page number (1-indexed)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.pageSize",
+            "description": "Number of items per page (max 100)",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pagination.cursor",
+            "description": "Cursor for cursor-based pagination",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TODOService"
+        ]
+      },
+      "post": {
+        "summary": "Create a new TODO item.",
+        "operationId": "TODOService_CreateTODO",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateTODOResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "CreateTODORequest contains data for creating a new TODO.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateTODORequest"
+            }
+          }
+        ],
+        "tags": [
+          "TODOService"
+        ]
+      }
+    },
+    "/v1/todos/bulk/delete": {
+      "post": {
+        "summary": "Delete multiple TODO items.",
+        "operationId": "TODOService_BulkDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1BulkDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "BulkDeleteRequest for deleting multiple TODOs.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1BulkDeleteRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TODOService"
+        ]
+      }
+    },
+    "/v1/todos/bulk/status": {
+      "post": {
+        "summary": "Update status of multiple TODO items.",
+        "operationId": "TODOService_BulkUpdateStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1BulkUpdateStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "BulkUpdateStatusRequest for updating status of multiple TODOs.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1BulkUpdateStatusRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TODOService"
+        ]
+      }
+    },
+    "/v1/todos/{id}": {
+      "get": {
+        "summary": "Get a TODO item by ID.",
+        "operationId": "TODOService_GetTODO",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetTODOResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TODOService"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a TODO item by ID.",
+        "operationId": "TODOService_DeleteTODO",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteTODOResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TODOService"
+        ]
+      },
+      "put": {
+        "summary": "Update an existing TODO item.",
+        "operationId": "TODOService_UpdateTODO",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateTODOResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TODOServiceUpdateTODOBody"
+            }
+          }
+        ],
+        "tags": [
+          "TODOService"
+        ]
+      }
+    },
+    "/v1/todos/{id}/complete": {
+      "post": {
+        "summary": "Complete a TODO item.",
+        "operationId": "TODOService_CompleteTODO",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CompleteTODOResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TODOService"
+        ]
+      }
+    },
+    "/v1/todos/{id}/move": {
+      "post": {
+        "summary": "Move TODO item to new position or parent.",
+        "operationId": "TODOService_MoveTODO",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MoveTODOResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TODOServiceMoveTODOBody"
+            }
+          }
+        ],
+        "tags": [
+          "TODOService"
+        ]
+      }
+    },
+    "/v1/todos/{id}/reopen": {
+      "post": {
+        "summary": "Reopen a completed TODO item.",
+        "operationId": "TODOService_ReopenTODO",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReopenTODOResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TODOService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "TODOServiceMoveTODOBody": {
+      "type": "object",
+      "properties": {
+        "parentId": {
+          "type": "string",
+          "title": "New parent ID (null for root)"
+        },
+        "position": {
+          "type": "integer",
+          "format": "int32",
+          "title": "New position in list"
+        }
+      },
+      "description": "MoveTODORequest for changing TODO position or parent."
+    },
+    "TODOServiceUpdateTODOBody": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/commonv1Status"
+        },
+        "priority": {
+          "$ref": "#/definitions/v1Priority"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Note: Cannot use optional with repeated"
+        },
+        "mediaAttachments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1MediaAttachment"
+          },
+          "title": "Note: Cannot use optional with repeated"
+        },
+        "assignedTo": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "string"
+        },
+        "position": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "description": "UpdateTODORequest contains data for updating an existing TODO."
+    },
+    "TeamServiceAddTeamMemberBody": {
+      "type": "object",
+      "properties": {
+        "userEmail": {
+          "type": "string",
+          "title": "Email of user to add"
+        },
+        "role": {
+          "$ref": "#/definitions/v1Role"
+        },
+        "permission": {
+          "$ref": "#/definitions/v1Permission"
+        }
+      },
+      "description": "AddTeamMemberRequest for adding a user to a team."
+    },
+    "TeamServiceShareListBody": {
+      "type": "object",
+      "properties": {
+        "todoId": {
+          "type": "string"
+        },
+        "permission": {
+          "$ref": "#/definitions/v1Permission"
+        }
+      },
+      "description": "ShareListRequest for sharing a TODO list with a team."
+    },
+    "TeamServiceUpdateSharedListBody": {
+      "type": "object",
+      "properties": {
+        "permission": {
+          "$ref": "#/definitions/v1Permission"
+        }
+      },
+      "description": "UpdateSharedListRequest for updating shared list permissions."
+    },
+    "TeamServiceUpdateTeamBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        }
+      },
+      "description": "UpdateTeamRequest contains data for updating a team."
+    },
+    "TeamServiceUpdateTeamMemberBody": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "$ref": "#/definitions/v1Role"
+        },
+        "permission": {
+          "$ref": "#/definitions/v1Permission"
+        }
+      },
+      "description": "UpdateTeamMemberRequest for updating team member permissions."
+    },
+    "UploadMediaRequestMetadata": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/v1MediaType"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string",
+          "format": "int64",
+          "title": "File size in bytes"
+        },
+        "todoId": {
+          "type": "string",
+          "title": "Optional: associate with TODO immediately"
+        }
+      }
+    },
+    "commonv1Status": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "STATUS_NOT_STARTED",
+        "STATUS_IN_PROGRESS",
+        "STATUS_COMPLETED",
+        "STATUS_CANCELLED"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "description": "Status represents the state of a TODO item."
+    },
+    "googlerpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "v1Activity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/v1EventType"
+        },
+        "resourceId": {
+          "type": "string",
+          "description": "TODO ID, Team ID, etc."
+        },
+        "resourceType": {
+          "type": "string",
+          "title": "\"todo\", \"team\", \"comment\""
+        },
+        "description": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Additional context"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "Activity represents a user activity in the system."
+    },
+    "v1AddTeamMemberResponse": {
+      "type": "object",
+      "properties": {
+        "member": {
+          "$ref": "#/definitions/v1TeamMember"
+        }
+      },
+      "description": "AddTeamMemberResponse contains team member information."
+    },
+    "v1BulkDeleteRequest": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "BulkDeleteRequest for deleting multiple TODOs."
+    },
+    "v1BulkDeleteResponse": {
+      "type": "object",
+      "description": "BulkDeleteResponse confirms bulk deletion."
+    },
+    "v1BulkUpdateStatusRequest": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "$ref": "#/definitions/commonv1Status"
+        }
+      },
+      "description": "BulkUpdateStatusRequest for updating status of multiple TODOs."
+    },
+    "v1BulkUpdateStatusResponse": {
+      "type": "object",
+      "description": "BulkUpdateStatusResponse confirms bulk status update."
+    },
+    "v1ChangePasswordRequest": {
+      "type": "object",
+      "properties": {
+        "currentPassword": {
+          "type": "string"
+        },
+        "newPassword": {
+          "type": "string"
+        }
+      },
+      "description": "ChangePasswordRequest contains password change information."
+    },
+    "v1ChangePasswordResponse": {
+      "type": "object",
+      "description": "ChangePasswordResponse confirms password change."
+    },
+    "v1ClearOldLogsRequest": {
+      "type": "object",
+      "properties": {
+        "before": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "level": {
+          "type": "string",
+          "title": "Optional: clear only specific level"
+        }
+      },
+      "description": "ClearOldLogsRequest for cleaning up old logs."
+    },
+    "v1ClearOldLogsResponse": {
+      "type": "object",
+      "description": "ClearOldLogsResponse confirms log cleanup."
+    },
+    "v1CompleteTODOResponse": {
+      "type": "object",
+      "properties": {
+        "todo": {
+          "$ref": "#/definitions/v1TODO"
+        }
+      },
+      "description": "CompleteTODOResponse contains completed TODO item."
+    },
+    "v1ConfirmPasswordResetRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "newPassword": {
+          "type": "string"
+        }
+      },
+      "description": "ConfirmPasswordResetRequest contains new password for reset."
+    },
+    "v1ConfirmPasswordResetResponse": {
+      "type": "object",
+      "description": "ConfirmPasswordResetResponse confirms password reset."
+    },
+    "v1CreateTODORequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/commonv1Status"
+        },
+        "priority": {
+          "$ref": "#/definitions/v1Priority"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mediaAttachments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1MediaAttachment"
+          }
+        },
+        "assignedTo": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "string"
+        }
+      },
+      "description": "CreateTODORequest contains data for creating a new TODO."
+    },
+    "v1CreateTODOResponse": {
+      "type": "object",
+      "properties": {
+        "todo": {
+          "$ref": "#/definitions/v1TODO"
+        }
+      },
+      "description": "CreateTODOResponse contains created TODO item."
+    },
+    "v1CreateTeamRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        }
+      },
+      "description": "CreateTeamRequest contains data for creating a new team."
+    },
+    "v1CreateTeamResponse": {
+      "type": "object",
+      "properties": {
+        "team": {
+          "$ref": "#/definitions/v1Team"
+        }
+      },
+      "description": "CreateTeamResponse contains created team information."
+    },
+    "v1DateRange": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "DateRange defines a range of dates."
+    },
+    "v1DeleteMediaResponse": {
+      "type": "object",
+      "description": "DeleteMediaResponse confirms media deletion."
+    },
+    "v1DeleteTODOResponse": {
+      "type": "object",
+      "description": "DeleteTODOResponse confirms TODO deletion."
+    },
+    "v1DeleteTeamResponse": {
+      "type": "object",
+      "description": "DeleteTeamResponse confirms team deletion."
+    },
+    "v1EventType": {
+      "type": "string",
+      "enum": [
+        "EVENT_TYPE_UNSPECIFIED",
+        "EVENT_TYPE_TODO_CREATED",
+        "EVENT_TYPE_TODO_UPDATED",
+        "EVENT_TYPE_TODO_DELETED",
+        "EVENT_TYPE_TODO_STATUS_CHANGED",
+        "EVENT_TYPE_USER_JOINED",
+        "EVENT_TYPE_USER_LEFT",
+        "EVENT_TYPE_COMMENT_ADDED",
+        "EVENT_TYPE_MEDIA_ADDED"
+      ],
+      "default": "EVENT_TYPE_UNSPECIFIED",
+      "description": "EventType defines types of real-time events."
+    },
+    "v1ExportDataRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "formats": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "\"json\", \"csv\", \"pdf\""
+        }
+      },
+      "description": "ExportDataRequest for exporting user data."
+    },
+    "v1ExportDataResponse": {
+      "type": "object",
+      "properties": {
+        "exportId": {
+          "type": "string"
+        },
+        "downloadUrl": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "format": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "description": "ExportDataResponse with export information."
+    },
+    "v1GenerateUploadURLRequest": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/v1MediaType"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "todoId": {
+          "type": "string"
+        }
+      },
+      "description": "GenerateUploadURLRequest for generating pre-signed upload URLs."
+    },
+    "v1GenerateUploadURLResponse": {
+      "type": "object",
+      "properties": {
+        "uploadUrl": {
+          "type": "string"
+        },
+        "mediaId": {
+          "type": "string"
+        },
+        "downloadUrl": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "GenerateUploadURLResponse contains pre-signed URL."
+    },
+    "v1GetExportStatusResponse": {
+      "type": "object",
+      "properties": {
+        "export": {
+          "$ref": "#/definitions/v1ExportDataResponse"
+        }
+      },
+      "description": "GetExportStatusResponse contains export status information."
+    },
+    "v1GetMediaResponse": {
+      "type": "object",
+      "properties": {
+        "media": {
+          "$ref": "#/definitions/v1MediaAttachment"
+        }
+      },
+      "description": "GetMediaResponse contains media metadata."
+    },
+    "v1GetOnlineUsersResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1OnlineUser"
+          }
+        }
+      },
+      "description": "GetOnlineUsersResponse with online users."
+    },
+    "v1GetProfileResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      },
+      "description": "GetProfileResponse contains user profile."
+    },
+    "v1GetSystemStatusResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/v1SystemStatus"
+        }
+      },
+      "description": "GetSystemStatusResponse contains detailed system status."
+    },
+    "v1GetTODOResponse": {
+      "type": "object",
+      "properties": {
+        "todo": {
+          "$ref": "#/definitions/v1TODO"
+        }
+      },
+      "description": "GetTODOResponse contains TODO item."
+    },
+    "v1GetTeamResponse": {
+      "type": "object",
+      "properties": {
+        "team": {
+          "$ref": "#/definitions/v1Team"
+        }
+      },
+      "description": "GetTeamResponse contains team information."
+    },
+    "v1HealthCheckResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/v1ServingStatus"
+        },
+        "version": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Additional health info per service"
+        }
+      },
+      "description": "HealthCheckResponse contains system health information."
+    },
+    "v1HeartbeatRequest": {
+      "type": "object",
+      "properties": {
+        "todoIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "teamIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "HeartbeatRequest for keeping connection alive."
+    },
+    "v1HeartbeatResponse": {
+      "type": "object",
+      "properties": {
+        "serverTime": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "HeartbeatResponse acknowledging heartbeat."
+    },
+    "v1ListActivitiesResponse": {
+      "type": "object",
+      "properties": {
+        "activities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Activity"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/v1PaginationResponse"
+        }
+      },
+      "description": "ListActivitiesResponse with activities and pagination info."
+    },
+    "v1ListLogsResponse": {
+      "type": "object",
+      "properties": {
+        "logs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1LogEntry"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/v1PaginationResponse"
+        }
+      },
+      "description": "ListLogsResponse with logs and pagination info."
+    },
+    "v1ListMediaResponse": {
+      "type": "object",
+      "properties": {
+        "media": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1MediaAttachment"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/v1PaginationResponse"
+        }
+      },
+      "description": "ListMediaResponse with media list and pagination info."
+    },
+    "v1ListSharedListsResponse": {
+      "type": "object",
+      "properties": {
+        "sharedLists": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1SharedList"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/v1PaginationResponse"
+        }
+      },
+      "description": "ListSharedListsResponse with shared lists and pagination info."
+    },
+    "v1ListTODOsResponse": {
+      "type": "object",
+      "properties": {
+        "todos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1TODO"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/v1PaginationResponse"
+        }
+      },
+      "description": "ListTODOsResponse contains TODO list and pagination info."
+    },
+    "v1ListTeamMembersResponse": {
+      "type": "object",
+      "properties": {
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1TeamMember"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/v1PaginationResponse"
+        }
+      },
+      "description": "ListTeamMembersResponse with members and pagination info."
+    },
+    "v1ListTeamsResponse": {
+      "type": "object",
+      "properties": {
+        "teams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Team"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/v1PaginationResponse"
+        }
+      },
+      "description": "ListTeamsResponse with teams and pagination info."
+    },
+    "v1LogEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string",
+          "title": "\"debug\", \"info\", \"warn\", \"error\""
+        },
+        "message": {
+          "type": "string"
+        },
+        "service": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string",
+          "title": "Optional: associated user"
+        },
+        "requestId": {
+          "type": "string",
+          "title": "Optional: associated request"
+        },
+        "context": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Additional context"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "LogEntry represents a system log entry."
+    },
+    "v1LoginRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "rememberMe": {
+          "type": "boolean"
+        }
+      },
+      "description": "LoginRequest contains user login credentials."
+    },
+    "v1LoginResponse": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "accessTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "refreshTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      },
+      "description": "LoginResponse contains authentication tokens and user info."
+    },
+    "v1LogoutRequest": {
+      "type": "object",
+      "properties": {
+        "refreshToken": {
+          "type": "string"
+        }
+      },
+      "description": "LogoutRequest contains logout information."
+    },
+    "v1LogoutResponse": {
+      "type": "object",
+      "description": "LogoutResponse confirms logout operation."
+    },
+    "v1MediaAttachment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/v1MediaType"
+        },
+        "url": {
+          "type": "string"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "title": "For videos"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string",
+          "format": "int64",
+          "title": "Size in bytes"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Duration in seconds (for videos)"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "todoId": {
+          "type": "string",
+          "title": "Associated TODO ID"
+        },
+        "userId": {
+          "type": "string",
+          "title": "Uploader user ID"
+        }
+      },
+      "description": "MediaAttachment represents media content attached to a TODO."
+    },
+    "v1MediaType": {
+      "type": "string",
+      "enum": [
+        "MEDIA_TYPE_UNSPECIFIED",
+        "MEDIA_TYPE_IMAGE",
+        "MEDIA_TYPE_VIDEO"
+      ],
+      "default": "MEDIA_TYPE_UNSPECIFIED",
+      "description": "MediaType specifies the type of media content attached to a TODO."
+    },
+    "v1MoveTODOResponse": {
+      "type": "object",
+      "properties": {
+        "todo": {
+          "$ref": "#/definitions/v1TODO"
+        }
+      },
+      "description": "MoveTODOResponse contains moved TODO item."
+    },
+    "v1OnlineUser": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "lastActive": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "todoIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "TODO lists user is viewing"
+        },
+        "teamIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Teams user is active in"
+        }
+      },
+      "description": "OnlineUser represents a currently online user."
+    },
+    "v1PaginationRequest": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Page number (1-indexed)"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Number of items per page (max 100)"
+        },
+        "cursor": {
+          "type": "string",
+          "title": "Cursor for cursor-based pagination"
+        }
+      },
+      "description": "PaginationRequest defines parameters for paginated requests."
+    },
+    "v1PaginationResponse": {
+      "type": "object",
+      "properties": {
+        "totalItems": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "hasNext": {
+          "type": "boolean"
+        },
+        "hasPrev": {
+          "type": "boolean"
+        },
+        "nextCursor": {
+          "type": "string"
+        }
+      },
+      "description": "PaginationResponse provides pagination metadata."
+    },
+    "v1Permission": {
+      "type": "string",
+      "enum": [
+        "PERMISSION_UNSPECIFIED",
+        "PERMISSION_VIEW",
+        "PERMISSION_EDIT",
+        "PERMISSION_ADMIN"
+      ],
+      "default": "PERMISSION_UNSPECIFIED",
+      "description": "Permission defines the access level for shared TODO lists."
+    },
+    "v1Priority": {
+      "type": "string",
+      "enum": [
+        "PRIORITY_UNSPECIFIED",
+        "PRIORITY_LOW",
+        "PRIORITY_MEDIUM",
+        "PRIORITY_HIGH",
+        "PRIORITY_URGENT"
+      ],
+      "default": "PRIORITY_UNSPECIFIED",
+      "description": "Priority defines the priority level of a TODO item."
+    },
+    "v1PublishEventRequest": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/v1RealtimeEvent"
+        }
+      },
+      "description": "PublishEventRequest contains event to publish."
+    },
+    "v1PublishEventResponse": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/v1RealtimeEvent"
+        }
+      },
+      "description": "PublishEventResponse confirms event publication."
+    },
+    "v1RealtimeEvent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/v1EventType"
+        },
+        "id": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "todoId": {
+          "type": "string"
+        },
+        "teamId": {
+          "type": "string"
+        },
+        "todo": {
+          "$ref": "#/definitions/v1TODO",
+          "title": "For TODO-related events"
+        },
+        "message": {
+          "type": "string",
+          "title": "For chat/comment events"
+        },
+        "media": {
+          "$ref": "#/definitions/v1MediaAttachment",
+          "title": "For media events"
+        }
+      },
+      "description": "RealtimeEvent represents a real-time collaboration event."
+    },
+    "v1RefreshTokenRequest": {
+      "type": "object",
+      "properties": {
+        "refreshToken": {
+          "type": "string"
+        }
+      },
+      "description": "RefreshTokenRequest contains refresh token for obtaining new access token."
+    },
+    "v1RefreshTokenResponse": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "accessTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "refreshTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      },
+      "description": "RefreshTokenResponse contains new authentication tokens."
+    },
+    "v1RegisterRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      },
+      "description": "RegisterRequest contains user registration information."
+    },
+    "v1RegisterResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      },
+      "description": "RegisterResponse contains the registered user information."
+    },
+    "v1RemoveTeamMemberResponse": {
+      "type": "object",
+      "description": "RemoveTeamMemberResponse confirms team member removal."
+    },
+    "v1ReopenTODOResponse": {
+      "type": "object",
+      "properties": {
+        "todo": {
+          "$ref": "#/definitions/v1TODO"
+        }
+      },
+      "description": "ReopenTODOResponse contains reopened TODO item."
+    },
+    "v1RequestPasswordResetRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      },
+      "description": "RequestPasswordResetRequest contains email for password reset."
+    },
+    "v1RequestPasswordResetResponse": {
+      "type": "object",
+      "description": "RequestPasswordResetResponse confirms password reset request."
+    },
+    "v1Role": {
+      "type": "string",
+      "enum": [
+        "ROLE_UNSPECIFIED",
+        "ROLE_MEMBER",
+        "ROLE_ADMIN",
+        "ROLE_OWNER"
+      ],
+      "default": "ROLE_UNSPECIFIED",
+      "description": "Role defines user roles within a team."
+    },
+    "v1ServiceStatus": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/v1ServingStatus"
+        },
+        "message": {
+          "type": "string"
+        },
+        "lastCheck": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "ServiceStatus contains status of a specific service."
+    },
+    "v1ServingStatus": {
+      "type": "string",
+      "enum": [
+        "SERVING_STATUS_UNSPECIFIED",
+        "SERVING_STATUS_SERVING",
+        "SERVING_STATUS_NOT_SERVING"
+      ],
+      "default": "SERVING_STATUS_UNSPECIFIED",
+      "description": "ServingStatus defines the serving status of a service."
+    },
+    "v1ShareListResponse": {
+      "type": "object",
+      "properties": {
+        "sharedList": {
+          "$ref": "#/definitions/v1SharedList"
+        }
+      },
+      "description": "ShareListResponse contains shared list information."
+    },
+    "v1SharedList": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "todoId": {
+          "type": "string",
+          "title": "Reference to TODO list (root TODO)"
+        },
+        "teamId": {
+          "type": "string"
+        },
+        "permission": {
+          "$ref": "#/definitions/v1Permission",
+          "title": "Default permission for team members"
+        },
+        "sharedBy": {
+          "type": "string",
+          "title": "User ID who shared the list"
+        },
+        "sharedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "SharedList represents a TODO list shared with a team."
+    },
+    "v1SortOption": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string",
+          "title": "Field to sort by"
+        },
+        "descending": {
+          "type": "boolean",
+          "title": "Sort direction (false = ascending)"
+        }
+      },
+      "description": "SortOption defines sorting criteria."
+    },
+    "v1SubscribeResponse": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/v1RealtimeEvent"
+        }
+      },
+      "description": "SubscribeResponse contains real-time events."
+    },
+    "v1SystemInfo": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "environment": {
+          "type": "string",
+          "title": "\"development\", \"staging\", \"production\""
+        },
+        "region": {
+          "type": "string"
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "uptime": {
+          "type": "string"
+        }
+      },
+      "description": "SystemInfo contains system configuration information."
+    },
+    "v1SystemMetrics": {
+      "type": "object",
+      "properties": {
+        "cpuUsage": {
+          "type": "number",
+          "format": "double",
+          "title": "Percentage"
+        },
+        "memoryUsage": {
+          "type": "number",
+          "format": "double",
+          "title": "Percentage"
+        },
+        "activeConnections": {
+          "type": "string",
+          "format": "int64"
+        },
+        "requestsPerSecond": {
+          "type": "string",
+          "format": "int64"
+        },
+        "averageResponseTime": {
+          "type": "number",
+          "format": "double",
+          "title": "Milliseconds"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "SystemMetrics contains system performance metrics."
+    },
+    "v1SystemStatus": {
+      "type": "object",
+      "properties": {
+        "health": {
+          "$ref": "#/definitions/v1HealthCheckResponse"
+        },
+        "metrics": {
+          "$ref": "#/definitions/v1SystemMetrics"
+        },
+        "info": {
+          "$ref": "#/definitions/v1SystemInfo"
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ServiceStatus"
+          }
+        }
+      },
+      "description": "SystemStatus contains comprehensive system status."
+    },
+    "v1TODO": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/commonv1Status"
+        },
+        "priority": {
+          "$ref": "#/definitions/v1Priority"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mediaAttachments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1MediaAttachment"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "assignedTo": {
+          "type": "string",
+          "title": "User ID of assignee"
+        },
+        "parentId": {
+          "type": "string",
+          "title": "Parent TODO ID for subtasks"
+        },
+        "position": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Position in list (for manual ordering)"
+        }
+      },
+      "description": "TODO represents a single TODO item."
+    },
+    "v1Team": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "Team represents a group of users collaborating on TODO lists."
+    },
+    "v1TeamMember": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "teamId": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/v1Role"
+        },
+        "permission": {
+          "$ref": "#/definitions/v1Permission",
+          "title": "Default permission for shared lists"
+        },
+        "joinedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "TeamMember represents a user's membership in a team."
+    },
+    "v1UnshareListResponse": {
+      "type": "object",
+      "description": "UnshareListResponse confirms unsharing operation."
+    },
+    "v1UpdateProfileRequest": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        }
+      },
+      "description": "UpdateProfileRequest contains user profile updates."
+    },
+    "v1UpdateProfileResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      },
+      "description": "UpdateProfileResponse contains updated user profile."
+    },
+    "v1UpdateSharedListResponse": {
+      "type": "object",
+      "properties": {
+        "sharedList": {
+          "$ref": "#/definitions/v1SharedList"
+        }
+      },
+      "description": "UpdateSharedListResponse contains updated shared list information."
+    },
+    "v1UpdateTODOResponse": {
+      "type": "object",
+      "properties": {
+        "todo": {
+          "$ref": "#/definitions/v1TODO"
+        }
+      },
+      "description": "UpdateTODOResponse contains updated TODO item."
+    },
+    "v1UpdateTeamMemberResponse": {
+      "type": "object",
+      "properties": {
+        "member": {
+          "$ref": "#/definitions/v1TeamMember"
+        }
+      },
+      "description": "UpdateTeamMemberResponse contains updated team member information."
+    },
+    "v1UpdateTeamResponse": {
+      "type": "object",
+      "properties": {
+        "team": {
+          "$ref": "#/definitions/v1Team"
+        }
+      },
+      "description": "UpdateTeamResponse contains updated team information."
+    },
+    "v1UploadMediaRequest": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/definitions/UploadMediaRequestMetadata",
+          "title": "First message contains metadata"
+        },
+        "chunk": {
+          "type": "string",
+          "format": "byte",
+          "title": "Subsequent messages contain file chunks"
+        }
+      },
+      "description": "UploadMediaRequest for uploading media files."
+    },
+    "v1UploadMediaResponse": {
+      "type": "object",
+      "properties": {
+        "mediaId": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "title": "For videos"
+        },
+        "size": {
+          "type": "string",
+          "format": "int64"
+        },
+        "type": {
+          "$ref": "#/definitions/v1MediaType"
+        }
+      },
+      "description": "UploadMediaResponse contains upload result."
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastLoginAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "emailVerified": {
+          "type": "boolean"
+        }
+      },
+      "description": "User represents a user in the system."
+    },
+    "v1VerifyEmailRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "description": "VerifyEmailRequest contains email verification token."
+    },
+    "v1VerifyEmailResponse": {
+      "type": "object",
+      "description": "VerifyEmailResponse confirms email verification."
+    }
+  },
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "description": "Bearer token authentication",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ]
+}

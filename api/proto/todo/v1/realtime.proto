@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "common/v1/enums.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+import "todo/v1/media.proto";
+import "todo/v1/todo.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option java_multiple_files = true;
+option java_package = "todo.v1";
+
+// RealtimeEvent represents a real-time collaboration event.
+message RealtimeEvent {
+  common.v1.EventType type = 1;
+  string id = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  string user_id = 4;
+  string username = 5;
+  string todo_id = 6;
+  string team_id = 7;
+  oneof payload {
+    TODO todo = 8; // For TODO-related events
+    string message = 9; // For chat/comment events
+    MediaAttachment media = 10; // For media events
+  }
+}
+
+// SubscribeRequest for subscribing to real-time events.
+message SubscribeRequest {
+  repeated string todo_ids = 1; // TODO lists to subscribe to
+  repeated string team_ids = 2; // Teams to subscribe to
+  repeated common.v1.EventType event_types = 3; // Filter by event types
+  string last_event_id = 4; // For resuming connection
+}
+
+// Activity represents a user activity in the system.
+message Activity {
+  string id = 1;
+  string user_id = 2;
+  string username = 3;
+  common.v1.EventType type = 4;
+  string resource_id = 5; // TODO ID, Team ID, etc.
+  string resource_type = 6; // "todo", "team", "comment"
+  string description = 7;
+  map<string, string> metadata = 8; // Additional context
+  google.protobuf.Timestamp created_at = 9;
+}
+
+// ListActivitiesRequest with filtering and pagination.
+message ListActivitiesRequest {
+  optional string user_id = 1; // Filter by user
+  optional string resource_id = 2; // Filter by resource
+  optional string resource_type = 3; // Filter by resource type
+  repeated common.v1.EventType event_types = 4; // Filter by event types
+  optional google.protobuf.Timestamp after = 5; // Filter by timestamp
+  optional common.v1.PaginationRequest pagination = 6;
+}
+
+// ListActivitiesResponse with activities and pagination info.
+message ListActivitiesResponse {
+  repeated Activity activities = 1;
+  common.v1.PaginationResponse pagination = 2;
+}
+
+// OnlineUser represents a currently online user.
+message OnlineUser {
+  string user_id = 1;
+  string username = 2;
+  string avatar_url = 3;
+  google.protobuf.Timestamp last_active = 4;
+  repeated string todo_ids = 5; // TODO lists user is viewing
+  repeated string team_ids = 6; // Teams user is active in
+}
+
+// GetOnlineUsersRequest for listing online users.
+message GetOnlineUsersRequest {
+  optional string todo_id = 1; // Filter by TODO list
+  optional string team_id = 2; // Filter by team
+}
+
+// GetOnlineUsersResponse with online users.
+message GetOnlineUsersResponse {
+  repeated OnlineUser users = 1;
+}
+
+// HeartbeatRequest for keeping connection alive.
+message HeartbeatRequest {
+  repeated string todo_ids = 1;
+  repeated string team_ids = 2;
+}
+
+// HeartbeatResponse acknowledging heartbeat.
+message HeartbeatResponse {
+  google.protobuf.Timestamp server_time = 1;
+}
+
+// SubscribeResponse contains real-time events.
+message SubscribeResponse {
+  RealtimeEvent event = 1;
+}
+
+// PublishEventRequest contains event to publish.
+message PublishEventRequest {
+  RealtimeEvent event = 1;
+}
+
+// PublishEventResponse confirms event publication.
+message PublishEventResponse {
+  RealtimeEvent event = 1;
+}
