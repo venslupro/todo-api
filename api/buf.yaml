@@ -6,6 +6,7 @@ deps:
   - buf.build/grpc-ecosystem/grpc-gateway
 modules:
   - path: proto
+    name: buf.build/venslupro/todo-api
 lint:
   use:
     - STANDARD
