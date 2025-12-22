@@ -7,26 +7,26 @@ managed:
 plugins:
   # 生成 Go 消息定义 (.pb.go)
   - remote: buf.build/protocolbuffers/go
-    out: gen
+    out: ../gen
     opt: paths=source_relative
 
   # 生成 gRPC 服务代码 (_grpc.pb.go)
   - remote: buf.build/grpc/go
-    out: gen
+    out: ../gen
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
 
   # 生成 gRPC-Gateway 代码 (.pb.gw.go)
   - remote: buf.build/grpc-ecosystem/gateway
-    out: gen
+    out: ../gen
     opt:
       - paths=source_relative
       - generate_unbound_methods=true
 
   # 生成 Swagger/OpenAPI 文档
   - remote: buf.build/grpc-ecosystem/openapiv2
-    out: gen
+    out: ../gen
     opt:
       - allow_merge=true
       - merge_file_name=todo-api
