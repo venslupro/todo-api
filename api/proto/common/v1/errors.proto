@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package common.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/common;common";
+option java_multiple_files = true;
+option java_package = "todo.common.v1";
+
+// ErrorCode defines application-specific error codes.
+enum ErrorCode {
+  ERROR_CODE_UNSPECIFIED = 0;
+
+  // Authentication errors (1000-1999)
+  ERROR_CODE_UNAUTHENTICATED = 1001;
+  ERROR_CODE_INVALID_CREDENTIALS = 1002;
+  ERROR_CODE_TOKEN_EXPIRED = 1003;
+  ERROR_CODE_INVALID_TOKEN = 1004;
+
+  // Authorization errors (2000-2999)
+  ERROR_CODE_PERMISSION_DENIED = 2001;
+  ERROR_CODE_INSUFFICIENT_PERMISSIONS = 2002;
+
+  // Validation errors (3000-3999)
+  ERROR_CODE_VALIDATION_FAILED = 3001;
+  ERROR_CODE_INVALID_INPUT = 3002;
+  ERROR_CODE_RESOURCE_NOT_FOUND = 3003;
+
+  // Resource errors (4000-4999)
+  ERROR_CODE_RESOURCE_ALREADY_EXISTS = 4001;
+  ERROR_CODE_RESOURCE_CONFLICT = 4002;
+  ERROR_CODE_RESOURCE_EXHAUSTED = 4003;
+
+  // System errors (5000-5999)
+  ERROR_CODE_INTERNAL_ERROR = 5001;
+  ERROR_CODE_SERVICE_UNAVAILABLE = 5002;
+  ERROR_CODE_TIMEOUT = 5003;
+}
+
+// ErrorDetail provides detailed error information.
+message ErrorDetail {
+  string field = 1;
+  string description = 2;
+}
+
+// Error represents a structured error response.
+message Error {
+  ErrorCode code = 1;
+  string message = 2;
+  repeated ErrorDetail details = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  string request_id = 5;
+}
+
+// Empty response for operations that don't return data.
+message Empty {}

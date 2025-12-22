@@ -3,12 +3,12 @@ name: Proto Generation
 on:
   push:
     paths:
-      - 'api/protos/**/*.proto'
+      - '../../api/proto/**/*.proto'
       - '.github/workflows/proto-gen.yml'
     branches: [ main, develop ]
   pull_request:
     paths:
-      - 'api/protos/**/*.proto'
+      - '../../api/proto/**/*.proto'
   workflow_dispatch:  # 允许手动触发
 
 jobs:

@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "google/api/annotations.proto";
+import "todo/v1/realtime.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option java_multiple_files = true;
+option java_package = "todo.v1";
+
+// RealtimeService handles real-time collaboration features.
+service RealtimeService {
+  // Subscribe to real-time events (streaming).
+  rpc Subscribe(SubscribeRequest) returns (stream SubscribeResponse) {
+    option (google.api.http) = {get: "/v1/realtime/subscribe"};
+  }
+
+  // Publish an event to subscribers.
+  rpc PublishEvent(PublishEventRequest) returns (PublishEventResponse) {
+    option (google.api.http) = {
+      post: "/v1/realtime/publish"
+      body: "*"
+    };
+  }
+
+  // List recent activities.
+  rpc ListActivities(ListActivitiesRequest) returns (ListActivitiesResponse) {
+    option (google.api.http) = {get: "/v1/realtime/activities"};
+  }
+
+  // Get online users for a TODO list or team.
+  rpc GetOnlineUsers(GetOnlineUsersRequest) returns (GetOnlineUsersResponse) {
+    option (google.api.http) = {get: "/v1/realtime/online-users"};
+  }
+
+  // Send heartbeat to indicate user is active.
+  rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse) {
+    option (google.api.http) = {
+      post: "/v1/realtime/heartbeat"
+      body: "*"
+    };
+  }
+}

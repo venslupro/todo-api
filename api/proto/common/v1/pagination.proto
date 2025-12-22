@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package common.v1;
+
+import "common/v1/enums.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/common;common";
+option java_multiple_files = true;
+option java_package = "todo.common.v1";
+
+// PaginationRequest defines parameters for paginated requests.
+message PaginationRequest {
+  int32 page = 1; // Page number (1-indexed)
+  int32 page_size = 2; // Number of items per page (max 100)
+  string cursor = 3; // Cursor for cursor-based pagination
+}
+
+// PaginationResponse provides pagination metadata.
+message PaginationResponse {
+  int32 total_items = 1;
+  int32 total_pages = 2;
+  int32 current_page = 3;
+  int32 page_size = 4;
+  bool has_next = 5;
+  bool has_prev = 6;
+  string next_cursor = 7;
+}
+
+// SortOption defines sorting criteria.
+message SortOption {
+  string field = 1; // Field to sort by
+  bool descending = 2; // Sort direction (false = ascending)
+}
+
+// FilterCondition defines a single filter condition.
+message FilterCondition {
+  string field = 1; // Field to filter on
+  FilterOperator operator = 2; // Comparison operator
+  string value = 3; // Filter value (as string)
+  repeated string values = 4; // For IN operator
+}
+
+// DateRange defines a range of dates.
+message DateRange {
+  google.protobuf.Timestamp start = 1;
+  google.protobuf.Timestamp end = 2;
+}

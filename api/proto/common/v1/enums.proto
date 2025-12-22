@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "github.com/venslupro/todo-api/api/proto/common;common";
+option java_multiple_files = true;
+option java_package = "todo.common.v1";
+
+// Status represents the state of a TODO item.
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_NOT_STARTED = 1;
+  STATUS_IN_PROGRESS = 2;
+  STATUS_COMPLETED = 3;
+  STATUS_CANCELLED = 4;
+}
+
+// Priority defines the priority level of a TODO item.
+enum Priority {
+  PRIORITY_UNSPECIFIED = 0;
+  PRIORITY_LOW = 1;
+  PRIORITY_MEDIUM = 2;
+  PRIORITY_HIGH = 3;
+  PRIORITY_URGENT = 4;
+}
+
+// MediaType specifies the type of media content attached to a TODO.
+enum MediaType {
+  MEDIA_TYPE_UNSPECIFIED = 0;
+  MEDIA_TYPE_IMAGE = 1;
+  MEDIA_TYPE_VIDEO = 2;
+}
+
+// Permission defines the access level for shared TODO lists.
+enum Permission {
+  PERMISSION_UNSPECIFIED = 0;
+  PERMISSION_VIEW = 1;
+  PERMISSION_EDIT = 2;
+  PERMISSION_ADMIN = 3;
+}
+
+// Role defines user roles within a team.
+enum Role {
+  ROLE_UNSPECIFIED = 0;
+  ROLE_MEMBER = 1;
+  ROLE_ADMIN = 2;
+  ROLE_OWNER = 3;
+}
+
+// FilterOperator defines operators for filtering TODO items.
+enum FilterOperator {
+  FILTER_OPERATOR_UNSPECIFIED = 0;
+  FILTER_OPERATOR_EQUALS = 1;
+  FILTER_OPERATOR_NOT_EQUALS = 2;
+  FILTER_OPERATOR_GREATER_THAN = 3;
+  FILTER_OPERATOR_LESS_THAN = 4;
+  FILTER_OPERATOR_CONTAINS = 5;
+}
+
+// ServingStatus defines the serving status of a service.
+enum ServingStatus {
+  SERVING_STATUS_UNSPECIFIED = 0;
+  SERVING_STATUS_SERVING = 1;
+  SERVING_STATUS_NOT_SERVING = 2;
+}
+
+// EventType defines types of real-time events.
+enum EventType {
+  EVENT_TYPE_UNSPECIFIED = 0;
+  EVENT_TYPE_TODO_CREATED = 1;
+  EVENT_TYPE_TODO_UPDATED = 2;
+  EVENT_TYPE_TODO_DELETED = 3;
+  EVENT_TYPE_TODO_STATUS_CHANGED = 4;
+  EVENT_TYPE_USER_JOINED = 5;
+  EVENT_TYPE_USER_LEFT = 6;
+  EVENT_TYPE_COMMENT_ADDED = 7;
+  EVENT_TYPE_MEDIA_ADDED = 8;
+}

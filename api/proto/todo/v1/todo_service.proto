@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "google/api/annotations.proto";
+import "todo/v1/todo.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option java_multiple_files = true;
+option java_package = "todo.v1";
+
+// TODOService handles TODO item operations.
+service TODOService {
+  // Create a new TODO item.
+  rpc CreateTODO(CreateTODORequest) returns (CreateTODOResponse) {
+    option (google.api.http) = {
+      post: "/v1/todos"
+      body: "*"
+    };
+  }
+
+  // Get a TODO item by ID.
+  rpc GetTODO(GetTODORequest) returns (GetTODOResponse) {
+    option (google.api.http) = {get: "/v1/todos/{id}"};
+  }
+
+  // Update an existing TODO item.
+  rpc UpdateTODO(UpdateTODORequest) returns (UpdateTODOResponse) {
+    option (google.api.http) = {
+      put: "/v1/todos/{id}"
+      body: "*"
+    };
+  }
+
+  // Delete a TODO item by ID.
+  rpc DeleteTODO(DeleteTODORequest) returns (DeleteTODOResponse) {
+    option (google.api.http) = {delete: "/v1/todos/{id}"};
+  }
+
+  // List TODO items with filtering, sorting, and pagination.
+  rpc ListTODOs(ListTODOsRequest) returns (ListTODOsResponse) {
+    option (google.api.http) = {get: "/v1/todos"};
+  }
+
+  // Update status of multiple TODO items.
+  rpc BulkUpdateStatus(BulkUpdateStatusRequest) returns (BulkUpdateStatusResponse) {
+    option (google.api.http) = {
+      post: "/v1/todos/bulk/status"
+      body: "*"
+    };
+  }
+
+  // Delete multiple TODO items.
+  rpc BulkDelete(BulkDeleteRequest) returns (BulkDeleteResponse) {
+    option (google.api.http) = {
+      post: "/v1/todos/bulk/delete"
+      body: "*"
+    };
+  }
+
+  // Move TODO item to new position or parent.
+  rpc MoveTODO(MoveTODORequest) returns (MoveTODOResponse) {
+    option (google.api.http) = {
+      post: "/v1/todos/{id}/move"
+      body: "*"
+    };
+  }
+
+  // Complete a TODO item.
+  rpc CompleteTODO(CompleteTODORequest) returns (CompleteTODOResponse) {
+    option (google.api.http) = {post: "/v1/todos/{id}/complete"};
+  }
+
+  // Reopen a completed TODO item.
+  rpc ReopenTODO(ReopenTODORequest) returns (ReopenTODOResponse) {
+    option (google.api.http) = {post: "/v1/todos/{id}/reopen"};
+  }
+}

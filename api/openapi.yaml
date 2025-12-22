@@ -1,0 +1,37 @@
+# openapi.yaml
+file:
+  swagger: "2.0"
+  info:
+    title: "Todo API"
+    description: "A comprehensive todo management API"
+    version: "1.0.0"
+    contact:
+      name: "API Support"
+      email: "support@example.com"
+    license:
+      name: "MIT"
+      url: "https://opensource.org/licenses/MIT"
+  schemes:
+    - "http"
+    - "https"
+  consumes:
+    - "application/json"
+  produces:
+    - "application/json"
+  securityDefinitions:
+    BearerAuth:
+      type: "apiKey"
+      name: "Authorization"
+      in: "header"
+      description: "Bearer token authentication"
+    ApiKeyAuth:
+      type: "apiKey"
+      name: "X-API-Key"
+      in: "header"
+      description: "API key authentication"
+  security:
+    - BearerAuth: []
+    - ApiKeyAuth: []
+  externalDocs:
+    description: "Find out more about the API"
+    url: "https://docs.example.com"

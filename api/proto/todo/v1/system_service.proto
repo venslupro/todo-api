@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "google/api/annotations.proto";
+import "todo/v1/system.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option java_multiple_files = true;
+option java_package = "todo.v1";
+
+// SystemService handles system administration and monitoring.
+service SystemService {
+  // Health check endpoint.
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse) {
+    option (google.api.http) = {get: "/v1/system/health"};
+  }
+
+  // Get detailed system status.
+  rpc GetSystemStatus(GetSystemStatusRequest) returns (GetSystemStatusResponse) {
+    option (google.api.http) = {get: "/v1/system/status"};
+  }
+
+  // List system logs.
+  rpc ListLogs(ListLogsRequest) returns (ListLogsResponse) {
+    option (google.api.http) = {get: "/v1/system/logs"};
+  }
+
+  // Export user data.
+  rpc ExportData(ExportDataRequest) returns (ExportDataResponse) {
+    option (google.api.http) = {
+      post: "/v1/system/export"
+      body: "*"
+    };
+  }
+
+  // Get export status.
+  rpc GetExportStatus(GetExportStatusRequest) returns (GetExportStatusResponse) {
+    option (google.api.http) = {get: "/v1/system/export/{export_id}"};
+  }
+
+  // Clear old logs.
+  rpc ClearOldLogs(ClearOldLogsRequest) returns (ClearOldLogsResponse) {
+    option (google.api.http) = {
+      post: "/v1/system/logs/clear"
+      body: "*"
+    };
+  }
+}

@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "common/v1/enums.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option java_multiple_files = true;
+option java_package = "todo.v1";
+
+// HealthCheckResponse contains system health information.
+message HealthCheckResponse {
+  common.v1.ServingStatus status = 1;
+  string version = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  map<string, string> details = 4; // Additional health info per service
+}
+
+// SystemStatus contains comprehensive system status.
+message SystemStatus {
+  HealthCheckResponse health = 1;
+  SystemMetrics metrics = 2;
+  SystemInfo info = 3;
+  repeated ServiceStatus services = 4;
+}
+
+// SystemMetrics contains system performance metrics.
+message SystemMetrics {
+  double cpu_usage = 1; // Percentage
+  double memory_usage = 2; // Percentage
+  int64 active_connections = 3;
+  int64 requests_per_second = 4;
+  double average_response_time = 5; // Milliseconds
+  google.protobuf.Timestamp timestamp = 6;
+}
+
+// SystemInfo contains system configuration information.
+message SystemInfo {
+  string version = 1;
+  string environment = 2; // "development", "staging", "production"
+  string region = 3;
+  google.protobuf.Timestamp start_time = 4;
+  google.protobuf.Duration uptime = 5;
+}
+
+// ServiceStatus contains status of a specific service.
+message ServiceStatus {
+  string name = 1;
+  common.v1.ServingStatus status = 2;
+  string message = 3;
+  google.protobuf.Timestamp last_check = 4;
+}
+
+// LogEntry represents a system log entry.
+message LogEntry {
+  string id = 1;
+  string level = 2; // "debug", "info", "warn", "error"
+  string message = 3;
+  string service = 4;
+  string user_id = 5; // Optional: associated user
+  string request_id = 6; // Optional: associated request
+  map<string, string> context = 7; // Additional context
+  google.protobuf.Timestamp timestamp = 8;
+}
+
+// ListLogsRequest with filtering and pagination.
+message ListLogsRequest {
+  optional string level = 1; // Filter by log level
+  optional string service = 2; // Filter by service
+  optional string user_id = 3; // Filter by user
+  optional string request_id = 4; // Filter by request
+  optional google.protobuf.Timestamp from = 5;
+  optional google.protobuf.Timestamp to = 6;
+  optional common.v1.PaginationRequest pagination = 7;
+}
+
+// ListLogsResponse with logs and pagination info.
+message ListLogsResponse {
+  repeated LogEntry logs = 1;
+  common.v1.PaginationResponse pagination = 2;
+}
+
+// ExportDataRequest for exporting user data.
+message ExportDataRequest {
+  string user_id = 1;
+  repeated string formats = 2; // "json", "csv", "pdf"
+}
+
+// ExportDataResponse with export information.
+message ExportDataResponse {
+  string export_id = 1;
+  string download_url = 2;
+  google.protobuf.Timestamp expires_at = 3;
+  string format = 4;
+  int64 size = 5;
+}
+
+// GetExportStatusRequest contains export ID.
+message GetExportStatusRequest {
+  string export_id = 1;
+}
+
+// ClearOldLogsRequest for cleaning up old logs.
+message ClearOldLogsRequest {
+  google.protobuf.Timestamp before = 1;
+  optional string level = 2; // Optional: clear only specific level
+}
+
+// HealthCheckRequest requests system health information.
+message HealthCheckRequest {}
+
+// GetSystemStatusRequest requests detailed system status.
+message GetSystemStatusRequest {}
+
+// GetSystemStatusResponse contains detailed system status.
+message GetSystemStatusResponse {
+  SystemStatus status = 1;
+}
+
+// GetExportStatusResponse contains export status information.
+message GetExportStatusResponse {
+  ExportDataResponse export = 1;
+}
+
+// ClearOldLogsResponse confirms log cleanup.
+message ClearOldLogsResponse {}

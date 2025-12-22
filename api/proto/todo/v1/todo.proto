@@ -1,0 +1,157 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "common/v1/enums.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+import "todo/v1/media.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option java_multiple_files = true;
+option java_package = "todo.v1";
+
+// TODO represents a single TODO item.
+message TODO {
+  string id = 1;
+  string user_id = 2;
+  string title = 3;
+  string description = 4;
+  common.v1.Status status = 5;
+  common.v1.Priority priority = 6;
+  google.protobuf.Timestamp due_date = 7;
+  repeated string tags = 8;
+  repeated MediaAttachment media_attachments = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+  google.protobuf.Timestamp completed_at = 12;
+  string assigned_to = 13; // User ID of assignee
+  string parent_id = 14; // Parent TODO ID for subtasks
+  int32 position = 15; // Position in list (for manual ordering)
+}
+
+// CreateTODORequest contains data for creating a new TODO.
+message CreateTODORequest {
+  string title = 1;
+  optional string description = 2;
+  optional common.v1.Status status = 3;
+  optional common.v1.Priority priority = 4;
+  optional google.protobuf.Timestamp due_date = 5;
+  repeated string tags = 6;
+  repeated MediaAttachment media_attachments = 7;
+  optional string assigned_to = 8;
+  optional string parent_id = 9;
+}
+
+// UpdateTODORequest contains data for updating an existing TODO.
+message UpdateTODORequest {
+  string id = 1;
+  optional string title = 2;
+  optional string description = 3;
+  optional common.v1.Status status = 4;
+  optional common.v1.Priority priority = 5;
+  optional google.protobuf.Timestamp due_date = 6;
+  repeated string tags = 7; // Note: Cannot use optional with repeated
+  repeated MediaAttachment media_attachments = 8; // Note: Cannot use optional with repeated
+  optional string assigned_to = 9;
+  optional string parent_id = 10;
+  optional int32 position = 11;
+}
+
+// GetTODORequest contains TODO ID.
+message GetTODORequest {
+  string id = 1;
+}
+
+// DeleteTODORequest contains TODO ID.
+message DeleteTODORequest {
+  string id = 1;
+}
+
+// ListTODOsRequest contains filtering and pagination parameters.
+message ListTODOsRequest {
+  repeated string ids = 1; // Filter by specific IDs
+  optional string user_id = 2; // Filter by user ID
+  repeated common.v1.Status statuses = 3; // Filter by status
+  repeated common.v1.Priority priorities = 4; // Filter by priority
+  optional common.v1.DateRange due_date_range = 5; // Filter by due date range
+  repeated string tags = 6; // Filter by tags
+  optional string assigned_to = 7; // Filter by assignee
+  optional string parent_id = 8; // Filter by parent TODO
+  optional string search_query = 9; // Full-text search
+  repeated common.v1.SortOption sort_options = 10; // Sorting criteria
+  optional common.v1.PaginationRequest pagination = 11; // Pagination parameters
+}
+
+// ListTODOsResponse contains TODO list and pagination info.
+message ListTODOsResponse {
+  repeated TODO todos = 1;
+  common.v1.PaginationResponse pagination = 2;
+}
+
+// BulkUpdateStatusRequest for updating status of multiple TODOs.
+message BulkUpdateStatusRequest {
+  repeated string ids = 1;
+  common.v1.Status status = 2;
+}
+
+// BulkDeleteRequest for deleting multiple TODOs.
+message BulkDeleteRequest {
+  repeated string ids = 1;
+}
+
+// MoveTODORequest for changing TODO position or parent.
+message MoveTODORequest {
+  string id = 1;
+  optional string parent_id = 2; // New parent ID (null for root)
+  optional int32 position = 3; // New position in list
+}
+
+// CreateTODOResponse contains created TODO item.
+message CreateTODOResponse {
+  TODO todo = 1;
+}
+
+// GetTODOResponse contains TODO item.
+message GetTODOResponse {
+  TODO todo = 1;
+}
+
+// UpdateTODOResponse contains updated TODO item.
+message UpdateTODOResponse {
+  TODO todo = 1;
+}
+
+// DeleteTODOResponse confirms TODO deletion.
+message DeleteTODOResponse {}
+
+// BulkUpdateStatusResponse confirms bulk status update.
+message BulkUpdateStatusResponse {}
+
+// BulkDeleteResponse confirms bulk deletion.
+message BulkDeleteResponse {}
+
+// MoveTODOResponse contains moved TODO item.
+message MoveTODOResponse {
+  TODO todo = 1;
+}
+
+// CompleteTODORequest requests TODO completion.
+message CompleteTODORequest {
+  string id = 1;
+}
+
+// CompleteTODOResponse contains completed TODO item.
+message CompleteTODOResponse {
+  TODO todo = 1;
+}
+
+// ReopenTODORequest requests TODO reopening.
+message ReopenTODORequest {
+  string id = 1;
+}
+
+// ReopenTODOResponse contains reopened TODO item.
+message ReopenTODOResponse {
+  TODO todo = 1;
+}

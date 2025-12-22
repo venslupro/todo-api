@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package todo.v1;
+
+import "common/v1/enums.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option java_multiple_files = true;
+option java_package = "todo.v1";
+
+// MediaAttachment represents media content attached to a TODO.
+message MediaAttachment {
+  string id = 1;
+  common.v1.MediaType type = 2;
+  string url = 3;
+  string thumbnail_url = 4; // For videos
+  string filename = 5;
+  int64 size = 6; // Size in bytes
+  int32 duration = 7; // Duration in seconds (for videos)
+  google.protobuf.Timestamp created_at = 8;
+  string todo_id = 9; // Associated TODO ID
+  string user_id = 10; // Uploader user ID
+}
+
+// UploadMediaRequest for uploading media files.
+message UploadMediaRequest {
+  oneof data {
+    Metadata metadata = 1; // First message contains metadata
+    bytes chunk = 2; // Subsequent messages contain file chunks
+  }
+
+  message Metadata {
+    common.v1.MediaType type = 1;
+    string filename = 2;
+    int64 size = 3; // File size in bytes
+    optional string todo_id = 4; // Optional: associate with TODO immediately
+  }
+}
+
+// UploadMediaResponse contains upload result.
+message UploadMediaResponse {
+  string media_id = 1;
+  string url = 2;
+  string thumbnail_url = 3; // For videos
+  int64 size = 4;
+  common.v1.MediaType type = 5;
+}
+
+// GetMediaRequest contains media ID.
+message GetMediaRequest {
+  string id = 1;
+}
+
+// ListMediaRequest with filtering and pagination.
+message ListMediaRequest {
+  optional string todo_id = 1; // Filter by associated TODO
+  optional common.v1.MediaType type = 2; // Filter by media type
+  optional string user_id = 3; // Filter by uploader
+  optional common.v1.PaginationRequest pagination = 4;
+}
+
+// ListMediaResponse with media list and pagination info.
+message ListMediaResponse {
+  repeated MediaAttachment media = 1;
+  common.v1.PaginationResponse pagination = 2;
+}
+
+// DeleteMediaRequest contains media ID.
+message DeleteMediaRequest {
+  string id = 1;
+}
+
+// GenerateUploadURLRequest for generating pre-signed upload URLs.
+message GenerateUploadURLRequest {
+  common.v1.MediaType type = 1;
+  string filename = 2;
+  string content_type = 3;
+  optional string todo_id = 4;
+}
+
+// GenerateUploadURLResponse contains pre-signed URL.
+message GenerateUploadURLResponse {
+  string upload_url = 1;
+  string media_id = 2;
+  string download_url = 3;
+  google.protobuf.Timestamp expires_at = 4;
+}
+
+// GetMediaResponse contains media metadata.
+message GetMediaResponse {
+  MediaAttachment media = 1;
+}
+
+// DeleteMediaResponse confirms media deletion.
+message DeleteMediaResponse {}
