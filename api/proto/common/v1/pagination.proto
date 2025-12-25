@@ -5,7 +5,7 @@ package common.v1;
 import "common/v1/enums.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/venslupro/todo-api/api/proto/common;common";
+option go_package = "github.com/venslupro/todo-api/api/gen/common/v1;commonv1";
 option java_multiple_files = true;
 option java_package = "todo.common.v1";
 

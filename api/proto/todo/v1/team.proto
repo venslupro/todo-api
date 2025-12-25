@@ -6,7 +6,7 @@ import "common/v1/enums.proto";
 import "common/v1/pagination.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/venslupro/todo-api/api/proto/todo;todo";
+option go_package = "github.com/venslupro/todo-api/api/gen/todo/v1;todov1";
 option java_multiple_files = true;
 option java_package = "todo.v1";
 

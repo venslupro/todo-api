@@ -1,0 +1,50 @@
+apiVersion: v2
+name: todo-api
+description: A Helm chart for deploying Todo API application
+
+type: application
+
+version: 1.0.0
+appVersion: "1.0.0"
+
+# Dependencies for the application
+dependencies:
+  - name: postgresql
+    version: "12.1.0"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  - name: redis
+    version: "17.3.0"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
+
+# Keywords for discovery
+keywords:
+  - todo
+  - api
+  - golang
+  - postgresql
+  - redis
+  - s3
+
+# Maintainers information
+maintainers:
+  - name: Todo API Team
+    email: dev@todoapi.com
+    url: https://github.com/venslupro/todo-api
+
+# Icon for the chart
+icon: https://raw.githubusercontent.com/kubernetes/helm/master/logo.png
+
+# Annotations for the chart
+annotations:
+  "artifacthub.io/changes": |
+    - Initial release of Todo API Helm chart
+  "artifacthub.io/images": |
+    - name: todo-api
+      image: ghcr.io/venslupro/todo-api:latest
+  "artifacthub.io/links": |
+    - name: Source Code
+      url: https://github.com/venslupro/todo-api
+    - name: Documentation
+      url: https://github.com/venslupro/todo-api/blob/main/README.md

@@ -1,0 +1,64 @@
+{{- if .Values.migration.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "todo-api.fullname" . }}-migration
+  labels:
+    {{- include "todo-api.labels" . | nindent 4 }}
+    app.kubernetes.io/component: migration
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "todo-api.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: migration
+    spec:
+      restartPolicy: OnFailure
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: migration
+          image: "{{ .Values.migration.image.repository }}:{{ .Values.migration.image.tag }}"
+          imagePullPolicy: {{ .Values.migration.image.pullPolicy }}
+          command: ["/app/main"]
+          args: ["migrate"]
+          env:
+            # Database configuration
+            - name: DB_HOST
+              value: {{ .Values.app.env.DB_HOST | quote }}
+            - name: DB_PORT
+              value: {{ .Values.app.env.DB_PORT | quote }}
+            - name: DB_NAME
+              value: {{ .Values.app.env.DB_NAME | quote }}
+            - name: DB_USER
+              value: {{ .Values.app.env.DB_USER | quote }}
+            - name: DB_SSLMODE
+              value: {{ .Values.app.env.DB_SSLMODE | quote }}
+            
+            # Database password from secret
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "todo-api.fullname" . }}-secrets
+                  key: db-password
+          resources:
+            {{- toYaml .Values.migration.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
