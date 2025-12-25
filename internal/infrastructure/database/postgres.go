@@ -411,7 +411,7 @@ func (r *PostgresRepository) List(ctx context.Context, options domain.TODOListOp
 	offset := (page - 1) * pageSize
 
 	// Count total items
-	countQuery := fmt.Sprintf("SELECT COUNT(*) FROM todos %s", whereClause)
+	countQuery := "SELECT COUNT(*) FROM todos " + whereClause
 	var totalItems int32
 	err := r.db.QueryRowContext(ctx, countQuery, args...).Scan(&totalItems)
 	if err != nil {
@@ -419,14 +419,13 @@ func (r *PostgresRepository) List(ctx context.Context, options domain.TODOListOp
 	}
 
 	// Fetch items
-	query := fmt.Sprintf(`
+	query := `
 		SELECT id, user_id, title, description, status, priority, due_date,
 		       tags, is_shared, shared_by, created_at, updated_at, completed_at, assigned_to, parent_id, position
 		FROM todos
-		%s
-		%s
-		LIMIT $%d OFFSET $%d
-	`, whereClause, orderBy, argIndex, argIndex+1)
+		` + whereClause + `
+		` + orderBy + `
+		LIMIT $` + fmt.Sprintf("%d", argIndex) + ` OFFSET $` + fmt.Sprintf("%d", argIndex+1)
 
 	args = append(args, pageSize, offset)
 
@@ -521,11 +520,11 @@ func (r *PostgresRepository) BulkUpdateStatus(ctx context.Context, ids []string,
 	}
 	args[len(ids)] = int32(status)
 
-	query := fmt.Sprintf(`
+	query := `
 		UPDATE todos
-		SET status = $%d, updated_at = $%d
-		WHERE id IN (%s)
-	`, len(ids)+1, len(ids)+2, strings.Join(placeholders, ","))
+		SET status = $` + fmt.Sprintf("%d", len(ids)+1) + `, updated_at = $` + fmt.Sprintf("%d", len(ids)+2) + `
+		WHERE id IN (` + strings.Join(placeholders, ",") + `)
+	`
 
 	now := time.Now()
 	args = append(args, now)
@@ -547,7 +546,7 @@ func (r *PostgresRepository) BulkDelete(ctx context.Context, ids []string) error
 		args[i] = id
 	}
 
-	query := fmt.Sprintf("DELETE FROM todos WHERE id IN (%s)", strings.Join(placeholders, ","))
+	query := "DELETE FROM todos WHERE id IN (" + strings.Join(placeholders, ",") + ")"
 	_, err := r.db.ExecContext(ctx, query, args...)
 	return err
 }
@@ -754,7 +753,7 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 				);
 
 				-- Media files table
-				CREATE TABLE IF NOT EXISTS media (
+				CREATE TABLE IF NOT EXISTS media_attachments (
 				    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 				    todo_id UUID NOT NULL REFERENCES todos(id) ON DELETE CASCADE,
 				    file_name VARCHAR(500) NOT NULL,
@@ -807,9 +806,9 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 				CREATE INDEX IF NOT EXISTS idx_shared_todos_todo_id ON shared_todos(todo_id);
 				CREATE INDEX IF NOT EXISTS idx_shared_todos_team_id ON shared_todos(team_id);
 
-				-- Indexes for media table
-				CREATE INDEX IF NOT EXISTS idx_media_todo_id ON media(todo_id);
-				CREATE INDEX IF NOT EXISTS idx_media_uploaded_by ON media(uploaded_by);
+				-- Indexes for media_attachments table
+				CREATE INDEX IF NOT EXISTS idx_media_todo_id ON media_attachments(todo_id);
+				CREATE INDEX IF NOT EXISTS idx_media_uploaded_by ON media_attachments(uploaded_by);
 
 				-- Indexes for activity_logs table
 				CREATE INDEX IF NOT EXISTS idx_activity_logs_team_id ON activity_logs(team_id);
@@ -821,33 +820,10 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 		{
 			version: "002",
 			upSQL: `
-				-- Create media_attachments table
-				CREATE TABLE media_attachments (
-				    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-				    todo_id UUID NOT NULL,
-				    file_name VARCHAR(255) NOT NULL,
-				    file_url TEXT NOT NULL,
-				    file_type INTEGER NOT NULL,
-				    file_size BIGINT NOT NULL,
-				    mime_type VARCHAR(100) NOT NULL,
-				    thumbnail_url TEXT,
-				    duration INTEGER DEFAULT 0,
-				    uploaded_by UUID NOT NULL,
-				    uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-				    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-				    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-				    
-				    -- Foreign key constraints
-				    CONSTRAINT fk_media_todo FOREIGN KEY (todo_id) REFERENCES todos(id) ON DELETE CASCADE,
-				    CONSTRAINT fk_media_user FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE CASCADE
-				);
-
-				-- Create indexes for better query performance
-				CREATE INDEX idx_media_todo_id ON media_attachments(todo_id);
-				CREATE INDEX idx_media_uploaded_by ON media_attachments(uploaded_by);
-				CREATE INDEX idx_media_uploaded_at ON media_attachments(uploaded_at);
-				CREATE INDEX idx_media_file_type ON media_attachments(file_type);
-				CREATE INDEX idx_media_created_at ON media_attachments(created_at);
+				-- Add additional indexes and constraints for media_attachments table
+				CREATE INDEX IF NOT EXISTS idx_media_uploaded_at ON media_attachments(uploaded_at);
+				CREATE INDEX IF NOT EXISTS idx_media_file_type ON media_attachments(file_type);
+				CREATE INDEX IF NOT EXISTS idx_media_created_at ON media_attachments(created_at);
 			`,
 		},
 	}

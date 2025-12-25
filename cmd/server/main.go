@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -130,8 +131,9 @@ func main() {
 	routes.RegisterSearchRoutes(httpMux, todoHandler)
 
 	httpServer := &http.Server{
-		Addr:    fmt.Sprintf(":%d", cfg.Server.HTTPPort),
-		Handler: httpMux,
+		Addr:              fmt.Sprintf(":%d", cfg.Server.HTTPPort),
+		Handler:           httpMux,
+		ReadHeaderTimeout: 30 * time.Second,
 	}
 
 	// Start HTTP server in a goroutine
