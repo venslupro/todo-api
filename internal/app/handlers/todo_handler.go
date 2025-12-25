@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"reflect"
 	"strconv"
 	"time"
 
@@ -183,17 +182,10 @@ func (h *TODOHandler) ListTODOs(ctx context.Context, req *todov1.ListTODOsReques
 		var descending bool
 		// Convert to interface{} first, then to commonv1.SortOption
 		// This works because both types have the same structure
-		if soInterface := interface{}(so); soInterface != nil {
-			// Try to convert to commonv1.SortOption using type assertion
-			if commonSO, ok := soInterface.(*commonv1.SortOption); ok {
-				field = commonSO.GetField()
-				descending = commonSO.GetDescending()
-			} else {
-				// Fallback: use reflection to access fields
-				// Since proto fields are exported, we can access them via reflection
-				field = getSortOptionFieldByReflection(so)
-				descending = getSortOptionDescendingByReflection(so)
-			}
+		if so != nil {
+			// Directly access the fields since so is already *commonv1.SortOption
+			field = so.GetField()
+			descending = so.GetDescending()
 		}
 		sortOptions = append(sortOptions, domain.SortOption{
 			Field:      field,
@@ -312,40 +304,6 @@ func (h *TODOHandler) ReopenTODO(ctx context.Context, req *todov1.ReopenTODORequ
 }
 
 // Helper functions
-
-// getSortOptionFieldByReflection extracts the Field value from a proto SortOption using reflection.
-func getSortOptionFieldByReflection(so interface{}) string {
-	// Use reflection to access the Field field
-	// This is a workaround for proto import path mismatch
-	v := reflect.ValueOf(so)
-	if v.Kind() == reflect.Ptr {
-		v = v.Elem()
-	}
-	if v.Kind() == reflect.Struct {
-		field := v.FieldByName("Field")
-		if field.IsValid() && field.Kind() == reflect.String {
-			return field.String()
-		}
-	}
-	return ""
-}
-
-// getSortOptionDescendingByReflection extracts the Descending value from a proto SortOption using reflection.
-func getSortOptionDescendingByReflection(so interface{}) bool {
-	// Use reflection to access the Descending field
-	// This is a workaround for proto import path mismatch
-	v := reflect.ValueOf(so)
-	if v.Kind() == reflect.Ptr {
-		v = v.Elem()
-	}
-	if v.Kind() == reflect.Struct {
-		field := v.FieldByName("Descending")
-		if field.IsValid() && field.Kind() == reflect.Bool {
-			return field.Bool()
-		}
-	}
-	return false
-}
 
 // convertToProto converts a domain TODO to a proto TODO message.
 func convertToProto(todo *domain.TODO) *todov1.TODO {

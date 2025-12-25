@@ -17,12 +17,18 @@ const (
 	AuthorizationHeader = "authorization"
 	// BearerPrefix is the prefix for bearer tokens
 	BearerPrefix = "Bearer "
+)
+
+// Define custom types for context keys to avoid collisions
+type contextKey string
+
+const (
 	// UserIDKey is the context key for user ID
-	UserIDKey = "user_id"
+	UserIDKey contextKey = "user_id"
 	// UsernameKey is the context key for username
-	UsernameKey = "username"
+	UsernameKey contextKey = "username"
 	// EmailKey is the context key for email
-	EmailKey = "email"
+	EmailKey contextKey = "email"
 )
 
 // AuthInterceptor creates a gRPC interceptor for authentication

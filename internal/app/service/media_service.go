@@ -6,11 +6,9 @@ import (
 	"mime/multipart"
 
 	commonv1 "github.com/venslupro/todo-api/api/gen/common/v1"
-	todov1 "github.com/venslupro/todo-api/api/gen/todo/v1"
 	"github.com/venslupro/todo-api/internal/domain"
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // MediaRepository defines the interface for media data access
@@ -178,21 +176,5 @@ func (s *MediaService) determineMediaType(mimeType string) commonv1.MediaType {
 		return commonv1.MediaType_MEDIA_TYPE_VIDEO
 	default:
 		return commonv1.MediaType_MEDIA_TYPE_UNSPECIFIED
-	}
-}
-
-// domainMediaToProto converts domain Media to protobuf MediaAttachment
-func (s *MediaService) domainMediaToProto(media *domain.Media) *todov1.MediaAttachment {
-	return &todov1.MediaAttachment{
-		Id:           media.ID,
-		Type:         media.FileType,
-		Url:          media.FileURL,
-		ThumbnailUrl: media.ThumbnailURL,
-		Filename:     media.FileName,
-		Size:         media.FileSize,
-		Duration:     media.Duration,
-		CreatedAt:    timestamppb.New(media.UploadedAt),
-		TodoId:       media.TODOID,
-		UserId:       media.UploadedBy,
 	}
 }
