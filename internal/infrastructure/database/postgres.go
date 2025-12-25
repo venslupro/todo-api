@@ -821,8 +821,8 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 		{
 			version: "002",
 			upSQL: `
-				-- Create media_attachments table
-				CREATE TABLE media_attachments (
+				-- Create media table
+				CREATE TABLE media (
 				    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 				    todo_id UUID NOT NULL,
 				    file_name VARCHAR(255) NOT NULL,
@@ -843,11 +843,11 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 				);
 
 				-- Create indexes for better query performance
-				CREATE INDEX idx_media_todo_id ON media_attachments(todo_id);
-				CREATE INDEX idx_media_uploaded_by ON media_attachments(uploaded_by);
-				CREATE INDEX idx_media_uploaded_at ON media_attachments(uploaded_at);
-				CREATE INDEX idx_media_file_type ON media_attachments(file_type);
-				CREATE INDEX idx_media_created_at ON media_attachments(created_at);
+				CREATE INDEX idx_media_todo_id ON media(todo_id);
+				CREATE INDEX idx_media_uploaded_by ON media(uploaded_by);
+				CREATE INDEX idx_media_uploaded_at ON media(uploaded_at);
+				CREATE INDEX idx_media_file_type ON media(file_type);
+				CREATE INDEX idx_media_created_at ON media(created_at);
 			`,
 		},
 	}

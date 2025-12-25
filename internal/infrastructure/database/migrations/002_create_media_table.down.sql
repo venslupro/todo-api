@@ -1,2 +1,2 @@
--- Drop media_attachments table and related indexes
-DROP TABLE IF EXISTS media_attachments;
+-- Drop media table and related indexes
+DROP TABLE IF EXISTS media;
