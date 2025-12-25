@@ -107,10 +107,10 @@ func (s *S3Storage) UploadFile(ctx context.Context, file multipart.File, header 
 
 	// Upload file to S3
 	_, err := s.uploader.UploadWithContext(ctx, &s3manager.UploadInput{
-		Bucket: aws.String(s.config.BucketName),
-		Key:    aws.String(filePath),
-		Body:   file,
-		ACL:    aws.String("public-read"),
+		Bucket:      aws.String(s.config.BucketName),
+		Key:         aws.String(filePath),
+		Body:        file,
+		ACL:         aws.String("public-read"),
 		ContentType: aws.String(contentType),
 	})
 
@@ -119,7 +119,7 @@ func (s *S3Storage) UploadFile(ctx context.Context, file multipart.File, header 
 	}
 
 	// Generate file URL
-	fileURL := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", 
+	fileURL := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s",
 		s.config.BucketName, s.config.Region, filePath)
 
 	return fileURL, nil
@@ -132,7 +132,7 @@ func (s *S3Storage) DeleteFile(ctx context.Context, fileURL string) error {
 	}
 
 	// Extract key from URL
-	key := strings.TrimPrefix(fileURL, fmt.Sprintf("https://%s.s3.%s.amazonaws.com/", 
+	key := strings.TrimPrefix(fileURL, fmt.Sprintf("https://%s.s3.%s.amazonaws.com/",
 		s.config.BucketName, s.config.Region))
 
 	_, err := s.s3Client.DeleteObjectWithContext(ctx, &s3.DeleteObjectInput{
@@ -154,7 +154,7 @@ func (s *S3Storage) DownloadFile(ctx context.Context, fileURL string) (io.ReadCl
 	}
 
 	// Extract key from URL
-	key := strings.TrimPrefix(fileURL, fmt.Sprintf("https://%s.s3.%s.amazonaws.com/", 
+	key := strings.TrimPrefix(fileURL, fmt.Sprintf("https://%s.s3.%s.amazonaws.com/",
 		s.config.BucketName, s.config.Region))
 
 	result, err := s.s3Client.GetObjectWithContext(ctx, &s3.GetObjectInput{
@@ -176,7 +176,7 @@ func (s *S3Storage) GetFileInfo(ctx context.Context, fileURL string) (*FileInfo,
 	}
 
 	// Extract key from URL
-	key := strings.TrimPrefix(fileURL, fmt.Sprintf("https://%s.s3.%s.amazonaws.com/", 
+	key := strings.TrimPrefix(fileURL, fmt.Sprintf("https://%s.s3.%s.amazonaws.com/",
 		s.config.BucketName, s.config.Region))
 
 	result, err := s.s3Client.HeadObjectWithContext(ctx, &s3.HeadObjectInput{
@@ -189,8 +189,8 @@ func (s *S3Storage) GetFileInfo(ctx context.Context, fileURL string) (*FileInfo,
 	}
 
 	return &FileInfo{
-		Size:        aws.Int64Value(result.ContentLength),
-		ContentType: aws.StringValue(result.ContentType),
+		Size:         aws.Int64Value(result.ContentLength),
+		ContentType:  aws.StringValue(result.ContentType),
 		LastModified: aws.TimeValue(result.LastModified),
 	}, nil
 }

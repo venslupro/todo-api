@@ -650,7 +650,7 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 			applied_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 		);
 	`
-	
+
 	_, err := r.db.ExecContext(ctx, createTableSQL)
 	if err != nil {
 		return fmt.Errorf("failed to create migrations table: %w", err)
@@ -894,7 +894,7 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 func (r *PostgresRepository) CheckMigrationStatus(ctx context.Context) error {
 	// Check if schema_migrations table exists
 	var tableExists bool
-	err := r.db.QueryRowContext(ctx, 
+	err := r.db.QueryRowContext(ctx,
 		"SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'schema_migrations')").Scan(&tableExists)
 	if err != nil {
 		return fmt.Errorf("failed to check migrations table: %w", err)
@@ -927,7 +927,7 @@ func (r *PostgresRepository) CheckMigrationStatus(ctx context.Context) error {
 
 	// Expected migrations
 	expectedMigrations := []string{"001", "002"}
-	
+
 	// Check if all expected migrations are applied
 	appliedMap := make(map[string]bool)
 	for _, migration := range appliedMigrations {
