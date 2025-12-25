@@ -823,8 +823,8 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 			upSQL: `
 				-- Create media_attachments table
 				CREATE TABLE media_attachments (
-				    id VARCHAR(36) PRIMARY KEY,
-				    todo_id VARCHAR(36) NOT NULL,
+				    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+				    todo_id UUID NOT NULL,
 				    file_name VARCHAR(255) NOT NULL,
 				    file_url TEXT NOT NULL,
 				    file_type INTEGER NOT NULL,
@@ -832,7 +832,7 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 				    mime_type VARCHAR(100) NOT NULL,
 				    thumbnail_url TEXT,
 				    duration INTEGER DEFAULT 0,
-				    uploaded_by VARCHAR(36) NOT NULL,
+				    uploaded_by UUID NOT NULL,
 				    uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 				    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 				    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
