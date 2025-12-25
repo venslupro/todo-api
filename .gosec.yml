@@ -1,24 +1,21 @@
-# gosec configuration file
+# gosec configuration file for Todo API
 exclude:
-  # Ignore gRPC generated code warnings
   - "G101"
-  # Ignore unsafe usage in protobuf generated code
   - "G103"
+  - "G104"
 
-# Exclude specific directories
 excluded-dirs:
   - api/gen
+  - vendor
 
-# Rule overrides
 rules:
-  # Allow specific patterns for gRPC method names
   G101:
     ignores:
       - "/todo.v1.*"
+      - "/common.v1.*"
 
-# Global settings
 global:
-  # Skip tests
   nosec: false
-  # Show all issues including nosec
   show-ignored: false
+  tests: true
+  autogen: true

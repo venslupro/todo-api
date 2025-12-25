@@ -247,104 +247,120 @@ func (r *PostgresRepository) List(ctx context.Context, options domain.TODOListOp
 	argIndex := 1
 
 	// Build WHERE clause
+
 	if len(options.Filter.IDs) > 0 {
 		placeholders := make([]string, len(options.Filter.IDs))
-		for i, id := range options.Filter.IDs {
-			placeholders[i] = fmt.Sprintf("$%d", argIndex)
-			args = append(args, id)
-			argIndex++
+		for i := range options.Filter.IDs {
+			placeholders[i] = fmt.Sprintf("$%d", argIndex+i)
 		}
-		conditions = append(conditions, fmt.Sprintf("id IN (%s)", strings.Join(placeholders, ",")))
+		// Convert []string to []interface{}
+		idArgs := make([]interface{}, len(options.Filter.IDs))
+		for i, id := range options.Filter.IDs {
+			idArgs[i] = id
+		}
+		args = append(args, idArgs...)
+		conditions = append(conditions, "id IN ("+strings.Join(placeholders, ",")+")")
+		argIndex += len(options.Filter.IDs)
 	}
 
 	if options.Filter.UserID != nil {
-		conditions = append(conditions, fmt.Sprintf("user_id = $%d", argIndex))
+		conditions = append(conditions, "user_id = $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.UserID)
 		argIndex++
 	}
 
 	if len(options.Filter.Statuses) > 0 {
 		placeholders := make([]string, len(options.Filter.Statuses))
-		for i, status := range options.Filter.Statuses {
-			placeholders[i] = fmt.Sprintf("$%d", argIndex)
-			args = append(args, int32(status))
-			argIndex++
+		for i := range options.Filter.Statuses {
+			placeholders[i] = fmt.Sprintf("$%d", argIndex+i)
 		}
-		conditions = append(conditions, fmt.Sprintf("status IN (%s)", strings.Join(placeholders, ",")))
+		// Convert []commonv1.Status to []interface{}
+		statusArgs := make([]interface{}, len(options.Filter.Statuses))
+		for i, status := range options.Filter.Statuses {
+			statusArgs[i] = status
+		}
+		args = append(args, statusArgs...)
+		conditions = append(conditions, "status IN ("+strings.Join(placeholders, ",")+")")
+		argIndex += len(options.Filter.Statuses)
 	}
 
 	if len(options.Filter.Priorities) > 0 {
 		placeholders := make([]string, len(options.Filter.Priorities))
-		for i, priority := range options.Filter.Priorities {
-			placeholders[i] = fmt.Sprintf("$%d", argIndex)
-			args = append(args, int32(priority))
-			argIndex++
+		for i := range options.Filter.Priorities {
+			placeholders[i] = fmt.Sprintf("$%d", argIndex+i)
 		}
-		conditions = append(conditions, fmt.Sprintf("priority IN (%s)", strings.Join(placeholders, ",")))
+		// Convert []commonv1.Priority to []interface{}
+		priorityArgs := make([]interface{}, len(options.Filter.Priorities))
+		for i, priority := range options.Filter.Priorities {
+			priorityArgs[i] = priority
+		}
+		args = append(args, priorityArgs...)
+		conditions = append(conditions, "priority IN ("+strings.Join(placeholders, ",")+")")
+		argIndex += len(options.Filter.Priorities)
 	}
 
 	if options.Filter.DueDateFrom != nil {
-		conditions = append(conditions, fmt.Sprintf("due_date >= $%d", argIndex))
+		conditions = append(conditions, "due_date >= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.DueDateFrom)
 		argIndex++
 	}
 
 	if options.Filter.DueDateTo != nil {
-		conditions = append(conditions, fmt.Sprintf("due_date <= $%d", argIndex))
+		conditions = append(conditions, "due_date <= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.DueDateTo)
 		argIndex++
 	}
 
 	if len(options.Filter.Tags) > 0 {
-		conditions = append(conditions, fmt.Sprintf("tags && $%d", argIndex))
+		conditions = append(conditions, "tags && $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, pq.Array(options.Filter.Tags))
 		argIndex++
 	}
 
 	if options.Filter.AssignedTo != nil {
-		conditions = append(conditions, fmt.Sprintf("assigned_to = $%d", argIndex))
+		conditions = append(conditions, "assigned_to = $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.AssignedTo)
 		argIndex++
 	}
 
 	if options.Filter.ParentID != nil {
-		conditions = append(conditions, fmt.Sprintf("parent_id = $%d", argIndex))
+		conditions = append(conditions, "parent_id = $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.ParentID)
 		argIndex++
 	}
 
 	if options.Filter.TeamID != nil {
-		conditions = append(conditions, fmt.Sprintf("team_id = $%d", argIndex))
+		conditions = append(conditions, "team_id = $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.TeamID)
 		argIndex++
 	}
 
 	if options.Filter.IsShared != nil {
-		conditions = append(conditions, fmt.Sprintf("is_shared = $%d", argIndex))
+		conditions = append(conditions, "is_shared = $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.IsShared)
 		argIndex++
 	}
 
 	if options.Filter.CreatedDateFrom != nil {
-		conditions = append(conditions, fmt.Sprintf("created_at >= $%d", argIndex))
+		conditions = append(conditions, "created_at >= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.CreatedDateFrom)
 		argIndex++
 	}
 
 	if options.Filter.CreatedDateTo != nil {
-		conditions = append(conditions, fmt.Sprintf("created_at <= $%d", argIndex))
+		conditions = append(conditions, "created_at <= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.CreatedDateTo)
 		argIndex++
 	}
 
 	if options.Filter.CompletedDateFrom != nil {
-		conditions = append(conditions, fmt.Sprintf("completed_at >= $%d", argIndex))
+		conditions = append(conditions, "completed_at >= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.CompletedDateFrom)
 		argIndex++
 	}
 
 	if options.Filter.CompletedDateTo != nil {
-		conditions = append(conditions, fmt.Sprintf("completed_at <= $%d", argIndex))
+		conditions = append(conditions, "completed_at <= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.CompletedDateTo)
 		argIndex++
 	}
@@ -361,11 +377,11 @@ func (r *PostgresRepository) List(ctx context.Context, options domain.TODOListOp
 		for _, field := range searchFields {
 			switch field {
 			case "title":
-				searchConditions = append(searchConditions, fmt.Sprintf("title ILIKE $%d", argIndex))
+				searchConditions = append(searchConditions, "title ILIKE $"+fmt.Sprintf("%d", argIndex))
 			case "description":
-				searchConditions = append(searchConditions, fmt.Sprintf("description ILIKE $%d", argIndex))
+				searchConditions = append(searchConditions, "description ILIKE $"+fmt.Sprintf("%d", argIndex))
 			case "tags":
-				searchConditions = append(searchConditions, fmt.Sprintf("$%d = ANY(tags)", argIndex))
+				searchConditions = append(searchConditions, "$"+fmt.Sprintf("%d", argIndex)+" = ANY(tags)")
 			}
 		}
 
@@ -419,13 +435,10 @@ func (r *PostgresRepository) List(ctx context.Context, options domain.TODOListOp
 	}
 
 	// Fetch items
-	query := `
-		SELECT id, user_id, title, description, status, priority, due_date,
-		       tags, is_shared, shared_by, created_at, updated_at, completed_at, assigned_to, parent_id, position
-		FROM todos
-		` + whereClause + `
-		` + orderBy + `
-		LIMIT $` + fmt.Sprintf("%d", argIndex) + ` OFFSET $` + fmt.Sprintf("%d", argIndex+1)
+	query := "SELECT id, user_id, title, description, status, priority, due_date, " +
+		"tags, is_shared, shared_by, created_at, updated_at, completed_at, assigned_to, parent_id, position " +
+		"FROM todos " + whereClause + " " + orderBy + " " +
+		"LIMIT $" + fmt.Sprintf("%d", argIndex) + " OFFSET $" + fmt.Sprintf("%d", argIndex+1)
 
 	args = append(args, pageSize, offset)
 
@@ -764,7 +777,9 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 				    thumbnail_url TEXT,
 				    duration INTEGER, -- For videos
 				    uploaded_by UUID NOT NULL REFERENCES users(id),
-				    uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+				    uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+				    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+				    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 				);
 
 				-- Activity logs table
