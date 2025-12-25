@@ -839,15 +839,13 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 				    
 				    -- Foreign key constraints
 				    CONSTRAINT fk_media_todo FOREIGN KEY (todo_id) REFERENCES todos(id) ON DELETE CASCADE,
-				    CONSTRAINT fk_media_user FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE CASCADE,
-				    
-				    -- Indexes for performance
-				    INDEX idx_media_todo_id (todo_id),
-				    INDEX idx_media_uploaded_by (uploaded_by),
-				    INDEX idx_media_uploaded_at (uploaded_at)
+				    CONSTRAINT fk_media_user FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE CASCADE
 				);
 
 				-- Create indexes for better query performance
+				CREATE INDEX idx_media_todo_id ON media_attachments(todo_id);
+				CREATE INDEX idx_media_uploaded_by ON media_attachments(uploaded_by);
+				CREATE INDEX idx_media_uploaded_at ON media_attachments(uploaded_at);
 				CREATE INDEX idx_media_file_type ON media_attachments(file_type);
 				CREATE INDEX idx_media_created_at ON media_attachments(created_at);
 			`,
