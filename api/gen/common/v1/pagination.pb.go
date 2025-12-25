@@ -384,9 +384,8 @@ const file_common_v1_pagination_proto_rawDesc = "" +
 	"\x06values\x18\x04 \x03(\tR\x06values\"k\n" +
 	"\tDateRange\x120\n" +
 	"\x05start\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x05start\x12,\n" +
-	"\x03end\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x03endB\x9b\x01\n" +
-	"\rcom.common.v1B\x0fPaginationProtoP\x01Z4github.com/venslupro/todo-api/gen/common/v1;commonv1\xa2\x02\x03CXX\xaa\x02\tCommon.V1\xca\x02\tCommon\\V1\xe2\x02\x15Common\\V1\\GPBMetadata\xea\x02\n" +
-	"Common::V1b\x06proto3"
+	"\x03end\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x03endBL\n" +
+	"\x0etodo.common.v1P\x01Z8github.com/venslupro/todo-api/api/gen/common/v1;commonv1b\x06proto3"
 
 var (
 	file_common_v1_pagination_proto_rawDescOnce sync.Once

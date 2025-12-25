@@ -7,7 +7,7 @@
 package todov1
 
 import (
-	_ "github.com/venslupro/todo-api/gen/google/api"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -42,8 +42,8 @@ const file_todo_v1_team_service_proto_rawDesc = "" +
 	"\tShareList\x12\x19.todo.v1.ShareListRequest\x1a\x1a.todo.v1.ShareListResponse\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/v1/teams/{team_id}/share\x12y\n" +
 	"\x10UpdateSharedList\x12 .todo.v1.UpdateSharedListRequest\x1a!.todo.v1.UpdateSharedListResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\x1a\x15/v1/shared-lists/{id}\x12n\n" +
 	"\x0fListSharedLists\x12\x1f.todo.v1.ListSharedListsRequest\x1a .todo.v1.ListSharedListsResponse\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/v1/shared-lists\x12g\n" +
-	"\vUnshareList\x12\x1b.todo.v1.UnshareListRequest\x1a\x1c.todo.v1.UnshareListResponse\"\x1d\x82\xd3\xe4\x93\x02\x17*\x15/v1/shared-lists/{id}B\x8e\x01\n" +
-	"\vcom.todo.v1B\x10TeamServiceProtoP\x01Z0github.com/venslupro/todo-api/gen/todo/v1;todov1\xa2\x02\x03TXX\xaa\x02\aTodo.V1\xca\x02\aTodo\\V1\xe2\x02\x13Todo\\V1\\GPBMetadata\xea\x02\bTodo::V1b\x06proto3"
+	"\vUnshareList\x12\x1b.todo.v1.UnshareListRequest\x1a\x1c.todo.v1.UnshareListResponse\"\x1d\x82\xd3\xe4\x93\x02\x17*\x15/v1/shared-lists/{id}BA\n" +
+	"\atodo.v1P\x01Z4github.com/venslupro/todo-api/api/gen/todo/v1;todov1b\x06proto3"
 
 var file_todo_v1_team_service_proto_goTypes = []any{
 	(*CreateTeamRequest)(nil),        // 0: todo.v1.CreateTeamRequest

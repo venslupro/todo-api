@@ -7,7 +7,7 @@
 package todov1
 
 import (
-	_ "github.com/venslupro/todo-api/gen/google/api"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -37,8 +37,8 @@ const file_todo_v1_auth_service_proto_rawDesc = "" +
 	"\x0eChangePassword\x12\x1e.todo.v1.ChangePasswordRequest\x1a\x1f.todo.v1.ChangePasswordResponse\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/v1/auth/change-password\x12j\n" +
 	"\vVerifyEmail\x12\x1b.todo.v1.VerifyEmailRequest\x1a\x1c.todo.v1.VerifyEmailResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1/auth/verify-email\x12\x8f\x01\n" +
 	"\x14RequestPasswordReset\x12$.todo.v1.RequestPasswordResetRequest\x1a%.todo.v1.RequestPasswordResetResponse\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/v1/auth/request-password-reset\x12\x8f\x01\n" +
-	"\x14ConfirmPasswordReset\x12$.todo.v1.ConfirmPasswordResetRequest\x1a%.todo.v1.ConfirmPasswordResetResponse\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/v1/auth/confirm-password-resetB\x8e\x01\n" +
-	"\vcom.todo.v1B\x10AuthServiceProtoP\x01Z0github.com/venslupro/todo-api/gen/todo/v1;todov1\xa2\x02\x03TXX\xaa\x02\aTodo.V1\xca\x02\aTodo\\V1\xe2\x02\x13Todo\\V1\\GPBMetadata\xea\x02\bTodo::V1b\x06proto3"
+	"\x14ConfirmPasswordReset\x12$.todo.v1.ConfirmPasswordResetRequest\x1a%.todo.v1.ConfirmPasswordResetResponse\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/v1/auth/confirm-password-resetBA\n" +
+	"\atodo.v1P\x01Z4github.com/venslupro/todo-api/api/gen/todo/v1;todov1b\x06proto3"
 
 var file_todo_v1_auth_service_proto_goTypes = []any{
 	(*RegisterRequest)(nil),              // 0: todo.v1.RegisterRequest

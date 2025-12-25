@@ -7,7 +7,7 @@
 package todov1
 
 import (
-	_ "github.com/venslupro/todo-api/gen/google/api"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -31,8 +31,8 @@ const file_todo_v1_realtime_service_proto_rawDesc = "" +
 	"\fPublishEvent\x12\x1c.todo.v1.PublishEventRequest\x1a\x1d.todo.v1.PublishEventResponse\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1/realtime/publish\x12r\n" +
 	"\x0eListActivities\x12\x1e.todo.v1.ListActivitiesRequest\x1a\x1f.todo.v1.ListActivitiesResponse\"\x1f\x82\xd3\xe4\x93\x02\x19\x12\x17/v1/realtime/activities\x12t\n" +
 	"\x0eGetOnlineUsers\x12\x1e.todo.v1.GetOnlineUsersRequest\x1a\x1f.todo.v1.GetOnlineUsersResponse\"!\x82\xd3\xe4\x93\x02\x1b\x12\x19/v1/realtime/online-users\x12e\n" +
-	"\tHeartbeat\x12\x19.todo.v1.HeartbeatRequest\x1a\x1a.todo.v1.HeartbeatResponse\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/v1/realtime/heartbeatB\x92\x01\n" +
-	"\vcom.todo.v1B\x14RealtimeServiceProtoP\x01Z0github.com/venslupro/todo-api/gen/todo/v1;todov1\xa2\x02\x03TXX\xaa\x02\aTodo.V1\xca\x02\aTodo\\V1\xe2\x02\x13Todo\\V1\\GPBMetadata\xea\x02\bTodo::V1b\x06proto3"
+	"\tHeartbeat\x12\x19.todo.v1.HeartbeatRequest\x1a\x1a.todo.v1.HeartbeatResponse\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/v1/realtime/heartbeatBA\n" +
+	"\atodo.v1P\x01Z4github.com/venslupro/todo-api/api/gen/todo/v1;todov1b\x06proto3"
 
 var file_todo_v1_realtime_service_proto_goTypes = []any{
 	(*SubscribeRequest)(nil),       // 0: todo.v1.SubscribeRequest

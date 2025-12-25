@@ -7,7 +7,7 @@
 package todov1
 
 import (
-	v1 "github.com/venslupro/todo-api/gen/common/v1"
+	v1 "github.com/venslupro/todo-api/api/gen/common/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -1003,8 +1003,8 @@ const file_todo_v1_realtime_proto_rawDesc = "" +
 	"\x13PublishEventRequest\x12,\n" +
 	"\x05event\x18\x01 \x01(\v2\x16.todo.v1.RealtimeEventR\x05event\"D\n" +
 	"\x14PublishEventResponse\x12,\n" +
-	"\x05event\x18\x01 \x01(\v2\x16.todo.v1.RealtimeEventR\x05eventB\x8b\x01\n" +
-	"\vcom.todo.v1B\rRealtimeProtoP\x01Z0github.com/venslupro/todo-api/gen/todo/v1;todov1\xa2\x02\x03TXX\xaa\x02\aTodo.V1\xca\x02\aTodo\\V1\xe2\x02\x13Todo\\V1\\GPBMetadata\xea\x02\bTodo::V1b\x06proto3"
+	"\x05event\x18\x01 \x01(\v2\x16.todo.v1.RealtimeEventR\x05eventBA\n" +
+	"\atodo.v1P\x01Z4github.com/venslupro/todo-api/api/gen/todo/v1;todov1b\x06proto3"
 
 var (
 	file_todo_v1_realtime_proto_rawDescOnce sync.Once

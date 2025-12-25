@@ -7,7 +7,7 @@
 package todov1
 
 import (
-	_ "github.com/venslupro/todo-api/gen/protoc-gen-openapiv2/options"
+	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -25,7 +25,7 @@ var File_todo_v1_todo_api_proto protoreflect.FileDescriptor
 
 const file_todo_v1_todo_api_proto_rawDesc = "" +
 	"\n" +
-	"\x16todo/v1/todo_api.proto\x12\atodo.v1\x1a.protoc-gen-openapiv2/options/annotations.protoB\x8d\x04\x92A\xff\x02\x12\xff\x01\n" +
+	"\x16todo/v1/todo_api.proto\x12\atodo.v1\x1a.protoc-gen-openapiv2/options/annotations.protoB\xc4\x03\x92A\xff\x02\x12\xff\x01\n" +
 	" Real-Time Collaborative TODO API\x12\\A scalable real-time collaborative TODO list application supporting 100M+ daily active users\"L\n" +
 	"\rTODO API Team\x12%https://github.com/venslupro/todo-api\x1a\x14support@todo-api.com**\n" +
 	"\x03MIT\x12#https://opensource.org/licenses/MIT2\x031.0*\x03\x01\x02\x042\x10application/json:\x10application/jsonZ@\n" +
@@ -35,7 +35,7 @@ const file_todo_v1_todo_api_proto_rawDesc = "" +
 	"\x0e\n" +
 	"\n" +
 	"BearerAuth\x12\x00\n" +
-	"\vcom.todo.v1B\fTodoApiProtoP\x01Z0github.com/venslupro/todo-api/gen/todo/v1;todov1\xa2\x02\x03TXX\xaa\x02\aTodo.V1\xca\x02\aTodo\\V1\xe2\x02\x13Todo\\V1\\GPBMetadata\xea\x02\bTodo::V1b\x06proto3"
+	"\atodo.v1P\x01Z4github.com/venslupro/todo-api/api/gen/todo/v1;todov1b\x06proto3"
 
 var file_todo_v1_todo_api_proto_goTypes = []any{}
 var file_todo_v1_todo_api_proto_depIdxs = []int32{

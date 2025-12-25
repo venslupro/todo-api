@@ -1,0 +1,205 @@
+# Production values for Todo API Helm chart
+# Use this file for production deployments
+
+# Application configuration
+app:
+  name: todo-api
+  fullname: todo-api-production
+  
+  # Production image configuration
+  image:
+    repository: ghcr.io/venslupro/todo-api
+    tag: v1.0.0  # Use specific version tag for production
+    pullPolicy: IfNotPresent
+    
+  # Production service configuration
+  service:
+    type: LoadBalancer  # Use LoadBalancer for production
+    port: 8080
+    grpcPort: 50051
+    
+  # Production resources
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+      
+  # Production replicas
+  replicaCount: 3
+  
+  # Production environment variables
+  env:
+    # Database configuration
+    DB_HOST: "postgresql-production"
+    DB_PORT: "5432"
+    DB_NAME: "todo_api_production"
+    DB_USER: "todo_user"
+    DB_SSLMODE: "require"  # Require SSL in production
+    
+    # Redis configuration
+    REDIS_HOST: "redis-production"
+    REDIS_PORT: "6379"
+    
+    # Server configuration
+    GRPC_PORT: "50051"
+    HTTP_PORT: "8080"
+    ENVIRONMENT: "production"
+    
+    # Authentication configuration
+    ACCESS_TOKEN_EXPIRY: "15m"
+    REFRESH_TOKEN_EXPIRY: "168h"
+    
+    # Storage configuration
+    STORAGE_TYPE: "s3"
+    
+  # Production secrets (should be provided via external secrets)
+  secrets:
+    # Database password
+    DB_PASSWORD: ""  # Set via external secret
+    
+    # JWT secret
+    JWT_SECRET: ""  # Set via external secret
+    
+    # AWS S3 credentials
+    STORAGE_S3_BUCKET: "todo-api-production"
+    STORAGE_S3_REGION: "us-east-1"
+    STORAGE_S3_KEY: ""  # Set via external secret
+    STORAGE_S3_SECRET: ""  # Set via external secret
+
+# Database configuration (use external database in production)
+postgresql:
+  enabled: false  # Use external PostgreSQL in production
+  
+# Redis configuration (use external Redis in production)
+redis:
+  enabled: false  # Use external Redis in production
+
+# Ingress configuration for production
+ingress:
+  enabled: true
+  className: "nginx"
+  
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    
+  hosts:
+    - host: api.todoapp.com
+      paths:
+        - path: /
+          pathType: Prefix
+          
+  tls:
+    - secretName: todo-api-tls
+      hosts:
+        - api.todoapp.com
+
+# Service account configuration
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+# Production security context
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsNonRoot: true
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# Production health checks
+probes:
+  liveness:
+    path: /health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+    
+  readiness:
+    path: /health
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+# Database migration configuration
+migration:
+  enabled: true
+  image:
+    repository: ghcr.io/venslupro/todo-api
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+    
+  # Migration job resources
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+# Production autoscaling configuration
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+# Pod disruption budget for production
+pdb:
+  enabled: true
+  minAvailable: 2
+
+# Node selector for production
+nodeSelector:
+  node-type: worker
+  environment: production
+
+# Tolerations for production
+tolerations:
+  - key: "environment"
+    operator: "Equal"
+    value: "production"
+    effect: "NoSchedule"
+
+# Affinity for production
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+            - todo-api
+        topologyKey: kubernetes.io/hostname
+
+# Additional labels and annotations for production
+labels:
+  environment: production
+  team: backend
+  
+annotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8080"
+  prometheus.io/path: "/metrics"
+
+# Pod management policy
+podManagementPolicy: Parallel

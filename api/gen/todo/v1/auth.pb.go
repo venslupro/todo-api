@@ -1182,8 +1182,8 @@ const file_todo_v1_auth_proto_rawDesc = "" +
 	"\x1cConfirmPasswordResetResponse\"\x13\n" +
 	"\x11GetProfileRequest\"7\n" +
 	"\x12GetProfileResponse\x12!\n" +
-	"\x04user\x18\x01 \x01(\v2\r.todo.v1.UserR\x04userB\x87\x01\n" +
-	"\vcom.todo.v1B\tAuthProtoP\x01Z0github.com/venslupro/todo-api/gen/todo/v1;todov1\xa2\x02\x03TXX\xaa\x02\aTodo.V1\xca\x02\aTodo\\V1\xe2\x02\x13Todo\\V1\\GPBMetadata\xea\x02\bTodo::V1b\x06proto3"
+	"\x04user\x18\x01 \x01(\v2\r.todo.v1.UserR\x04userBA\n" +
+	"\atodo.v1P\x01Z4github.com/venslupro/todo-api/api/gen/todo/v1;todov1b\x06proto3"
 
 var (
 	file_todo_v1_auth_proto_rawDescOnce sync.Once

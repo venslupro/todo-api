@@ -520,10 +520,8 @@ const file_common_v1_enums_proto_rawDesc = "" +
 	"\x16EVENT_TYPE_USER_JOINED\x10\x05\x12\x18\n" +
 	"\x14EVENT_TYPE_USER_LEFT\x10\x06\x12\x1c\n" +
 	"\x18EVENT_TYPE_COMMENT_ADDED\x10\a\x12\x1a\n" +
-	"\x16EVENT_TYPE_MEDIA_ADDED\x10\bB\x96\x01\n" +
-	"\rcom.common.v1B\n" +
-	"EnumsProtoP\x01Z4github.com/venslupro/todo-api/gen/common/v1;commonv1\xa2\x02\x03CXX\xaa\x02\tCommon.V1\xca\x02\tCommon\\V1\xe2\x02\x15Common\\V1\\GPBMetadata\xea\x02\n" +
-	"Common::V1b\x06proto3"
+	"\x16EVENT_TYPE_MEDIA_ADDED\x10\bBL\n" +
+	"\x0etodo.common.v1P\x01Z8github.com/venslupro/todo-api/api/gen/common/v1;commonv1b\x06proto3"
 
 var (
 	file_common_v1_enums_proto_rawDescOnce sync.Once

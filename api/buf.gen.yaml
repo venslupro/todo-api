@@ -1,9 +1,4 @@
 version: v2
-managed:
-  enabled: true
-  override:
-    - file_option: go_package_prefix
-      value: github.com/venslupro/todo-api/gen
 plugins:
   # 生成 Go 消息定义 (.pb.go)
   - remote: buf.build/protocolbuffers/go
@@ -30,4 +25,4 @@ plugins:
     opt:
       - allow_merge=true
       - merge_file_name=todo-api
-      #- openapi_configuration=openapi.yaml
+      - openapi_configuration=openapi.yaml

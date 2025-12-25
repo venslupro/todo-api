@@ -1,0 +1,240 @@
+# Default values for todo-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Application configuration
+app:
+  name: todo-api
+  fullname: todo-api
+  
+  # Application image configuration
+  image:
+    repository: ghcr.io/venslupro/todo-api
+    tag: latest
+    pullPolicy: IfNotPresent
+    
+  # Application service configuration
+  service:
+    type: ClusterIP
+    port: 8080
+    grpcPort: 50051
+    
+  # Application resources
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+      
+  # Application replicas
+  replicaCount: 3
+  
+  # Application environment variables
+  env:
+    # Database configuration
+    DB_HOST: "postgresql"
+    DB_PORT: "5432"
+    DB_NAME: "todo_api"
+    DB_USER: "postgres"
+    DB_SSLMODE: "disable"
+    
+    # Redis configuration
+    REDIS_HOST: "redis-master"
+    REDIS_PORT: "6379"
+    
+    # Server configuration
+    GRPC_PORT: "50051"
+    HTTP_PORT: "8080"
+    ENVIRONMENT: "production"
+    
+    # Authentication configuration
+    ACCESS_TOKEN_EXPIRY: "15m"
+    REFRESH_TOKEN_EXPIRY: "168h"
+    
+    # Storage configuration
+    STORAGE_TYPE: "s3"
+    
+  # Application secrets (should be provided via external secrets)
+  secrets:
+    # Database password
+    DB_PASSWORD: ""
+    
+    # JWT secret
+    JWT_SECRET: ""
+    
+    # AWS S3 credentials
+    STORAGE_S3_BUCKET: ""
+    STORAGE_S3_REGION: ""
+    STORAGE_S3_KEY: ""
+    STORAGE_S3_SECRET: ""
+
+# Database configuration
+postgresql:
+  enabled: true
+  
+  # PostgreSQL image configuration
+  image:
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: 13.12.0
+    
+  # PostgreSQL authentication
+  auth:
+    postgresPassword: ""
+    database: "todo_api"
+    username: "postgres"
+    
+  # PostgreSQL persistence
+  persistence:
+    enabled: true
+    size: 8Gi
+    storageClass: ""
+    
+  # PostgreSQL resources
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+      
+  # PostgreSQL primary configuration
+  primary:
+    persistence:
+      size: 8Gi
+
+# Redis configuration
+redis:
+  enabled: true
+  
+  # Redis architecture
+  architecture: replication
+  
+  # Redis authentication
+  auth:
+    enabled: false
+    
+  # Redis master configuration
+  master:
+    persistence:
+      enabled: true
+      size: 1Gi
+      
+  # Redis resources
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "250m"
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    
+  hosts:
+    - host: todo-api.local
+      paths:
+        - path: /
+          pathType: Prefix
+          
+  tls: []
+  #  - secretName: todo-api-tls
+  #    hosts:
+  #      - todo-api.local
+
+# Service account configuration
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# Pod security context
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsNonRoot: true
+
+# Container security context
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# Liveness and readiness probes
+probes:
+  liveness:
+    path: /health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+    
+  readiness:
+    path: /health
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+# Database migration configuration
+migration:
+  enabled: true
+  image:
+    repository: ghcr.io/venslupro/todo-api
+    tag: latest
+    pullPolicy: IfNotPresent
+    
+  # Migration job resources
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# Autoscaling configuration
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Pod disruption budget
+pdb:
+  enabled: false
+  minAvailable: 1
+  # maxUnavailable: 1
+
+# Node selector and affinity
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Additional labels and annotations
+labels: {}
+annotations: {}
+
+# Pod management policy
+podManagementPolicy: Parallel

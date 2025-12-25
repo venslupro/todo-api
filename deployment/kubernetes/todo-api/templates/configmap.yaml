@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "todo-api.fullname" . }}-config
+  labels:
+    {{- include "todo-api.labels" . | nindent 4 }}
+data:
+  # Application configuration
+  app-config.yaml: |
+    # Todo API Configuration
+    server:
+      grpcPort: {{ .Values.app.env.GRPC_PORT }}
+      httpPort: {{ .Values.app.env.HTTP_PORT }}
+      environment: {{ .Values.app.env.ENVIRONMENT }}
+    
+    database:
+      host: {{ .Values.app.env.DB_HOST }}
+      port: {{ .Values.app.env.DB_PORT }}
+      name: {{ .Values.app.env.DB_NAME }}
+      user: {{ .Values.app.env.DB_USER }}
+      sslMode: {{ .Values.app.env.DB_SSLMODE }}
+    
+    redis:
+      host: {{ .Values.app.env.REDIS_HOST }}
+      port: {{ .Values.app.env.REDIS_PORT }}
+    
+    auth:
+      accessTokenExpiry: {{ .Values.app.env.ACCESS_TOKEN_EXPIRY }}
+      refreshTokenExpiry: {{ .Values.app.env.REFRESH_TOKEN_EXPIRY }}
+    
+    storage:
+      type: {{ .Values.app.env.STORAGE_TYPE }}
+  
+  # Logging configuration
+  logging-config.yaml: |
+    # Logging configuration for Todo API
+    level: info
+    format: json
+    output: stdout
+    
+    # Application specific loggers
+    loggers:
+      todo-api: info
+      database: warn
+      redis: warn
+      s3: info
+    
+    # Structured logging fields
+    fields:
+      service: todo-api
+      version: {{ .Chart.AppVersion }}
+      environment: {{ .Values.app.env.ENVIRONMENT }}
+  
+  # Health check configuration
+  health-config.yaml: |
+    # Health check endpoints
+    endpoints:
+      - name: database
+        type: postgresql
+        host: {{ .Values.app.env.DB_HOST }}
+        port: {{ .Values.app.env.DB_PORT }}
+        
+      - name: redis
+        type: redis
+        host: {{ .Values.app.env.REDIS_HOST }}
+        port: {{ .Values.app.env.REDIS_PORT }}
+        
+      - name: s3
+        type: aws-s3
+        region: {{ .Values.app.secrets.STORAGE_S3_REGION }}
+        bucket: {{ .Values.app.secrets.STORAGE_S3_BUCKET }}
+    
+    # Health check intervals
+    checkInterval: 30s
+    timeout: 10s

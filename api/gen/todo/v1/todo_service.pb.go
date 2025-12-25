@@ -7,7 +7,7 @@
 package todov1
 
 import (
-	_ "github.com/venslupro/todo-api/gen/google/api"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -41,8 +41,8 @@ const file_todo_v1_todo_service_proto_rawDesc = "" +
 	"\bMoveTODO\x12\x18.todo.v1.MoveTODORequest\x1a\x19.todo.v1.MoveTODOResponse\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1/todos/{id}/move\x12l\n" +
 	"\fCompleteTODO\x12\x1c.todo.v1.CompleteTODORequest\x1a\x1d.todo.v1.CompleteTODOResponse\"\x1f\x82\xd3\xe4\x93\x02\x19\"\x17/v1/todos/{id}/complete\x12d\n" +
 	"\n" +
-	"ReopenTODO\x12\x1a.todo.v1.ReopenTODORequest\x1a\x1b.todo.v1.ReopenTODOResponse\"\x1d\x82\xd3\xe4\x93\x02\x17\"\x15/v1/todos/{id}/reopenB\x8e\x01\n" +
-	"\vcom.todo.v1B\x10TodoServiceProtoP\x01Z0github.com/venslupro/todo-api/gen/todo/v1;todov1\xa2\x02\x03TXX\xaa\x02\aTodo.V1\xca\x02\aTodo\\V1\xe2\x02\x13Todo\\V1\\GPBMetadata\xea\x02\bTodo::V1b\x06proto3"
+	"ReopenTODO\x12\x1a.todo.v1.ReopenTODORequest\x1a\x1b.todo.v1.ReopenTODOResponse\"\x1d\x82\xd3\xe4\x93\x02\x17\"\x15/v1/todos/{id}/reopenBA\n" +
+	"\atodo.v1P\x01Z4github.com/venslupro/todo-api/api/gen/todo/v1;todov1b\x06proto3"
 
 var file_todo_v1_todo_service_proto_goTypes = []any{
 	(*CreateTODORequest)(nil),        // 0: todo.v1.CreateTODORequest

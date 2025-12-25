@@ -7,7 +7,7 @@
 package todov1
 
 import (
-	_ "github.com/venslupro/todo-api/gen/google/api"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -33,8 +33,8 @@ const file_todo_v1_system_service_proto_rawDesc = "" +
 	"\n" +
 	"ExportData\x12\x1a.todo.v1.ExportDataRequest\x1a\x1b.todo.v1.ExportDataResponse\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/v1/system/export\x12{\n" +
 	"\x0fGetExportStatus\x12\x1f.todo.v1.GetExportStatusRequest\x1a .todo.v1.GetExportStatusResponse\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/v1/system/export/{export_id}\x12m\n" +
-	"\fClearOldLogs\x12\x1c.todo.v1.ClearOldLogsRequest\x1a\x1d.todo.v1.ClearOldLogsResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1/system/logs/clearB\x90\x01\n" +
-	"\vcom.todo.v1B\x12SystemServiceProtoP\x01Z0github.com/venslupro/todo-api/gen/todo/v1;todov1\xa2\x02\x03TXX\xaa\x02\aTodo.V1\xca\x02\aTodo\\V1\xe2\x02\x13Todo\\V1\\GPBMetadata\xea\x02\bTodo::V1b\x06proto3"
+	"\fClearOldLogs\x12\x1c.todo.v1.ClearOldLogsRequest\x1a\x1d.todo.v1.ClearOldLogsResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1/system/logs/clearBA\n" +
+	"\atodo.v1P\x01Z4github.com/venslupro/todo-api/api/gen/todo/v1;todov1b\x06proto3"
 
 var file_todo_v1_system_service_proto_goTypes = []any{
 	(*HealthCheckRequest)(nil),      // 0: todo.v1.HealthCheckRequest

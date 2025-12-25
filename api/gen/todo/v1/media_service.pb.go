@@ -7,7 +7,7 @@
 package todov1
 
 import (
-	_ "github.com/venslupro/todo-api/gen/google/api"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -31,8 +31,8 @@ const file_todo_v1_media_service_proto_rawDesc = "" +
 	"\x11GenerateUploadURL\x12!.todo.v1.GenerateUploadURLRequest\x1a\".todo.v1.GenerateUploadURLResponse\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1/media/upload-url\x12W\n" +
 	"\bGetMedia\x12\x18.todo.v1.GetMediaRequest\x1a\x19.todo.v1.GetMediaResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/media/{id}\x12U\n" +
 	"\tListMedia\x12\x19.todo.v1.ListMediaRequest\x1a\x1a.todo.v1.ListMediaResponse\"\x11\x82\xd3\xe4\x93\x02\v\x12\t/v1/media\x12`\n" +
-	"\vDeleteMedia\x12\x1b.todo.v1.DeleteMediaRequest\x1a\x1c.todo.v1.DeleteMediaResponse\"\x16\x82\xd3\xe4\x93\x02\x10*\x0e/v1/media/{id}B\x8f\x01\n" +
-	"\vcom.todo.v1B\x11MediaServiceProtoP\x01Z0github.com/venslupro/todo-api/gen/todo/v1;todov1\xa2\x02\x03TXX\xaa\x02\aTodo.V1\xca\x02\aTodo\\V1\xe2\x02\x13Todo\\V1\\GPBMetadata\xea\x02\bTodo::V1b\x06proto3"
+	"\vDeleteMedia\x12\x1b.todo.v1.DeleteMediaRequest\x1a\x1c.todo.v1.DeleteMediaResponse\"\x16\x82\xd3\xe4\x93\x02\x10*\x0e/v1/media/{id}BA\n" +
+	"\atodo.v1P\x01Z4github.com/venslupro/todo-api/api/gen/todo/v1;todov1b\x06proto3"
 
 var file_todo_v1_media_service_proto_goTypes = []any{
 	(*UploadMediaRequest)(nil),        // 0: todo.v1.UploadMediaRequest

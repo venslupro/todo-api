@@ -7,7 +7,7 @@
 package todov1
 
 import (
-	v1 "github.com/venslupro/todo-api/gen/common/v1"
+	v1 "github.com/venslupro/todo-api/api/gen/common/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -873,9 +873,8 @@ const file_todo_v1_media_proto_rawDesc = "" +
 	"expires_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\"B\n" +
 	"\x10GetMediaResponse\x12.\n" +
 	"\x05media\x18\x01 \x01(\v2\x18.todo.v1.MediaAttachmentR\x05media\"\x15\n" +
-	"\x13DeleteMediaResponseB\x88\x01\n" +
-	"\vcom.todo.v1B\n" +
-	"MediaProtoP\x01Z0github.com/venslupro/todo-api/gen/todo/v1;todov1\xa2\x02\x03TXX\xaa\x02\aTodo.V1\xca\x02\aTodo\\V1\xe2\x02\x13Todo\\V1\\GPBMetadata\xea\x02\bTodo::V1b\x06proto3"
+	"\x13DeleteMediaResponseBA\n" +
+	"\atodo.v1P\x01Z4github.com/venslupro/todo-api/api/gen/todo/v1;todov1b\x06proto3"
 
 var (
 	file_todo_v1_media_proto_rawDescOnce sync.Once

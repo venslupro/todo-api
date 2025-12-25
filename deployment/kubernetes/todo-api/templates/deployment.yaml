@@ -1,0 +1,162 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-api.fullname" . }}
+  labels:
+    {{- include "todo-api.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.app.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "todo-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "todo-api.selectorLabels" . | nindent 8 }}
+        {{- with .Values.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "todo-api.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.app.service.port }}
+              protocol: TCP
+            - name: grpc
+              containerPort: {{ .Values.app.service.grpcPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+          resources:
+            {{- toYaml .Values.app.resources | nindent 12 }}
+          env:
+            # Database configuration
+            - name: DB_HOST
+              value: {{ .Values.app.env.DB_HOST | quote }}
+            - name: DB_PORT
+              value: {{ .Values.app.env.DB_PORT | quote }}
+            - name: DB_NAME
+              value: {{ .Values.app.env.DB_NAME | quote }}
+            - name: DB_USER
+              value: {{ .Values.app.env.DB_USER | quote }}
+            - name: DB_SSLMODE
+              value: {{ .Values.app.env.DB_SSLMODE | quote }}
+            
+            # Redis configuration
+            - name: REDIS_HOST
+              value: {{ .Values.app.env.REDIS_HOST | quote }}
+            - name: REDIS_PORT
+              value: {{ .Values.app.env.REDIS_PORT | quote }}
+            
+            # Server configuration
+            - name: GRPC_PORT
+              value: {{ .Values.app.env.GRPC_PORT | quote }}
+            - name: HTTP_PORT
+              value: {{ .Values.app.env.HTTP_PORT | quote }}
+            - name: ENVIRONMENT
+              value: {{ .Values.app.env.ENVIRONMENT | quote }}
+            
+            # Authentication configuration
+            - name: ACCESS_TOKEN_EXPIRY
+              value: {{ .Values.app.env.ACCESS_TOKEN_EXPIRY | quote }}
+            - name: REFRESH_TOKEN_EXPIRY
+              value: {{ .Values.app.env.REFRESH_TOKEN_EXPIRY | quote }}
+            
+            # Storage configuration
+            - name: STORAGE_TYPE
+              value: {{ .Values.app.env.STORAGE_TYPE | quote }}
+            
+            # Secrets from Kubernetes secrets
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "todo-api.fullname" . }}-secrets
+                  key: db-password
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "todo-api.fullname" . }}-secrets
+                  key: jwt-secret
+            - name: STORAGE_S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "todo-api.fullname" . }}-secrets
+                  key: s3-bucket
+            - name: STORAGE_S3_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "todo-api.fullname" . }}-secrets
+                  key: s3-region
+            - name: STORAGE_S3_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "todo-api.fullname" . }}-secrets
+                  key: s3-access-key
+            - name: STORAGE_S3_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "todo-api.fullname" . }}-secrets
+                  key: s3-secret-key
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "todo-api.fullname" . }}-config
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  {{- if .Values.pdb.enabled }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  {{- end }}

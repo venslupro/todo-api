@@ -315,9 +315,8 @@ const file_common_v1_errors_proto_rawDesc = "" +
 	"\x1dERROR_CODE_RESOURCE_EXHAUSTED\x10\xa3\x1f\x12\x1e\n" +
 	"\x19ERROR_CODE_INTERNAL_ERROR\x10\x89'\x12#\n" +
 	"\x1eERROR_CODE_SERVICE_UNAVAILABLE\x10\x8a'\x12\x17\n" +
-	"\x12ERROR_CODE_TIMEOUT\x10\x8b'B\x97\x01\n" +
-	"\rcom.common.v1B\vErrorsProtoP\x01Z4github.com/venslupro/todo-api/gen/common/v1;commonv1\xa2\x02\x03CXX\xaa\x02\tCommon.V1\xca\x02\tCommon\\V1\xe2\x02\x15Common\\V1\\GPBMetadata\xea\x02\n" +
-	"Common::V1b\x06proto3"
+	"\x12ERROR_CODE_TIMEOUT\x10\x8b'BL\n" +
+	"\x0etodo.common.v1P\x01Z8github.com/venslupro/todo-api/api/gen/common/v1;commonv1b\x06proto3"
 
 var (
 	file_common_v1_errors_proto_rawDescOnce sync.Once
