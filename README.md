@@ -1,54 +1,119 @@
 # TODO API - Real-time Collaborative TODO System
 
-> **注意**: 项目文档已归档到 `docs/` 目录。请查看相应的文档目录获取详细信息。
+A scalable and well-designed real-time collaborative TODO list API application built with Go, gRPC, and gRPC-Gateway. The system supports user management, team collaboration, real-time updates, and comprehensive TODO management features.
 
-## 📚 文档目录
+## 🚀 Features
 
-- **[项目概述](docs/README.md)** - 项目功能、特性和快速开始指南
-- **[系统架构](docs/architecture/)** - 架构设计、技术栈和组件说明
-- **[API文档](docs/api/)** - API接口、OpenAPI规范和Postman集合
-- **[部署指南](docs/deployment/)** - 部署配置、Kubernetes和Docker说明
-- **[开发指南](docs/development/)** - 开发环境设置、代码结构和贡献指南
+### Core Features
+- ✅ **TODOs CRUD Operations** - Create, Read, Update, Delete TODO items with rich metadata
+- ✅ **Real-time Collaboration** - WebSocket-based real-time updates for team members
+- ✅ **Team Management** - Create teams, invite members, manage permissions
+- ✅ **Media Attachments** - Upload and manage files associated with TODOs
+- ✅ **Advanced Filtering & Search** - Multi-criteria filtering and full-text search
+- ✅ **Authentication & Authorization** - JWT-based auth with role-based permissions
 
-## 🚀 快速开始
+### Technical Features
+- **gRPC & REST APIs** - Dual API interface with gRPC-Gateway
+- **PostgreSQL** - Reliable data storage with migrations
+- **Redis** - Caching and real-time messaging
+- **S3 Storage** - Scalable file storage
+- **Kubernetes Ready** - Complete Helm chart for production deployment
+- **Health Checks** - Comprehensive monitoring endpoints
 
+## 📋 API Overview
+
+### Authentication Service
+- User registration and login
+- JWT token generation and refresh
+- Password management with security requirements
+
+### TODO Service
+- Complete CRUD operations for TODO items
+- Subtask management (parent-child relationships)
+- Assignment and sharing capabilities
+- Status and priority management
+
+### Team Service
+- Team creation and management
+- Member invitation and role assignment
+- Team-based TODO sharing
+
+### Media Service
+- File upload and management
+- Image processing and thumbnails
+- Secure file access
+
+### Real-time Service
+- WebSocket connections for real-time updates
+- Live notifications for TODO changes
+- Team collaboration features
+
+## 🛠️ Quick Start
+
+> 📚 **For detailed setup instructions, see the [Development Guide](docs/DEVELOPMENT.md)**
+
+### Prerequisites
+- Go 1.25.5+
+- PostgreSQL 13+
+- Redis 6+
+- Docker (optional)
+
+### Development Setup
 ```bash
-# 克隆项目
+# Clone the repository
 git clone https://github.com/venslupro/todo-api.git
 cd todo-api
 
-# 安装依赖
+# Copy environment configuration
+cp .env.example .env
+
+# Install dependencies
 go mod download
 
-# 启动服务
+# Run database migrations
+go run cmd/server/migrate.go
+
+# Start the server
 go run cmd/server/main.go
 ```
 
-## 📦 项目结构
+### Production Deployment
+See [deployment documentation](docs/DEPLOYMENT.md) for comprehensive deployment and configuration instructions.
 
+## 📚 Documentation
+
+- [Architecture Overview](docs/ARCHITECTURE.md) - System design and architecture
+- [Deployment & Configuration Guide](docs/DEPLOYMENT.md) - Complete deployment and configuration instructions
+- [Development Guide](docs/DEVELOPMENT.md) - Development setup and guidelines
+
+## 🔧 Configuration
+
+> 📋 **For complete configuration reference, see the [Deployment & Configuration Guide](docs/DEPLOYMENT.md)**
+
+Key configuration options available in `.env`:
+- Database connection settings
+- JWT authentication parameters
+- Redis configuration
+- Storage options (S3 or local)
+- Server ports and environment
+
+## 🧪 Testing
+
+Run the complete test suite:
+```bash
+go test ./... -v
 ```
-todo-api/
-├── docs/                    # 项目文档
-├── api/                     # API定义和协议文件
-├── cmd/                     # 应用程序入口点
-├── internal/                # 内部包（不对外暴露）
-├── pkg/                     # 可复用的公共包
-├── deployment/              # 部署配置文件
-└── scripts/                 # 构建和部署脚本
-```
 
-## 🔧 开发环境
+## 📊 Monitoring
 
-- **Go**: 1.19+
-- **PostgreSQL**: 13+
-- **Redis**: 6+
-- **Docker**: 20+
-- **Kubernetes**: 1.25+
+Health check endpoints:
+- `GET /health` - Application health status
+- `GET /metrics` - Prometheus metrics (if enabled)
 
-## 📝 许可证
+## 🤝 Contributing
 
-本项目采用 MIT 许可证。详情请查看 [LICENSE](LICENSE) 文件。
+Please read our development guidelines in the [development documentation](docs/DEVELOPMENT.md).
 
----
+## 📄 License
 
-**更多详细信息请查看 [docs/](docs/) 目录中的相应文档。**
+MIT License - see LICENSE file for details.
