@@ -388,7 +388,7 @@ jobs:
         - **触发者**: ${{ github.actor }}
         
         ## 运行详情
-        - **开始时间**: ${{ fromJSON('{"date":"'$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"}').date }}
+        - **开始时间**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
         - **运行链接**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         
         ## 作业状态
