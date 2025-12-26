@@ -127,8 +127,8 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        # Use user-level package instead of organization-level package to avoid permission issues
-        images: ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE }}
+        # Use package-scoped naming to avoid organization package permission issues
+        images: ghcr.io/${{ github.repository }}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
