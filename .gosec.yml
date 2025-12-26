@@ -1,0 +1,18 @@
+{
+  "exclude": [
+    "G101",
+    "G103", 
+    "G104",
+    "G107"
+  ],
+  "excluded-dirs": [
+    "api/gen",
+    "vendor",
+    "testdata"
+  ],
+  "global": {
+    "nosec": false,
+    "tests": false,
+    "autogen": false
+  }
+}

@@ -147,7 +147,7 @@ func (s *PermissionService) hasTeamPermission(role commonv1.Role, requiredPermis
 			return true
 		}
 	}
-	
+
 	return false
 }
 

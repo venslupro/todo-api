@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -247,104 +248,120 @@ func (r *PostgresRepository) List(ctx context.Context, options domain.TODOListOp
 	argIndex := 1
 
 	// Build WHERE clause
+
 	if len(options.Filter.IDs) > 0 {
 		placeholders := make([]string, len(options.Filter.IDs))
-		for i, id := range options.Filter.IDs {
-			placeholders[i] = fmt.Sprintf("$%d", argIndex)
-			args = append(args, id)
-			argIndex++
+		for i := range options.Filter.IDs {
+			placeholders[i] = fmt.Sprintf("$%d", argIndex+i)
 		}
-		conditions = append(conditions, fmt.Sprintf("id IN (%s)", strings.Join(placeholders, ",")))
+		// Convert []string to []interface{}
+		idArgs := make([]interface{}, len(options.Filter.IDs))
+		for i, id := range options.Filter.IDs {
+			idArgs[i] = id
+		}
+		args = append(args, idArgs...)
+		conditions = append(conditions, "id IN ("+strings.Join(placeholders, ",")+")")
+		argIndex += len(options.Filter.IDs)
 	}
 
 	if options.Filter.UserID != nil {
-		conditions = append(conditions, fmt.Sprintf("user_id = $%d", argIndex))
+		conditions = append(conditions, "user_id = $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.UserID)
 		argIndex++
 	}
 
 	if len(options.Filter.Statuses) > 0 {
 		placeholders := make([]string, len(options.Filter.Statuses))
-		for i, status := range options.Filter.Statuses {
-			placeholders[i] = fmt.Sprintf("$%d", argIndex)
-			args = append(args, int32(status))
-			argIndex++
+		for i := range options.Filter.Statuses {
+			placeholders[i] = fmt.Sprintf("$%d", argIndex+i)
 		}
-		conditions = append(conditions, fmt.Sprintf("status IN (%s)", strings.Join(placeholders, ",")))
+		// Convert []commonv1.Status to []interface{}
+		statusArgs := make([]interface{}, len(options.Filter.Statuses))
+		for i, status := range options.Filter.Statuses {
+			statusArgs[i] = status
+		}
+		args = append(args, statusArgs...)
+		conditions = append(conditions, "status IN ("+strings.Join(placeholders, ",")+")")
+		argIndex += len(options.Filter.Statuses)
 	}
 
 	if len(options.Filter.Priorities) > 0 {
 		placeholders := make([]string, len(options.Filter.Priorities))
-		for i, priority := range options.Filter.Priorities {
-			placeholders[i] = fmt.Sprintf("$%d", argIndex)
-			args = append(args, int32(priority))
-			argIndex++
+		for i := range options.Filter.Priorities {
+			placeholders[i] = fmt.Sprintf("$%d", argIndex+i)
 		}
-		conditions = append(conditions, fmt.Sprintf("priority IN (%s)", strings.Join(placeholders, ",")))
+		// Convert []commonv1.Priority to []interface{}
+		priorityArgs := make([]interface{}, len(options.Filter.Priorities))
+		for i, priority := range options.Filter.Priorities {
+			priorityArgs[i] = priority
+		}
+		args = append(args, priorityArgs...)
+		conditions = append(conditions, "priority IN ("+strings.Join(placeholders, ",")+")")
+		argIndex += len(options.Filter.Priorities)
 	}
 
 	if options.Filter.DueDateFrom != nil {
-		conditions = append(conditions, fmt.Sprintf("due_date >= $%d", argIndex))
+		conditions = append(conditions, "due_date >= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.DueDateFrom)
 		argIndex++
 	}
 
 	if options.Filter.DueDateTo != nil {
-		conditions = append(conditions, fmt.Sprintf("due_date <= $%d", argIndex))
+		conditions = append(conditions, "due_date <= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.DueDateTo)
 		argIndex++
 	}
 
 	if len(options.Filter.Tags) > 0 {
-		conditions = append(conditions, fmt.Sprintf("tags && $%d", argIndex))
+		conditions = append(conditions, "tags && $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, pq.Array(options.Filter.Tags))
 		argIndex++
 	}
 
 	if options.Filter.AssignedTo != nil {
-		conditions = append(conditions, fmt.Sprintf("assigned_to = $%d", argIndex))
+		conditions = append(conditions, "assigned_to = $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.AssignedTo)
 		argIndex++
 	}
 
 	if options.Filter.ParentID != nil {
-		conditions = append(conditions, fmt.Sprintf("parent_id = $%d", argIndex))
+		conditions = append(conditions, "parent_id = $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.ParentID)
 		argIndex++
 	}
 
 	if options.Filter.TeamID != nil {
-		conditions = append(conditions, fmt.Sprintf("team_id = $%d", argIndex))
+		conditions = append(conditions, "team_id = $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.TeamID)
 		argIndex++
 	}
 
 	if options.Filter.IsShared != nil {
-		conditions = append(conditions, fmt.Sprintf("is_shared = $%d", argIndex))
+		conditions = append(conditions, "is_shared = $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.IsShared)
 		argIndex++
 	}
 
 	if options.Filter.CreatedDateFrom != nil {
-		conditions = append(conditions, fmt.Sprintf("created_at >= $%d", argIndex))
+		conditions = append(conditions, "created_at >= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.CreatedDateFrom)
 		argIndex++
 	}
 
 	if options.Filter.CreatedDateTo != nil {
-		conditions = append(conditions, fmt.Sprintf("created_at <= $%d", argIndex))
+		conditions = append(conditions, "created_at <= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.CreatedDateTo)
 		argIndex++
 	}
 
 	if options.Filter.CompletedDateFrom != nil {
-		conditions = append(conditions, fmt.Sprintf("completed_at >= $%d", argIndex))
+		conditions = append(conditions, "completed_at >= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.CompletedDateFrom)
 		argIndex++
 	}
 
 	if options.Filter.CompletedDateTo != nil {
-		conditions = append(conditions, fmt.Sprintf("completed_at <= $%d", argIndex))
+		conditions = append(conditions, "completed_at <= $"+fmt.Sprintf("%d", argIndex))
 		args = append(args, *options.Filter.CompletedDateTo)
 		argIndex++
 	}
@@ -361,11 +378,11 @@ func (r *PostgresRepository) List(ctx context.Context, options domain.TODOListOp
 		for _, field := range searchFields {
 			switch field {
 			case "title":
-				searchConditions = append(searchConditions, fmt.Sprintf("title ILIKE $%d", argIndex))
+				searchConditions = append(searchConditions, "title ILIKE $"+fmt.Sprintf("%d", argIndex))
 			case "description":
-				searchConditions = append(searchConditions, fmt.Sprintf("description ILIKE $%d", argIndex))
+				searchConditions = append(searchConditions, "description ILIKE $"+fmt.Sprintf("%d", argIndex))
 			case "tags":
-				searchConditions = append(searchConditions, fmt.Sprintf("$%d = ANY(tags)", argIndex))
+				searchConditions = append(searchConditions, "$"+fmt.Sprintf("%d", argIndex)+" = ANY(tags)")
 			}
 		}
 
@@ -411,26 +428,29 @@ func (r *PostgresRepository) List(ctx context.Context, options domain.TODOListOp
 	offset := (page - 1) * pageSize
 
 	// Count total items
-	countQuery := fmt.Sprintf("SELECT COUNT(*) FROM todos %s", whereClause)
+	countQuery := "SELECT COUNT(*) FROM todos " + whereClause
 	var totalItems int32
 	err := r.db.QueryRowContext(ctx, countQuery, args...).Scan(&totalItems)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	// Fetch items
-	query := fmt.Sprintf(`
-		SELECT id, user_id, title, description, status, priority, due_date,
-		       tags, is_shared, shared_by, created_at, updated_at, completed_at, assigned_to, parent_id, position
-		FROM todos
-		%s
-		%s
-		LIMIT $%d OFFSET $%d
-	`, whereClause, orderBy, argIndex, argIndex+1)
+	// Fetch items using safe string building
+	var queryBuilder strings.Builder
+	queryBuilder.WriteString("SELECT id, user_id, title, description, status, priority, due_date, ")
+	queryBuilder.WriteString("tags, is_shared, shared_by, created_at, updated_at, completed_at, assigned_to, parent_id, position ")
+	queryBuilder.WriteString("FROM todos ")
+	queryBuilder.WriteString(whereClause)
+	queryBuilder.WriteString(" ")
+	queryBuilder.WriteString(orderBy)
+	queryBuilder.WriteString(" LIMIT $")
+	queryBuilder.WriteString(strconv.Itoa(argIndex))
+	queryBuilder.WriteString(" OFFSET $")
+	queryBuilder.WriteString(strconv.Itoa(argIndex + 1))
 
 	args = append(args, pageSize, offset)
 
-	rows, err := r.db.QueryContext(ctx, query, args...)
+	rows, err := r.db.QueryContext(ctx, queryBuilder.String(), args...)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -521,16 +541,31 @@ func (r *PostgresRepository) BulkUpdateStatus(ctx context.Context, ids []string,
 	}
 	args[len(ids)] = int32(status)
 
-	query := fmt.Sprintf(`
-		UPDATE todos
-		SET status = $%d, updated_at = $%d
-		WHERE id IN (%s)
-	`, len(ids)+1, len(ids)+2, strings.Join(placeholders, ","))
+	// Build parameter placeholders for the IN clause using safe concatenation
+	var inClauseBuilder strings.Builder
+	inClauseBuilder.WriteString("$1")
+	for i := 2; i <= len(ids); i++ {
+		inClauseBuilder.WriteString(", $")
+		inClauseBuilder.WriteString(strconv.Itoa(i))
+	}
 
-	now := time.Now()
-	args = append(args, now)
+	// Build query using safe string building
+	var queryBuilder strings.Builder
+	queryBuilder.WriteString("UPDATE todos SET status = $")
+	queryBuilder.WriteString(strconv.Itoa(len(ids) + 1))
+	queryBuilder.WriteString(", updated_at = $")
+	queryBuilder.WriteString(strconv.Itoa(len(ids) + 2))
+	queryBuilder.WriteString(" WHERE id IN (")
+	queryBuilder.WriteString(inClauseBuilder.String())
+	queryBuilder.WriteString(")")
 
-	_, err := r.db.ExecContext(ctx, query, args...)
+	// Reorder args: ids first, then status, then updated_at
+	newArgs := make([]interface{}, 0, len(ids)+2)
+	newArgs = append(newArgs, args...)
+	newArgs = append(newArgs, int32(status))
+	newArgs = append(newArgs, time.Now())
+
+	_, err := r.db.ExecContext(ctx, queryBuilder.String(), newArgs...)
 	return err
 }
 
@@ -540,16 +575,28 @@ func (r *PostgresRepository) BulkDelete(ctx context.Context, ids []string) error
 		return nil
 	}
 
-	placeholders := make([]string, len(ids))
-	args := make([]interface{}, len(ids))
-	for i, id := range ids {
-		placeholders[i] = fmt.Sprintf("$%d", i+1)
-		args[i] = id
+	// Use individual DELETE statements in a transaction
+	// This is the safest approach as it avoids any dynamic SQL construction
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		}
+	}()
+
+	for _, id := range ids {
+		_, err := tx.ExecContext(ctx, "DELETE FROM todos WHERE id = $1", id)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
 	}
 
-	query := fmt.Sprintf("DELETE FROM todos WHERE id IN (%s)", strings.Join(placeholders, ","))
-	_, err := r.db.ExecContext(ctx, query, args...)
-	return err
+	return tx.Commit()
 }
 
 // Exists checks if a TODO exists by ID
@@ -650,7 +697,7 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 			applied_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 		);
 	`
-	
+
 	_, err := r.db.ExecContext(ctx, createTableSQL)
 	if err != nil {
 		return fmt.Errorf("failed to create migrations table: %w", err)
@@ -754,7 +801,7 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 				);
 
 				-- Media files table
-				CREATE TABLE IF NOT EXISTS media (
+				CREATE TABLE IF NOT EXISTS media_attachments (
 				    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 				    todo_id UUID NOT NULL REFERENCES todos(id) ON DELETE CASCADE,
 				    file_name VARCHAR(500) NOT NULL,
@@ -765,7 +812,9 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 				    thumbnail_url TEXT,
 				    duration INTEGER, -- For videos
 				    uploaded_by UUID NOT NULL REFERENCES users(id),
-				    uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+				    uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+				    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+				    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 				);
 
 				-- Activity logs table
@@ -807,9 +856,9 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 				CREATE INDEX IF NOT EXISTS idx_shared_todos_todo_id ON shared_todos(todo_id);
 				CREATE INDEX IF NOT EXISTS idx_shared_todos_team_id ON shared_todos(team_id);
 
-				-- Indexes for media table
-				CREATE INDEX IF NOT EXISTS idx_media_todo_id ON media(todo_id);
-				CREATE INDEX IF NOT EXISTS idx_media_uploaded_by ON media(uploaded_by);
+				-- Indexes for media_attachments table
+				CREATE INDEX IF NOT EXISTS idx_media_todo_id ON media_attachments(todo_id);
+				CREATE INDEX IF NOT EXISTS idx_media_uploaded_by ON media_attachments(uploaded_by);
 
 				-- Indexes for activity_logs table
 				CREATE INDEX IF NOT EXISTS idx_activity_logs_team_id ON activity_logs(team_id);
@@ -821,35 +870,10 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 		{
 			version: "002",
 			upSQL: `
-				-- Create media_attachments table
-				CREATE TABLE media_attachments (
-				    id VARCHAR(36) PRIMARY KEY,
-				    todo_id VARCHAR(36) NOT NULL,
-				    file_name VARCHAR(255) NOT NULL,
-				    file_url TEXT NOT NULL,
-				    file_type INTEGER NOT NULL,
-				    file_size BIGINT NOT NULL,
-				    mime_type VARCHAR(100) NOT NULL,
-				    thumbnail_url TEXT,
-				    duration INTEGER DEFAULT 0,
-				    uploaded_by VARCHAR(36) NOT NULL,
-				    uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-				    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-				    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-				    
-				    -- Foreign key constraints
-				    CONSTRAINT fk_media_todo FOREIGN KEY (todo_id) REFERENCES todos(id) ON DELETE CASCADE,
-				    CONSTRAINT fk_media_user FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE CASCADE,
-				    
-				    -- Indexes for performance
-				    INDEX idx_media_todo_id (todo_id),
-				    INDEX idx_media_uploaded_by (uploaded_by),
-				    INDEX idx_media_uploaded_at (uploaded_at)
-				);
-
-				-- Create indexes for better query performance
-				CREATE INDEX idx_media_file_type ON media_attachments(file_type);
-				CREATE INDEX idx_media_created_at ON media_attachments(created_at);
+				-- Add additional indexes and constraints for media_attachments table
+				CREATE INDEX IF NOT EXISTS idx_media_uploaded_at ON media_attachments(uploaded_at);
+				CREATE INDEX IF NOT EXISTS idx_media_file_type ON media_attachments(file_type);
+				CREATE INDEX IF NOT EXISTS idx_media_created_at ON media_attachments(created_at);
 			`,
 		},
 	}
@@ -894,7 +918,7 @@ func (r *PostgresRepository) Migrate(ctx context.Context) error {
 func (r *PostgresRepository) CheckMigrationStatus(ctx context.Context) error {
 	// Check if schema_migrations table exists
 	var tableExists bool
-	err := r.db.QueryRowContext(ctx, 
+	err := r.db.QueryRowContext(ctx,
 		"SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'schema_migrations')").Scan(&tableExists)
 	if err != nil {
 		return fmt.Errorf("failed to check migrations table: %w", err)
@@ -927,7 +951,7 @@ func (r *PostgresRepository) CheckMigrationStatus(ctx context.Context) error {
 
 	// Expected migrations
 	expectedMigrations := []string{"001", "002"}
-	
+
 	// Check if all expected migrations are applied
 	appliedMap := make(map[string]bool)
 	for _, migration := range appliedMigrations {

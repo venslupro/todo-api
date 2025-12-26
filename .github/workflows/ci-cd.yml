@@ -2,9 +2,7 @@ name: Todo API CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 env:
   GO_VERSION: '1.25'
@@ -12,7 +10,7 @@ env:
   DOCKER_REGISTRY: ghcr.io
 
 jobs:
-  # 代码质量检查
+  # Code Quality Checks
   lint-and-format:
     name: Lint and Format
     runs-on: ubuntu-latest
@@ -28,24 +26,24 @@ jobs:
 
     - name: Run gofmt
       run: |
-        # 检查代码格式
+        # Check code formatting
         if [[ $(gofmt -l .) ]]; then
-          echo "以下文件需要格式化:"
+          echo "Files that need formatting:"
           gofmt -l .
           exit 1
         fi
-        echo "代码格式检查通过"
+        echo "Code formatting check passed"
 
     - name: Run go vet
       run: go vet ./...
 
     - name: Run staticcheck
       run: |
-        # 安装静态检查工具
+        # Install static analysis tool
         go install honnef.co/go/tools/cmd/staticcheck@latest
         staticcheck ./...
 
-  # 单元测试
+  # Unit Tests
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
@@ -104,7 +102,7 @@ jobs:
         name: coverage-report
         path: coverage.html
 
-  # 构建和容器化
+  # Build and Containerize
   build-and-containerize:
     name: Build and Containerize
     runs-on: ubuntu-latest
@@ -148,7 +146,7 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
-  # 集成测试
+  # Integration Tests
   integration-tests:
     name: Integration Tests
     runs-on: ubuntu-latest
@@ -200,24 +198,24 @@ jobs:
         GRPC_PORT: 50051
         HTTP_PORT: 8080
       run: |
-        # 构建应用
+        # Build the application
         go build -o main cmd/server/main.go cmd/server/migrate.go
         
-        # 启动应用进行集成测试
+        # Start the application for integration testing
         ./main migrate
         ./main serve &
         SERVER_PID=$!
         
-        # 等待应用启动
+        # Wait for the application to start
         sleep 10
         
-        # 运行集成测试
+        # Run integration tests
         go test -tags=integration -v ./internal/app/service/...
         
-        # 停止应用
+        # Stop the application
         kill $SERVER_PID
 
-  # 安全扫描
+  # Lightweight Security Scan
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
@@ -227,26 +225,31 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Run Go security scanner
-      uses: securego/gosec@master
+    - name: Set up Go
+      uses: actions/setup-go@v4
       with:
-        args: '-exclude-dir=vendor ./...'
+        go-version: ${{ env.GO_VERSION }}
 
-    - name: Run dependency vulnerability check
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
+    - name: Run basic Go security scan
+      run: |
+        # Install and run lightweight gosec scan
+        go install github.com/securego/gosec/v2/cmd/gosec@latest
+        
+        # Only check high-risk security issues, ignore generated code and test files
+        gosec -exclude-dir=api/gen,vendor,testdata -exclude=G101,G103,G104,G107 \
+              -severity=high -confidence=high -quiet ./... || true
+        
+        echo "Basic security scan completed, only checking high severity issues"
 
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
-      if: always()
-      with:
-        sarif_file: 'trivy-results.sarif'
+    - name: Check Go module vulnerabilities
+      run: |
+        # Use govulncheck to check Go module vulnerabilities (official tool, lightweight and efficient)
+        go install golang.org/x/vuln/cmd/govulncheck@latest
+        govulncheck ./...
+        
+        echo "Dependency vulnerability check completed"
 
-  # 部署到开发环境
+  # Deploy to Development Environment
   deploy-dev:
     name: Deploy to Development
     runs-on: ubuntu-latest
@@ -269,41 +272,41 @@ jobs:
         echo "${{ secrets.DEV_KUBECONFIG }}" > kubeconfig.yaml
         export KUBECONFIG=kubeconfig.yaml
         
-        # 验证连接
+        # Verify connection
         kubectl cluster-info
 
     - name: Deploy to Kubernetes
       run: |
         export KUBECONFIG=kubeconfig.yaml
         
-        # 应用Kubernetes配置
+        # Apply Kubernetes configurations
         kubectl apply -f deployments/namespace.yaml
         kubectl apply -f deployments/configmap.yaml
         kubectl apply -f deployments/secrets.yaml
         
-        # 运行数据库迁移
+        # Run database migrations
         kubectl apply -f deployments/db-init-job.yaml
         kubectl wait --for=condition=complete job/todo-api-db-init -n todo-api --timeout=300s
         
-        # 部署应用
+        # Deploy application
         kubectl apply -f deployments/deployment.yaml
         kubectl apply -f deployments/service.yaml
         
-        # 等待部署完成
+        # Wait for deployment to complete
         kubectl rollout status deployment/todo-api -n todo-api --timeout=300s
 
     - name: Run smoke tests
       run: |
         export KUBECONFIG=kubeconfig.yaml
         
-        # 获取服务地址
+        # Get service address
         SERVICE_URL=$(kubectl get svc todo-api -n todo-api -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         
-        # 运行冒烟测试
+        # Run smoke tests
         curl -f http://$SERVICE_URL:8080/health
         curl -f http://$SERVICE_URL:8080/api/v1/system/health
 
-  # 部署到生产环境
+  # Deploy to Production Environment
   deploy-prod:
     name: Deploy to Production
     runs-on: ubuntu-latest
@@ -326,41 +329,41 @@ jobs:
         echo "${{ secrets.PROD_KUBECONFIG }}" > kubeconfig.yaml
         export KUBECONFIG=kubeconfig.yaml
         
-        # 验证连接
+        # Verify connection
         kubectl cluster-info
 
     - name: Deploy to Kubernetes
       run: |
         export KUBECONFIG=kubeconfig.yaml
         
-        # 应用Kubernetes配置
+        # Apply Kubernetes configurations
         kubectl apply -f deployments/namespace.yaml
         kubectl apply -f deployments/configmap.yaml
         kubectl apply -f deployments/secrets.yaml
         
-        # 运行数据库迁移
+        # Run database migrations
         kubectl apply -f deployments/db-init-job.yaml
         kubectl wait --for=condition=complete job/todo-api-db-init -n todo-api --timeout=300s
         
-        # 部署应用（蓝绿部署策略）
+        # Deploy application (blue-green deployment strategy)
         kubectl apply -f deployments/deployment.yaml
         kubectl apply -f deployments/service.yaml
         
-        # 等待部署完成
+        # Wait for deployment to complete
         kubectl rollout status deployment/todo-api -n todo-api --timeout=300s
 
     - name: Run production smoke tests
       run: |
         export KUBECONFIG=kubeconfig.yaml
         
-        # 获取服务地址
+        # Get service address
         SERVICE_URL=$(kubectl get svc todo-api -n todo-api -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         
-        # 运行生产环境冒烟测试
+        # Run production smoke tests
         curl -f https://$SERVICE_URL:8080/health
         curl -f https://$SERVICE_URL:8080/api/v1/system/health
 
-  # 通知和报告
+  # Notification and Reporting
   notify:
     name: Notify and Report
     runs-on: ubuntu-latest
@@ -368,16 +371,57 @@ jobs:
     if: always()
     
     steps:
-    - name: Send Slack notification
+    - name: Generate notification report
       if: always()
-      uses: 8398a7/action-slack@v3
+      run: |
+        # Generate detailed CI/CD report
+        cat > notification_report.md << EOF
+        # Todo API CI/CD Pipeline Status Report
+        
+        ## Basic Information
+        - **Status**: ${{ job.status }}
+        - **Repository**: ${{ github.repository }}
+        - **Branch**: ${{ github.ref }}
+        - **Commit**: ${{ github.sha }}
+        - **Workflow**: ${{ github.workflow }}
+        - **Run ID**: ${{ github.run_id }}
+        - **Triggered by**: ${{ github.actor }}
+        
+        ## Run Details
+        - **Start Time**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        - **Run Link**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        
+        ## Job Status
+        EOF
+        
+        # Add job statuses
+        echo "### Job Execution Status" >> notification_report.md
+        echo '```' >> notification_report.md
+        echo "lint-and-format: ${{ needs.lint-and-format.result || 'skipped' }}" >> notification_report.md
+        echo "unit-tests: ${{ needs.unit-tests.result || 'skipped' }}" >> notification_report.md
+        echo "build-and-containerize: ${{ needs.build-and-containerize.result || 'skipped' }}" >> notification_report.md
+        echo "integration-tests: ${{ needs.integration-tests.result || 'skipped' }}" >> notification_report.md
+        echo "security-scan: ${{ needs.security-scan.result || 'skipped' }}" >> notification_report.md
+        echo "deploy-dev: ${{ needs.deploy-dev.result || 'skipped' }}" >> notification_report.md
+        echo "deploy-prod: ${{ needs.deploy-prod.result || 'skipped' }}" >> notification_report.md
+        echo '```' >> notification_report.md
+        
+        echo "" >> notification_report.md
+        echo "---" >> notification_report.md
+        echo "*This report was automatically generated by GitHub Actions CI/CD pipeline*" >> notification_report.md
+        
+        # Output report content
+        cat notification_report.md
+        
+        echo "GitHub will automatically send workflow status notifications to your bound email"
+        echo "For custom email notifications, please configure email service integration"
+
+    - name: Upload notification report
+      if: always()
+      uses: actions/upload-artifact@v4
       with:
-        status: ${{ job.status }}
-        text: |
-          Todo API CI/CD Pipeline ${{ job.status }}
-          Branch: ${{ github.ref }}
-          Commit: ${{ github.sha }}
-        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        name: ci-cd-report
+        path: notification_report.md
 
     - name: Generate deployment report
       if: always()

@@ -222,4 +222,3 @@ func (r *PostgresUserRepository) ExistsByUsername(ctx context.Context, username 
 	err := r.db.QueryRowContext(ctx, query, username).Scan(&exists)
 	return exists, err
 }
-
