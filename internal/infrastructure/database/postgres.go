@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -434,15 +435,22 @@ func (r *PostgresRepository) List(ctx context.Context, options domain.TODOListOp
 		return nil, nil, err
 	}
 
-	// Fetch items
-	query := "SELECT id, user_id, title, description, status, priority, due_date, " +
-		"tags, is_shared, shared_by, created_at, updated_at, completed_at, assigned_to, parent_id, position " +
-		"FROM todos " + whereClause + " " + orderBy + " " +
-		"LIMIT $" + fmt.Sprintf("%d", argIndex) + " OFFSET $" + fmt.Sprintf("%d", argIndex+1)
+	// Fetch items using safe string building
+	var queryBuilder strings.Builder
+	queryBuilder.WriteString("SELECT id, user_id, title, description, status, priority, due_date, ")
+	queryBuilder.WriteString("tags, is_shared, shared_by, created_at, updated_at, completed_at, assigned_to, parent_id, position ")
+	queryBuilder.WriteString("FROM todos ")
+	queryBuilder.WriteString(whereClause)
+	queryBuilder.WriteString(" ")
+	queryBuilder.WriteString(orderBy)
+	queryBuilder.WriteString(" LIMIT $")
+	queryBuilder.WriteString(strconv.Itoa(argIndex))
+	queryBuilder.WriteString(" OFFSET $")
+	queryBuilder.WriteString(strconv.Itoa(argIndex + 1))
 
 	args = append(args, pageSize, offset)
 
-	rows, err := r.db.QueryContext(ctx, query, args...)
+	rows, err := r.db.QueryContext(ctx, queryBuilder.String(), args...)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -533,16 +541,31 @@ func (r *PostgresRepository) BulkUpdateStatus(ctx context.Context, ids []string,
 	}
 	args[len(ids)] = int32(status)
 
-	query := `
-		UPDATE todos
-		SET status = $` + fmt.Sprintf("%d", len(ids)+1) + `, updated_at = $` + fmt.Sprintf("%d", len(ids)+2) + `
-		WHERE id IN (` + strings.Join(placeholders, ",") + `)
-	`
+	// Build parameter placeholders for the IN clause using safe concatenation
+	var inClauseBuilder strings.Builder
+	inClauseBuilder.WriteString("$1")
+	for i := 2; i <= len(ids); i++ {
+		inClauseBuilder.WriteString(", $")
+		inClauseBuilder.WriteString(strconv.Itoa(i))
+	}
 
-	now := time.Now()
-	args = append(args, now)
+	// Build query using safe string building
+	var queryBuilder strings.Builder
+	queryBuilder.WriteString("UPDATE todos SET status = $")
+	queryBuilder.WriteString(strconv.Itoa(len(ids) + 1))
+	queryBuilder.WriteString(", updated_at = $")
+	queryBuilder.WriteString(strconv.Itoa(len(ids) + 2))
+	queryBuilder.WriteString(" WHERE id IN (")
+	queryBuilder.WriteString(inClauseBuilder.String())
+	queryBuilder.WriteString(")")
 
-	_, err := r.db.ExecContext(ctx, query, args...)
+	// Reorder args: ids first, then status, then updated_at
+	newArgs := make([]interface{}, 0, len(ids)+2)
+	newArgs = append(newArgs, args...)
+	newArgs = append(newArgs, int32(status))
+	newArgs = append(newArgs, time.Now())
+
+	_, err := r.db.ExecContext(ctx, queryBuilder.String(), newArgs...)
 	return err
 }
 
@@ -552,16 +575,28 @@ func (r *PostgresRepository) BulkDelete(ctx context.Context, ids []string) error
 		return nil
 	}
 
-	placeholders := make([]string, len(ids))
-	args := make([]interface{}, len(ids))
-	for i, id := range ids {
-		placeholders[i] = fmt.Sprintf("$%d", i+1)
-		args[i] = id
+	// Use individual DELETE statements in a transaction
+	// This is the safest approach as it avoids any dynamic SQL construction
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		}
+	}()
+
+	for _, id := range ids {
+		_, err := tx.ExecContext(ctx, "DELETE FROM todos WHERE id = $1", id)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
 	}
 
-	query := "DELETE FROM todos WHERE id IN (" + strings.Join(placeholders, ",") + ")"
-	_, err := r.db.ExecContext(ctx, query, args...)
-	return err
+	return tx.Commit()
 }
 
 // Exists checks if a TODO exists by ID
