@@ -8,8 +8,6 @@ env:
   GO_VERSION: '1.25'
   DOCKER_IMAGE: todo-api
   DOCKER_REGISTRY: ghcr.io
-  # Use user-level package instead of organization-level package to avoid permission issues
-  DOCKER_IMAGE_FULL: ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE }}
 
 jobs:
   # Code Quality Checks
@@ -129,7 +127,8 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ${{ env.DOCKER_IMAGE_FULL }}
+        # Use user-level package instead of organization-level package to avoid permission issues
+        images: ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE }}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
