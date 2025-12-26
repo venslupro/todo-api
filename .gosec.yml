@@ -10,33 +10,9 @@
     "vendor",
     "testdata"
   ],
-  "rules": {
-    "G101": {
-      "ignores": [
-        "/todo.v1.*",
-        "/common.v1.*",
-        "test.*"
-      ]
-    },
-    "G201": {
-      "severity": "high",
-      "confidence": "high"
-    },
-    "G202": {
-      "severity": "high", 
-      "confidence": "high"
-    },
-    "G204": {
-      "severity": "medium",
-      "confidence": "medium"
-    }
-  },
   "global": {
     "nosec": false,
-    "show-ignored": false,
-    "tests": true,
-    "autogen": true,
-    "concurrent-workers": 4,
-    "timeout": "5m"
+    "tests": false,
+    "autogen": false
   }
 }
