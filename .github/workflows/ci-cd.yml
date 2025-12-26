@@ -8,8 +8,8 @@ env:
   GO_VERSION: '1.25'
   DOCKER_IMAGE: todo-api
   DOCKER_REGISTRY: ghcr.io
-  # For personal accounts, use correct image naming format (owner/package/package)
-  CONTAINER_IMAGE: ${{ github.repository_owner }}/todo-api/todo-api
+  # Use simple image naming format for personal accounts
+  CONTAINER_IMAGE: ${{ github.repository_owner }}/todo-api
 
 jobs:
   # Code Quality Checks
@@ -122,15 +122,17 @@ jobs:
       uses: docker/login-action@v3
       with:
         registry: ${{ env.DOCKER_REGISTRY }}
-        username: ${{ github.repository_owner }}
+        username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Set up package permissions
       if: github.ref == 'refs/heads/main'
       run: |
         # For personal accounts, ensure package creation is allowed
-        echo "Configuring package permissions for personal account: ${{ github.repository_owner }}"
+        echo "Configuring package permissions for user: ${{ github.actor }}"
+        echo "Repository owner: ${{ github.repository_owner }}"
         echo "Package name: ${{ env.DOCKER_IMAGE }}"
+        echo "Full image name: ${{ env.DOCKER_REGISTRY }}/${{ env.CONTAINER_IMAGE }}"
 
     - name: Extract metadata
       id: meta
