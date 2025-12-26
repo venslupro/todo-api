@@ -8,8 +8,8 @@ env:
   GO_VERSION: '1.25'
   DOCKER_IMAGE: todo-api
   DOCKER_REGISTRY: ghcr.io
-  # For personal accounts, use simpler image naming
-  CONTAINER_IMAGE: ${{ github.repository_owner }}/todo-api
+  # For personal accounts, use correct image naming format (owner/package/package)
+  CONTAINER_IMAGE: ${{ github.repository_owner }}/todo-api/todo-api
 
 jobs:
   # Code Quality Checks
