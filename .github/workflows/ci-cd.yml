@@ -371,16 +371,57 @@ jobs:
     if: always()
     
     steps:
-    - name: Send Slack notification
+    - name: Generate notification report
       if: always()
-      uses: 8398a7/action-slack@v3
+      run: |
+        # 生成详细的CI/CD报告
+        cat > notification_report.md << EOF
+        # Todo API CI/CD Pipeline Status Report
+        
+        ## 基本信息
+        - **状态**: ${{ job.status }}
+        - **仓库**: ${{ github.repository }}
+        - **分支**: ${{ github.ref }}
+        - **提交**: ${{ github.sha }}
+        - **工作流**: ${{ github.workflow }}
+        - **运行ID**: ${{ github.run_id }}
+        - **触发者**: ${{ github.actor }}
+        
+        ## 运行详情
+        - **开始时间**: ${{ fromJSON('{"date":"'$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"}').date }}
+        - **运行链接**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        
+        ## 作业状态
+        EOF
+        
+        # 添加各作业状态
+        echo "### 作业执行情况" >> notification_report.md
+        echo '```' >> notification_report.md
+        echo "lint-and-format: ${{ needs.lint-and-format.result || 'skipped' }}" >> notification_report.md
+        echo "unit-tests: ${{ needs.unit-tests.result || 'skipped' }}" >> notification_report.md
+        echo "build-and-containerize: ${{ needs.build-and-containerize.result || 'skipped' }}" >> notification_report.md
+        echo "integration-tests: ${{ needs.integration-tests.result || 'skipped' }}" >> notification_report.md
+        echo "security-scan: ${{ needs.security-scan.result || 'skipped' }}" >> notification_report.md
+        echo "deploy-dev: ${{ needs.deploy-dev.result || 'skipped' }}" >> notification_report.md
+        echo "deploy-prod: ${{ needs.deploy-prod.result || 'skipped' }}" >> notification_report.md
+        echo '```' >> notification_report.md
+        
+        echo "" >> notification_report.md
+        echo "---" >> notification_report.md
+        echo "*此报告由GitHub Actions CI/CD流水线自动生成*" >> notification_report.md
+        
+        # 输出报告内容
+        cat notification_report.md
+        
+        echo "GitHub会自动发送workflow状态通知到您绑定的邮箱"
+        echo "如需自定义邮件通知，请配置邮件服务集成"
+
+    - name: Upload notification report
+      if: always()
+      uses: actions/upload-artifact@v4
       with:
-        status: ${{ job.status }}
-        text: |
-          Todo API CI/CD Pipeline ${{ job.status }}
-          Branch: ${{ github.ref }}
-          Commit: ${{ github.sha }}
-        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        name: ci-cd-report
+        path: notification_report.md
 
     - name: Generate deployment report
       if: always()
