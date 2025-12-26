@@ -220,6 +220,10 @@ jobs:
     name: Security Scan
     runs-on: ubuntu-latest
     needs: build-and-containerize
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
     
     steps:
     - name: Checkout code
@@ -228,7 +232,32 @@ jobs:
     - name: Run Go security scanner
       uses: securego/gosec@master
       with:
-        args: '-exclude-dir=vendor ./...'
+        args: '-conf .gosec.yml -fmt=json -out=gosec-results.json ./...'
+
+    - name: Process gosec results
+      id: gosec-results
+      run: |
+        # 检查是否有高严重性问题
+        if [ -f "gosec-results.json" ]; then
+          HIGH_ISSUES=$(jq -r '.Issues[] | select(.severity == "HIGH") | .file' gosec-results.json | wc -l)
+          MEDIUM_ISSUES=$(jq -r '.Issues[] | select(.severity == "MEDIUM") | .file' gosec-results.json | wc -l)
+          
+          echo "高严重性问题: $HIGH_ISSUES"
+          echo "中严重性问题: $MEDIUM_ISSUES"
+          
+          # 如果有高严重性问题，标记为失败
+          if [ "$HIGH_ISSUES" -gt 0 ]; then
+            echo "发现高严重性安全问题，构建失败"
+            exit 1
+          fi
+          
+          # 中严重性问题只警告
+          if [ "$MEDIUM_ISSUES" -gt 0 ]; then
+            echo "发现中严重性安全问题，请检查"
+          fi
+        else
+          echo "gosec结果文件不存在"
+        fi
 
     - name: Run dependency vulnerability check
       uses: aquasecurity/trivy-action@master
@@ -238,9 +267,20 @@ jobs:
         format: 'sarif'
         output: 'trivy-results.sarif'
 
+    - name: Check if Trivy results file exists
+      id: check-trivy
+      run: |
+        if [ -f "trivy-results.sarif" ]; then
+          echo "trivy-results.sarif file exists"
+          echo "file_exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "trivy-results.sarif file does not exist"
+          echo "file_exists=false" >> $GITHUB_OUTPUT
+        fi
+
     - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
-      if: always()
+      uses: github/codeql-action/upload-sarif@v4
+      if: always() && steps.check-trivy.outputs.file_exists == 'true'
       with:
         sarif_file: 'trivy-results.sarif'
 

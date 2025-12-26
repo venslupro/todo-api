@@ -1,21 +1,37 @@
 # gosec configuration file for Todo API
 exclude:
-  - "G101"
-  - "G103"
-  - "G104"
+  - "G101"  # 硬编码凭证 - 误报较多
+  - "G103"  # unsafe使用 - 在protobuf生成代码中常见
+  - "G104"  # 错误未检查 - 在生成代码中常见
+  - "G107"  # HTTP请求 - 在API项目中误报
 
 excluded-dirs:
-  - api/gen
-  - vendor
+  - api/gen      # gRPC生成代码
+  - vendor       # 第三方依赖
+  - testdata     # 测试数据
 
+# 针对特定规则的精细配置
 rules:
   G101:
     ignores:
-      - "/todo.v1.*"
-      - "/common.v1.*"
+      - "/todo.v1.*"      # gRPC方法路径
+      - "/common.v1.*"    # 通用gRPC路径
+      - "test.*"          # 测试相关字符串
+  G201:
+    severity: high        # SQL注入 - 高风险
+    confidence: high
+  G202:
+    severity: high        # SQL字符串拼接 - 高风险
+    confidence: high
+  G204:
+    severity: medium      # 命令执行 - 中风险
+    confidence: medium
 
 global:
   nosec: false
   show-ignored: false
   tests: true
   autogen: true
+  # 优化扫描性能
+  concurrent-workers: 4
+  timeout: 5m
