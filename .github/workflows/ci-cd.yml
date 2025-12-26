@@ -127,8 +127,8 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        # Use package-scoped naming to avoid organization package permission issues
-        images: ghcr.io/${{ github.repository }}
+        # Use package-scoped naming for personal GitHub accounts
+        images: ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE }}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
